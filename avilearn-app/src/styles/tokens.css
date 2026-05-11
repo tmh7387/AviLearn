@@ -1,0 +1,122 @@
+/* ==========================================================================
+   AviLearn Design System — Tokens
+   Color, type, spacing, radii, shadows + semantic element styles.
+   Dark-first. Import this file once at the root of any AviLearn surface.
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* --- COLOR — canvas & surface --------------------------------------- */
+  --bg-canvas:     #14171f;
+  --bg-surface:    #1c1f2a;
+  --bg-surface-2:  #232735;
+  --bg-surface-3:  #2c3142;
+  --border:        #2c3142;
+  --border-strong: #3a4055;
+
+  /* --- COLOR — foreground --------------------------------------------- */
+  --fg-1: #e6e9f2;
+  --fg-2: #a4a9bd;
+  --fg-3: #6b7187;
+  --fg-inverse: #14171f;
+
+  /* --- COLOR — brand --------------------------------------------------- */
+  --brand:        #2dd4bf;
+  --brand-hover:  #34e2cc;
+  --brand-press:  #22b8a3;
+  --brand-tint:   rgba(45, 212, 191, 0.15);
+  --brand-ring:   rgba(45, 212, 191, 0.30);
+
+  /* --- COLOR — status -------------------------------------------------- */
+  --success:        #22c55e;
+  --success-tint:   rgba(34, 197, 94, 0.15);
+  --warn:           #f59e0b;
+  --warn-tint:      rgba(245, 158, 11, 0.15);
+  --danger:         #ef4444;
+  --danger-tint:    rgba(239, 68, 68, 0.15);
+  --info:           #3b82f6;
+  --info-tint:      rgba(59, 130, 246, 0.15);
+  --accent-magenta: #ec4899;
+  --accent-violet:  #8b5cf6;
+
+  /* --- TYPE ------------------------------------------------------------ */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  --t-xs:   11px;
+  --t-sm:   12px;
+  --t-base: 14px;
+  --t-md:   15px;
+  --t-lg:   18px;
+  --t-xl:   22px;
+  --t-2xl:  28px;
+  --t-3xl:  36px;
+  --t-4xl:  48px;
+
+  --lh-tight: 1.2;
+  --lh-snug:  1.35;
+  --lh-base:  1.5;
+  --lh-loose: 1.7;
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+
+  --tracking-wide:  0.06em;
+  --tracking-tight: -0.01em;
+
+  /* --- SPACING --------------------------------------------------------- */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  24px;
+  --sp-6:  32px;
+  --sp-7:  48px;
+  --sp-8:  64px;
+
+  /* --- RADII ----------------------------------------------------------- */
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 10px;
+  --r-pill: 999px;
+
+  /* --- SHADOWS --------------------------------------------------------- */
+  --shadow-pop:   0 4px 12px rgba(0, 0, 0, 0.40);
+  --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.50);
+  --shadow-input-inset: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+
+  /* --- LAYOUT ---------------------------------------------------------- */
+  --sidebar-w: 244px;
+  --sidebar-w-collapsed: 60px;
+  --header-h: 56px;
+  --drawer-w: 320px;
+
+  /* --- ICON SIZES ------------------------------------------------------ */
+  --icon-sm: 14px;
+  --icon-md: 18px;
+  --icon-lg: 24px;
+
+  /* --- MOTION ---------------------------------------------------------- */
+  --ease-standard: cubic-bezier(.4, 0, .2, 1);
+  --t-fast: 80ms;
+  --t-base-d: 150ms;
+  --t-slow: 200ms;
+  --t-data: 600ms;
+}
+
+/* Light skin override */
+[data-theme="light"] {
+  --bg-canvas: #f6f7fb;
+  --bg-surface: #ffffff;
+  --bg-surface-2: #f0f2f7;
+  --bg-surface-3: #e3e6ee;
+  --border: #e3e6ee;
+  --border-strong: #cbd0dc;
+  --fg-1: #14171f;
+  --fg-2: #4b5167;
+  --fg-3: #7a8093;
+  --fg-inverse: #ffffff;
+}

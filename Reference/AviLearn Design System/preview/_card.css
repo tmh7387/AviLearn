@@ -1,0 +1,53 @@
+/* Preview-card chrome — used by every card in /preview/. Cards target ~700×<small>. */
+@import url('../colors_and_type.css');
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-canvas);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  font-size: var(--t-base);
+}
+.card {
+  padding: 20px 24px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+.row { display: flex; gap: 16px; align-items: stretch; }
+.row.tight { gap: 8px; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+.muted { color: var(--fg-2); }
+.dim { color: var(--fg-3); }
+.eyebrow {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg-3);
+  font-weight: 600;
+}
+.swatch {
+  border-radius: var(--r-sm);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 10px;
+  font-size: var(--t-xs);
+  font-family: var(--font-mono);
+  min-width: 96px;
+  height: 92px;
+  box-sizing: border-box;
+  position: relative;
+}
+.swatch .name {
+  font-family: var(--font-sans);
+  font-size: var(--t-sm);
+  font-weight: 600;
+  color: inherit;
+}
+.swatch .hex {
+  opacity: 0.7;
+  font-size: 10px;
+  margin-top: 2px;
+}

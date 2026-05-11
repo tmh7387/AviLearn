@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 48" width="200" height="48">
+  <defs>
+    
+  </defs>
+  
+  <g transform="translate(6, 10)" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 14 L28 2 L20 28 L14 18 L2 14 Z" fill="#2dd4bf" fill-opacity="0.15"></path>
+    <path d="M14 18 L28 2"></path>
+  </g>
+  <text x="44" y="31" class="wm" fill="#e6e9f2">Avi<tspan fill="#2dd4bf">Learn</tspan></text>
+</svg>

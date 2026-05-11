@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AviLearn Console</title>
+  <meta name="ext-resource-dependency" content="../../assets/avilearn-mark.svg" data-resource-id="markSvg" />
+  <link rel="stylesheet" href="console.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <template id="__bundler_thumbnail" data-bg-color="#14171f">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="800" fill="#14171f"/>
+      <g transform="translate(420, 240)" fill="none" stroke="#2dd4bf" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 160 L340 20 L240 320 L160 200 L20 160 Z" fill="#2dd4bf" fill-opacity="0.15"/>
+        <path d="M160 200 L340 20"/>
+      </g>
+    </svg>
+  </template>
+  <div id="root"></div>
+
+  <script type="text/babel" src="Avatar.jsx"></script>
+  <script type="text/babel" src="Sidebar.standalone.jsx"></script>
+  <script type="text/babel" src="Header.jsx"></script>
+  <script type="text/babel" src="Views.jsx"></script>
+
+  <script type="text/babel">
+    function App() {
+      const [view, setView] = React.useState("dashboard");
+      const titles = {
+        dashboard: "Dashboard",
+        roster: "Roster",
+        chat: "Chat",
+        schedule: "Schedule",
+        courses: "Courses",
+        grades: "Grades",
+        mail: "Mailbox",
+        reports: "Reports",
+        aircraft: "Aircraft",
+        weather: "Weather",
+        settings: "Settings",
+      };
+
+      // Some nav items are placeholders — route them to dashboard with a friendly note
+      const realViews = ["dashboard", "roster", "chat"];
+      const effectiveView = realViews.includes(view) ? view : view;
+
+      React.useEffect(() => {
+        // re-render lucide icons after each view change
+        if (window.lucide) lucide.createIcons();
+      });
+
+      return (
+        <div className="app" data-screen-label={`AviLearn Console · ${titles[view]}`}>
+          <Sidebar active={view} onNavigate={setView} />
+          <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+            <Header crumb={titles[view]} />
+            <main className="page">
+              {view === "dashboard" && <DashboardView />}
+              {view === "roster" && <RosterView />}
+              {view === "chat" && <ChatView />}
+              {!realViews.includes(view) && (
+                <div className="card" style={{ padding: 48, textAlign: "center" }}>
+                  <div style={{ fontSize: 18, fontWeight: 600, marginBottom: 8 }}>{titles[view]}</div>
+                  <div style={{ color: "var(--fg-2)", fontSize: 13 }}>This surface isn't recreated in the kit. The Console kit ships Dashboard, Roster, and Chat as worked examples.</div>
+                  <button className="btn btn-outline" style={{ marginTop: 16 }} onClick={() => setView("dashboard")}>Back to dashboard</button>
+                </div>
+              )}
+            </main>
+          </div>
+        </div>
+      );
+    }
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

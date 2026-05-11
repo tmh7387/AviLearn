@@ -1,0 +1,213 @@
+/* ==========================================================================
+   AviLearn Design System — Tokens
+   Color, type, spacing, radii, shadows + semantic element styles.
+   Dark-first. Import this file once at the root of any AviLearn surface.
+   ========================================================================== */
+
+/* Fonts (Google Fonts CDN; substitute self-hosted in fonts/ if needed) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* --- COLOR — canvas & surface --------------------------------------- */
+  --bg-canvas:     #14171f;     /* page background */
+  --bg-surface:    #1c1f2a;     /* cards, sidebars, modals */
+  --bg-surface-2:  #232735;     /* nested panels, hovers, table stripes */
+  --bg-surface-3:  #2c3142;     /* deepest hover, pressed */
+  --border:        #2c3142;     /* 1px hairline */
+  --border-strong: #3a4055;     /* on hover / focus rings */
+
+  /* --- COLOR — foreground --------------------------------------------- */
+  --fg-1: #e6e9f2;              /* primary text */
+  --fg-2: #a4a9bd;              /* secondary text, labels */
+  --fg-3: #6b7187;              /* muted, placeholder, disabled */
+  --fg-inverse: #14171f;        /* text on bright fills */
+
+  /* --- COLOR — brand --------------------------------------------------- */
+  --brand:        #2dd4bf;      /* aviation cyan-teal — primary actions */
+  --brand-hover:  #34e2cc;
+  --brand-press:  #22b8a3;
+  --brand-tint:   rgba(45, 212, 191, 0.15);
+  --brand-ring:   rgba(45, 212, 191, 0.30);
+
+  /* --- COLOR — status -------------------------------------------------- */
+  --success:        #22c55e;
+  --success-tint:   rgba(34, 197, 94, 0.15);
+  --warn:           #f59e0b;
+  --warn-tint:      rgba(245, 158, 11, 0.15);
+  --danger:         #ef4444;
+  --danger-tint:    rgba(239, 68, 68, 0.15);
+  --info:           #3b82f6;
+  --info-tint:      rgba(59, 130, 246, 0.15);
+  --accent-magenta: #ec4899;    /* charts only */
+  --accent-violet:  #8b5cf6;    /* charts only */
+
+  /* --- TYPE ------------------------------------------------------------ */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Type scale (px) */
+  --t-xs:   11px;
+  --t-sm:   12px;
+  --t-base: 14px;   /* body */
+  --t-md:   15px;
+  --t-lg:   18px;
+  --t-xl:   22px;
+  --t-2xl:  28px;   /* page title */
+  --t-3xl:  36px;
+  --t-4xl:  48px;   /* hero */
+
+  --lh-tight: 1.2;
+  --lh-snug:  1.35;
+  --lh-base:  1.5;
+  --lh-loose: 1.7;
+
+  --fw-regular: 400;
+  --fw-medium:  500;
+  --fw-semi:    600;
+  --fw-bold:    700;
+
+  --tracking-wide:  0.06em;     /* uppercase labels */
+  --tracking-tight: -0.01em;    /* large display */
+
+  /* --- SPACING --------------------------------------------------------- */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  24px;
+  --sp-6:  32px;
+  --sp-7:  48px;
+  --sp-8:  64px;
+
+  /* --- RADII ----------------------------------------------------------- */
+  --r-sm: 4px;       /* buttons, inputs, sidebar items */
+  --r-md: 6px;       /* cards, modals, drawers */
+  --r-lg: 10px;
+  --r-pill: 999px;   /* badges, avatars, pills */
+
+  /* --- SHADOWS (sparingly) -------------------------------------------- */
+  --shadow-pop:   0 4px 12px rgba(0, 0, 0, 0.40);
+  --shadow-modal: 0 20px 40px rgba(0, 0, 0, 0.50);
+  --shadow-input-inset: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+
+  /* --- LAYOUT ---------------------------------------------------------- */
+  --sidebar-w: 244px;
+  --sidebar-w-collapsed: 60px;
+  --header-h: 56px;
+  --drawer-w: 320px;
+
+  /* --- ICON SIZES ------------------------------------------------------ */
+  --icon-sm: 14px;
+  --icon-md: 18px;
+  --icon-lg: 24px;
+
+  /* --- MOTION ---------------------------------------------------------- */
+  --ease-standard: cubic-bezier(.4, 0, .2, 1);
+  --t-fast: 80ms;
+  --t-base-d: 150ms;
+  --t-slow: 200ms;
+  --t-data: 600ms;
+}
+
+/* ==========================================================================
+   Light skin override (secondary; for student Learn surface if needed)
+   ========================================================================== */
+[data-theme="light"] {
+  --bg-canvas: #f6f7fb;
+  --bg-surface: #ffffff;
+  --bg-surface-2: #f0f2f7;
+  --bg-surface-3: #e3e6ee;
+  --border: #e3e6ee;
+  --border-strong: #cbd0dc;
+  --fg-1: #14171f;
+  --fg-2: #4b5167;
+  --fg-3: #7a8093;
+  --fg-inverse: #ffffff;
+}
+
+/* ==========================================================================
+   Base + semantic element styles
+   ========================================================================== */
+html, body {
+  background: var(--bg-canvas);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  font-size: var(--t-base);
+  line-height: var(--lh-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, .h1 {
+  font-size: var(--t-2xl);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--fg-1);
+  margin: 0;
+}
+h2, .h2 {
+  font-size: var(--t-xl);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-snug);
+  color: var(--fg-1);
+  margin: 0;
+}
+h3, .h3 {
+  font-size: var(--t-lg);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-snug);
+  color: var(--fg-1);
+  margin: 0;
+}
+h4, .h4 {
+  font-size: var(--t-md);
+  font-weight: var(--fw-semi);
+  line-height: var(--lh-snug);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+p {
+  font-size: var(--t-base);
+  line-height: var(--lh-base);
+  color: var(--fg-1);
+  margin: 0;
+}
+
+small, .small {
+  font-size: var(--t-sm);
+  color: var(--fg-2);
+}
+
+code, pre, .mono, kbd {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+}
+
+/* Eyebrow / label — uppercase tracked small caps */
+.eyebrow, .label {
+  font-size: var(--t-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  font-weight: var(--fw-semi);
+  color: var(--fg-2);
+}
+
+/* Tabular numerics for tables, KPIs, timestamps */
+.tabular, table, .kpi-value {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Links */
+a {
+  color: var(--brand);
+  text-decoration: none;
+}
+a:hover { color: var(--brand-hover); }
+
+/* Selection */
+::selection {
+  background: var(--brand-tint);
+  color: var(--fg-1);
+}
