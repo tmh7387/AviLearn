@@ -88,7 +88,11 @@ function getSimTypeGuidelines(simType: SimulationType): string {
 - 6 branch categories: Man, Machine, Method, Material, Measurement, Mother Nature (Environment)
 - Provide a pool of draggable cause cards that learner places onto correct branches
 - Score based on correct placement percentage
-- Show feedback for each placement (correct branch vs wrong branch)`,
+- Show feedback for each placement (correct branch vs wrong branch)
+- LAYOUT: The simulation will run inside a full-viewport iframe.
+  - Use a CSS grid or flexbox layout that fills 100vh with NO internal scrolling.
+  - The cause-card panel (left sidebar) MUST be tall enough to display all 12 cause cards without scrolling — use calc(100vh - 180px) as its height.
+  - The fishbone diagram area MUST fill the remaining viewport width and height.`,
 
     'five-why-chain': `
 - Present an initial problem statement

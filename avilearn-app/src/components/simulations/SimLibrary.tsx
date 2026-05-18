@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { Sparkles, Eye, CheckCircle2, XCircle, Clock, AlertTriangle, RotateCcw } from 'lucide-react';
 import { Pill } from '@/components/ui/Pill';
-import { SimPreview } from './SimPreview';
 
 interface SimRecord {
   id: string;
@@ -28,9 +28,9 @@ const STATUS_CONFIG: Record<string, { kind?: 'success' | 'warn' | 'danger' | 'in
 };
 
 export function SimLibrary({ moduleId }: { moduleId?: string }) {
+  const router = useRouter();
   const [simulations, setSimulations] = useState<SimRecord[]>([]);
   const [loading, setLoading] = useState(true);
-  const [previewId, setPreviewId] = useState<string | null>(null);
   const [filter, setFilter] = useState('all');
 
   const fetchSims = useCallback(async () => {
@@ -121,7 +121,7 @@ export function SimLibrary({ moduleId }: { moduleId?: string }) {
 
                   <button
                     className="btn btn-secondary btn-sm sim-preview-btn"
-                    onClick={() => setPreviewId(sim.id)}
+                    onClick={() => router.push(`/simulations/${sim.id}/preview`)}
                   >
                     <Eye size={14} /> Preview
                   </button>
@@ -132,13 +132,7 @@ export function SimLibrary({ moduleId }: { moduleId?: string }) {
         </div>
       )}
 
-      {previewId && (
-        <SimPreview
-          simulationId={previewId}
-          onClose={() => setPreviewId(null)}
-          onStatusChange={fetchSims}
-        />
-      )}
+
     </div>
   );
 }
