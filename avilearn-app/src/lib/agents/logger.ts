@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import type { AgentRole } from './types';
 
 interface LogEntry {
@@ -13,7 +13,7 @@ interface LogEntry {
 
 export async function logAgentDecision(entry: LogEntry): Promise<void> {
   try {
-    const supabase = await createClient();
+    const supabase = createAdminClient();
     await supabase.from('agent_logs').insert({
       agent_name: entry.agentName,
       action: entry.action,

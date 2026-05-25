@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export interface RosterStudent {
   id: string;
@@ -18,7 +18,7 @@ const STATUS_MAP: Record<string, { kind: RosterStudent['status']; label: string 
 };
 
 export async function getRosterStudents(): Promise<RosterStudent[]> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: enrollments } = await supabase
     .from('enrollments')

@@ -2,12 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import { Sparkles, BookOpen, Target, Clock, ChevronLeft } from 'lucide-react';
+import { Sparkles, BookOpen, Target, Clock, ChevronLeft, Plus, Upload } from 'lucide-react';
 import Link from 'next/link';
 import { Pill } from '@/components/ui/Pill';
 import { GenerateModal } from '@/components/simulations/GenerateModal';
 import { SimLibrary } from '@/components/simulations/SimLibrary';
 import { SimPreview } from '@/components/simulations/SimPreview';
+import { CreateLessonModal } from '@/components/courses/CreateLessonModal';
+import { UploadMaterialModal } from '@/components/courses/UploadMaterialModal';
 
 interface ModuleData {
   id: string;
@@ -16,6 +18,7 @@ interface ModuleData {
   learning_objectives: string[] | null;
   lessons: { id: string; title: string; content_type: string; duration_minutes: number | null; sort_order: number }[];
   courses: { code: string; name: string };
+  error?: string;
 }
 
 export default function ModuleDetailPage() {
@@ -24,6 +27,8 @@ export default function ModuleDetailPage() {
   const [mod, setMod] = useState<ModuleData | null>(null);
   const [loading, setLoading] = useState(true);
   const [showGenerate, setShowGenerate] = useState(false);
+  const [showAddLesson, setShowAddLesson] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -32,13 +37,13 @@ export default function ModuleDetailPage() {
       .then(r => r.json())
       .then(data => { setMod(data); setLoading(false); })
       .catch(() => setLoading(false));
-  }, [moduleId]);
+  }, [moduleId, refreshKey]);
 
   if (loading) {
     return <div style={{ padding: 40, color: 'var(--fg-3)' }}>Loading module...</div>;
   }
 
-  if (!mod) {
+  if (!mod || mod.error) {
     return <div style={{ padding: 40, color: 'var(--fg-3)' }}>Module not found</div>;
   }
 
@@ -46,13 +51,16 @@ export default function ModuleDetailPage() {
     <>
       <div className="page-title">
         <div>
-          <Link href="/courses" className="breadcrumb-link">
-            <ChevronLeft size={14} /> Courses
+          <Link href={`/courses/${params.courseId}`} className="breadcrumb-link">
+            <ChevronLeft size={14} /> Course details
           </Link>
           <h1>{mod.title}</h1>
           <div className="sub">{mod.courses?.code} · {mod.courses?.name}</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-secondary" onClick={() => setShowUpload(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Upload size={14} /> Upload Content
+          </button>
           <button className="btn btn-primary" onClick={() => setShowGenerate(true)}>
             <Sparkles size={14} /> Generate Simulation
           </button>
@@ -80,8 +88,15 @@ export default function ModuleDetailPage() {
         </div>
 
         <div className="card module-lessons-card">
-          <div className="card-head">
+          <div className="card-head" style={{ justifyContent: 'space-between', display: 'flex', alignItems: 'center' }}>
             <h3><BookOpen size={14} /> Lessons ({mod.lessons?.length || 0})</h3>
+            <button
+              className="btn btn-ghost"
+              style={{ padding: '4px 8px', fontSize: 12, color: 'var(--brand)', display: 'flex', alignItems: 'center', gap: 4 }}
+              onClick={() => setShowAddLesson(true)}
+            >
+              <Plus size={12} /> Add Lesson
+            </button>
           </div>
           <div className="card-body">
             {mod.lessons?.sort((a, b) => a.sort_order - b.sort_order).map(lesson => (
@@ -134,6 +149,24 @@ export default function ModuleDetailPage() {
           onStatusChange={() => setRefreshKey(k => k + 1)}
         />
       )}
+
+      {showAddLesson && (
+        <CreateLessonModal
+          moduleId={moduleId}
+          onClose={() => setShowAddLesson(false)}
+          onSuccess={() => setRefreshKey(k => k + 1)}
+        />
+      )}
+
+      {showUpload && (
+        <UploadMaterialModal
+          moduleId={moduleId}
+          moduleTitle={mod.title}
+          onClose={() => setShowUpload(false)}
+          onSuccess={() => setRefreshKey(k => k + 1)}
+        />
+      )}
     </>
   );
 }
+

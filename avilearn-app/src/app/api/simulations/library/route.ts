@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 // GET /api/simulations/library — List all simulations with filters
 export async function GET(request: NextRequest) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { searchParams } = new URL(request.url);
 
   const moduleId = searchParams.get('moduleId');

@@ -1,25 +1,18 @@
 import Link from 'next/link';
 import { Pill } from '@/components/ui/Pill';
-import { Filter, Plus, BookOpen, Users } from 'lucide-react';
+import { BookOpen, Users } from 'lucide-react';
 import { getCourses } from '@/lib/data/courses';
+import { CoursesHeader } from '@/components/courses/CoursesHeader';
 
 export const dynamic = 'force-dynamic';
 
 export default async function CoursesPage() {
   const courses = await getCourses();
+  const activeCount = courses.filter((c) => c.statusLabel === 'Active').length;
 
   return (
     <>
-      <div className="page-title">
-        <div>
-          <h1>Courses</h1>
-          <div className="sub">{courses.length} courses · {courses.filter((c) => c.statusLabel === 'Active').length} active</div>
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          <button className="btn btn-secondary"><Filter size={14} /> Filter</button>
-          <button className="btn btn-primary"><Plus size={14} /> Create course</button>
-        </div>
-      </div>
+      <CoursesHeader totalCourses={courses.length} activeCourses={activeCount} />
 
       <div className="courses-grid">
         {courses.map((c) => (

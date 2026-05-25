@@ -6,6 +6,19 @@
 -- Enable UUID generation
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- ---- Clean Slate (Drop existing conflicting tables) ----
+DROP TABLE IF EXISTS generated_simulations CASCADE;
+DROP TABLE IF EXISTS agent_logs CASCADE;
+DROP TABLE IF EXISTS simulation_types CASCADE;
+DROP TABLE IF EXISTS scorm_packages CASCADE;
+DROP TABLE IF EXISTS grades CASCADE;
+DROP TABLE IF EXISTS flight_logs CASCADE;
+DROP TABLE IF EXISTS enrollments CASCADE;
+DROP TABLE IF EXISTS lessons CASCADE;
+DROP TABLE IF EXISTS modules CASCADE;
+DROP TABLE IF EXISTS courses CASCADE;
+DROP TABLE IF EXISTS profiles CASCADE;
+
 -- ---- Profiles ----
 CREATE TABLE profiles (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -143,3 +156,31 @@ CREATE INDEX idx_flight_logs_student ON flight_logs(student_id);
 CREATE INDEX idx_scorm_packages_course ON scorm_packages(course_id);
 CREATE INDEX idx_agent_logs_module ON agent_logs(related_module_id);
 CREATE INDEX idx_agent_logs_created ON agent_logs(created_at);
+
+-- ---- Phase 2: Generated simulations ----
+CREATE TABLE generated_simulations (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  module_id UUID NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+  sim_type_id UUID REFERENCES simulation_types(id) ON DELETE SET NULL,
+  title TEXT NOT NULL,
+  html_code TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'generating' CHECK (status IN ('generating', 'pending_review', 'approved', 'rejected', 'revision_requested')),
+  xapi_verb TEXT NOT NULL,
+  learning_objectives TEXT[],
+  sme_flags TEXT[],
+  agent_rationale TEXT,
+  researcher_output JSONB,
+  verifier_output JSONB,
+  generation_cost_tokens INT,
+  version INT NOT NULL DEFAULT 1,
+  approved_at TIMESTAMPTZ,
+  approved_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
+  cmi5_package_path TEXT,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_generated_simulations_module ON generated_simulations(module_id);
+CREATE INDEX idx_generated_simulations_sim_type ON generated_simulations(sim_type_id);
+CREATE INDEX idx_generated_simulations_status ON generated_simulations(status);
+

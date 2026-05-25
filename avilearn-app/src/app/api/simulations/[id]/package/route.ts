@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { packageSimulationAsCmi5 } from '@/lib/agents/packager';
 
 // POST /api/simulations/[id]/package — Package approved simulation as cmi5 AU
@@ -8,7 +8,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Fetch simulation
   const { data: sim, error } = await supabase

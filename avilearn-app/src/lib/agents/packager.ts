@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { logAgentDecision, timer } from './logger';
 
 interface PackageInput {
@@ -11,7 +11,7 @@ interface PackageInput {
 
 export async function packageSimulationAsCmi5(input: PackageInput): Promise<string> {
   const elapsed = timer();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Generate the cmi5 AU wrapper
   const cmi5Html = wrapInCmi5AU(input.htmlCode, input.moduleTitle, input.simType);

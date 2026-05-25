@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft, BookOpen, Target, Sparkles, ChevronRight } from 'lucide-react';
+import { ChevronLeft, Target, Sparkles, ChevronRight, Plus } from 'lucide-react';
 import { Pill } from '@/components/ui/Pill';
+import { CreateModuleModal } from '@/components/courses/CreateModuleModal';
 
 interface CourseData {
   id: string;
@@ -19,6 +20,7 @@ interface CourseData {
     sort_order: number;
     learning_objectives: string[] | null;
   }[];
+  error?: string;
 }
 
 export default function CourseDetailPage() {
@@ -26,16 +28,18 @@ export default function CourseDetailPage() {
   const courseId = params.courseId as string;
   const [course, setCourse] = useState<CourseData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showAddModule, setShowAddModule] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     fetch(`/api/courses/${courseId}`)
       .then(r => r.json())
       .then(data => { setCourse(data); setLoading(false); })
       .catch(() => setLoading(false));
-  }, [courseId]);
+  }, [courseId, refreshKey]);
 
   if (loading) return <div style={{ padding: 40, color: 'var(--fg-3)' }}>Loading course...</div>;
-  if (!course) return <div style={{ padding: 40, color: 'var(--fg-3)' }}>Course not found</div>;
+  if (!course || course.error) return <div style={{ padding: 40, color: 'var(--fg-3)' }}>Course not found</div>;
 
   const sorted = [...(course.modules || [])].sort((a, b) => a.sort_order - b.sort_order);
 
@@ -48,6 +52,11 @@ export default function CourseDetailPage() {
           </Link>
           <h1>{course.name}</h1>
           <div className="sub">{course.code} · {sorted.length} modules</div>
+        </div>
+        <div style={{ display: 'flex', gap: 8 }}>
+          <button className="btn btn-primary" onClick={() => setShowAddModule(true)}>
+            <Plus size={14} /> Add Module
+          </button>
         </div>
       </div>
 
@@ -91,6 +100,15 @@ export default function CourseDetailPage() {
           <div className="empty-state"><p>No modules in this course yet</p></div>
         )}
       </div>
+
+      {showAddModule && (
+        <CreateModuleModal
+          courseId={courseId}
+          onClose={() => setShowAddModule(false)}
+          onSuccess={() => setRefreshKey(k => k + 1)}
+        />
+      )}
     </>
   );
 }
+

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export interface ScheduleEvent {
   id: string;
@@ -43,7 +43,7 @@ export async function getWeekSchedule(): Promise<{
   const month = monday.toLocaleString('en-US', { month: 'long' });
   const year = monday.getFullYear();
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data } = await supabase
     .from('flight_logs')

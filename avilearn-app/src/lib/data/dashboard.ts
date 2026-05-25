@@ -1,7 +1,7 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export async function getDashboardKpis() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const [activeStudents, hoursLogged, pendingGrades] = await Promise.all([
     supabase.from('enrollments').select('id', { count: 'exact', head: true }).eq('status', 'active'),
@@ -22,7 +22,7 @@ export async function getDashboardKpis() {
 }
 
 export async function getCourseModules(courseCode: string) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: course } = await supabase
     .from('courses')
@@ -42,7 +42,7 @@ export async function getCourseModules(courseCode: string) {
 }
 
 export async function getTodaysFlights() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const today = new Date().toISOString().split('T')[0];
 
   const { data } = await supabase
@@ -68,7 +68,7 @@ export async function getTodaysFlights() {
 }
 
 export async function getRecentGrades(limit = 5) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data } = await supabase
     .from('grades')

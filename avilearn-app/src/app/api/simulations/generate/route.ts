@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 import { classifyContentDomain } from '@/lib/agents/supervisor';
 import { recommendSimulationType } from '@/lib/agents/researcher';
 import { generateSimulationCode } from '@/lib/agents/sim-designer';
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: 'moduleId is required' }, { status: 400 });
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Fetch module + course info
   const { data: mod, error: modErr } = await supabase

@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/server';
 
 export interface GradeRow {
   id: string;
@@ -20,7 +20,7 @@ const STATUS_MAP: Record<string, { kind: GradeRow['status']; label: string }> = 
 };
 
 export async function getGrades(): Promise<GradeRow[]> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data } = await supabase
     .from('grades')
