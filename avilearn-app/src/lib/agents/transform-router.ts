@@ -70,9 +70,15 @@ Requirements:
    - diagram: structured CSS boxes/flowcharts.
    - data_chart: styled HTML table with borders and highlights.
    - procedure_checklist: styled vertical steps sequence.
-5. Access Inter font from Google Fonts.`,
+5. Access Inter font from Google Fonts.
+
+CRITICAL: Output ONLY the raw HTML. Do NOT wrap it in markdown code fences. Start with <!DOCTYPE html> or <html>.`,
       });
-      htmlCode = text;
+      // Strip markdown code fences if the model wrapped the output
+      htmlCode = text
+        .replace(/^```(?:html)?\s*\n?/i, '')
+        .replace(/\n?```\s*$/i, '')
+        .trim();
     } else if (lesson.contentType === 'video') {
       // Mocking video render file (creating a simple preview player overlay)
       htmlCode = `

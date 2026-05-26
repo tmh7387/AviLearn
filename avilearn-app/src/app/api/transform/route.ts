@@ -110,6 +110,8 @@ export async function POST(request: NextRequest) {
 
             if (uploadErr) {
               console.error(`[Transform] Storage upload failed for ${lesson.title}:`, uploadErr);
+              send({ step: 'saving', message: `⚠ Storage upload failed for "${lesson.title}": ${uploadErr.message}` });
+              storagePath = null; // Don't save a broken content_url
             }
           }
 

@@ -13,7 +13,7 @@ export async function GET(
     .select(`
       id, title, description, learning_objectives, sort_order,
       courses(code, name),
-      lessons(id, title, content_type, duration_minutes, sort_order)
+      lessons(id, title, content_type, content_url, duration_minutes, sort_order)
     `)
     .eq('id', moduleId)
     .single();
