@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       try {
         let parsedSlides = [];
         const isPdf = file.name.toLowerCase().endsWith('.pdf');
-        const isPptx = file.name.toLowerCase().endsWith('.pptx');
+        const isPptx = file.name.toLowerCase().endsWith('.pptx') || file.name.toLowerCase().endsWith('.pptm');
 
         if (isPdf) {
           send({ step: 'intake', message: 'Extracting text from PDF...' });
@@ -66,10 +66,13 @@ export async function POST(request: NextRequest) {
           const buffer = Buffer.from(await file.arrayBuffer());
           fs.writeFileSync(tempPath, buffer);
 
-          send({ step: 'intake', message: 'Executing python-pptx slide parser...' });
+          send({ step: 'intake', message: 'Executing python-pptx slide parser (extracting text, images, shapes, tables)...' });
           const scriptPath = path.join(process.cwd(), '..', 'resources', 'parse_pptx.py');
           
-          const { stdout } = await execPromise(`python "${scriptPath}" "${tempPath}"`);
+          // maxBuffer increased to 50MB to accommodate base64-encoded images in stdout
+          const { stdout } = await execPromise(`python "${scriptPath}" "${tempPath}"`, {
+            maxBuffer: 50 * 1024 * 1024,
+          });
           
           // Cleanup
           try { fs.unlinkSync(tempPath); } catch {}
@@ -79,8 +82,16 @@ export async function POST(request: NextRequest) {
             throw new Error(result.error);
           }
           parsedSlides = result.slides;
+
+          // Report visual content extraction stats
+          const imgCount = parsedSlides.reduce((sum: number, s: any) => sum + (s.images?.length || 0), 0);
+          const shapeCount = parsedSlides.reduce((sum: number, s: any) => sum + (s.shapes?.length || 0), 0);
+          const tableCount = parsedSlides.reduce((sum: number, s: any) => sum + (s.tables?.length || 0), 0);
+          if (imgCount > 0 || shapeCount > 0 || tableCount > 0) {
+            send({ step: 'intake', message: `Visual content detected: ${imgCount} images, ${shapeCount} shapes, ${tableCount} tables.` });
+          }
         } else {
-          throw new Error('Unsupported file format. Please upload PPTX or PDF.');
+          throw new Error('Unsupported file format. Please upload PPTX, PPTM, or PDF.');
         }
 
         // Step 2: Enrichment Agent

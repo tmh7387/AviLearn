@@ -2,12 +2,38 @@ import { NextRequest } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/server';
 
 // GET /api/lessons/[lessonId]/content — Serve lesson content from Supabase Storage
+// Optional: ?path=<storagePath> to serve a specific version (used by Slide Studio)
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ lessonId: string }> }
 ) {
   const { lessonId } = await params;
   const supabase = createAdminClient();
+
+  // Check for explicit storage path (version rollback from Slide Studio)
+  const versionPath = request.nextUrl.searchParams.get('path');
+  if (versionPath) {
+    // Security: only allow paths scoped to this lesson's versions directory
+    const allowedPrefix = `lessons/versions/${lessonId}/`;
+    if (!versionPath.startsWith(allowedPrefix)) {
+      return Response.json({ error: 'Invalid version path' }, { status: 403 });
+    }
+
+    const { data: fileData, error: downloadErr } = await supabase.storage
+      .from('scorm-packages')
+      .download(versionPath);
+
+    if (downloadErr || !fileData) {
+      return Response.json({ error: 'Version not found in storage' }, { status: 404 });
+    }
+
+    return new Response(fileData, {
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-cache',
+      },
+    });
+  }
 
   // Look up the lesson to get the storage path
   const { data: lesson, error } = await supabase

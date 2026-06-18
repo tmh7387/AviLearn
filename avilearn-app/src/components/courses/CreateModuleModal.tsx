@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { X, Loader2, Plus, Trash2 } from 'lucide-react';
+import { X, Loader2, Plus } from 'lucide-react';
+import ObjectiveInput from './ObjectiveInput';
 
 interface CreateModuleModalProps {
   courseId: string;
@@ -170,47 +171,17 @@ export function CreateModuleModal({ courseId, onClose, onSuccess }: CreateModule
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               <label style={{ fontSize: 12, fontWeight: 600, color: 'var(--fg-2)' }}>Learning Objectives</label>
               
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                 {objectives.map((obj, index) => (
-                  <div key={index} style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                    <input
-                      type="text"
-                      placeholder={`Objective #${index + 1}`}
-                      value={obj}
-                      onChange={(e) => handleObjectiveChange(index, e.target.value)}
-                      style={{
-                        flex: 1,
-                        background: 'var(--bg-canvas)',
-                        border: '1px solid var(--border)',
-                        color: 'var(--fg-1)',
-                        padding: '8px 12px',
-                        borderRadius: 'var(--r-sm)',
-                        fontSize: 13,
-                        outline: 'none',
-                      }}
-                      disabled={loading}
-                    />
-                    {objectives.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveObjective(index)}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: 'var(--danger)',
-                          cursor: 'pointer',
-                          padding: 8,
-                          borderRadius: 'var(--r-sm)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                        disabled={loading}
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    )}
-                  </div>
+                  <ObjectiveInput
+                    key={index}
+                    value={obj}
+                    onChange={(value) => handleObjectiveChange(index, value)}
+                    index={index}
+                    onRemove={() => handleRemoveObjective(index)}
+                    showRemove={objectives.length > 1}
+                    disabled={loading}
+                  />
                 ))}
               </div>
 

@@ -9,7 +9,11 @@ export type AgentRole =
   | 'enrichment'
   | 'transform_router'
   | 'quality_gate'
-  | 'packager';
+  | 'packager'
+  | 'slide_designer'
+  | 'lesson_plan_generator'
+  | 'quiz_generator'
+  | 'objective_aligner';
 
 export type ContentDomain =
   | 'rca'
@@ -114,4 +118,133 @@ export interface GeneratedSimulationRow {
   cmi5_package_path: string | null;
   created_at: string;
   updated_at: string;
+}
+
+// --- Slide Studio types ---
+
+export interface ElementContext {
+  tagName: string;
+  cssSelector: string;
+  textPreview: string;
+  outerHTML: string;
+}
+
+export interface SlideEditMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  elementContext?: ElementContext;
+  timestamp: string;
+}
+
+export interface SlideVersion {
+  versionNumber: number;
+  storagePath: string;
+  summary: string;
+  createdAt: string;
+}
+
+// --- Lesson Plan types (course-level) ---
+
+export type BloomLevel =
+  | 'remember'
+  | 'understand'
+  | 'apply'
+  | 'analyze'
+  | 'evaluate'
+  | 'create';
+
+export interface SmartObjective {
+  text: string;
+  bloom_level: BloomLevel;
+  action_verb: string;
+  conditions: string;
+  standard: string;
+  audience: string;
+}
+
+export interface LessonPlanPhase {
+  activities: string;
+  content: string;
+  time_minutes: number;
+}
+
+export interface ModuleTopic {
+  topic: string;
+  activities: string;
+  content: string;
+  instructional_method: 'direct' | 'interactive' | 'indirect' | 'experiential';
+  time_minutes: number;
+}
+
+export interface ConductModule {
+  module_title: string;
+  objective_indices: number[];
+  topics: ModuleTopic[];
+  module_evaluation: string;
+  total_time_minutes: number;
+}
+
+export interface LessonPlanPhases {
+  start: LessonPlanPhase;
+  conduct: ConductModule[];
+  wrap_up: LessonPlanPhase;
+}
+
+export interface LessonPlan {
+  course_title: string;
+  total_time_minutes: number;
+  instructor?: string;
+  audience_description?: string;
+  target_group_size?: string;
+  rationale: string;
+  learning_objectives: SmartObjective[];
+  evaluation_strategy: string;
+  instructional_aids: string[];
+  phases: LessonPlanPhases;
+  notes?: string;
+}
+
+// --- Quiz types ---
+
+export type QuizQuestionType =
+  | 'mcq_single'
+  | 'mcq_multi'
+  | 'true_false'
+  | 'fill_blank'
+  | 'sequence'
+  | 'hotspot';
+
+export interface QuizQuestionOption {
+  text: string;
+  isCorrect: boolean;
+  feedback: string;
+}
+
+export interface QuizQuestion {
+  questionType: QuizQuestionType;
+  questionText: string;
+  options?: QuizQuestionOption[];
+  correctAnswer?: string;
+  explanation: string;
+  bloomLevel: BloomLevel;
+  difficulty: number;
+  objectiveIndex?: number;
+}
+
+// --- Objective Aligner types ---
+
+export type ObjectiveCoverage = 'fully_covered' | 'partially_covered' | 'not_covered';
+
+export interface ObjectiveCoverageResult {
+  index: number;
+  text: string;
+  coverage: ObjectiveCoverage;
+  evidence: string;
+  suggestion?: string;
+}
+
+export interface AlignmentReport {
+  objectives: ObjectiveCoverageResult[];
+  overallCoverage: number;
+  recommendations: string[];
 }

@@ -167,7 +167,7 @@ export function UploadMaterialModal({ moduleId, moduleTitle, onClose, onSuccess 
                   type="file"
                   ref={fileInputRef}
                   onChange={handleFileChange}
-                  accept=".pptx,.pdf"
+                  accept=".pptx,.pptm,.pdf"
                   style={{ display: 'none' }}
                 />
                 <div style={{ color: 'var(--fg-3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -178,7 +178,7 @@ export function UploadMaterialModal({ moduleId, moduleTitle, onClose, onSuccess 
                     {selectedFile ? selectedFile.name : 'Select or drop file here'}
                   </span>
                   <p style={{ fontSize: 12, color: 'var(--fg-3)', marginTop: 4 }}>
-                    Supports PowerPoint (.pptx) and PDF (.pdf) manuals up to 50MB.
+                    Supports PowerPoint (.pptx, .pptm) and PDF (.pdf) manuals up to 50MB.
                   </p>
                 </div>
               </div>

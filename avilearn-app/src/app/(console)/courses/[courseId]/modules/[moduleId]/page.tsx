@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { Sparkles, BookOpen, Target, Clock, ChevronLeft, Plus, Upload, ExternalLink, X, Eye } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import { Sparkles, BookOpen, Target, Clock, ChevronLeft, Plus, Upload, ExternalLink, X, Eye, Wand2, Pencil, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { Pill } from '@/components/ui/Pill';
 import { GenerateModal } from '@/components/simulations/GenerateModal';
@@ -10,11 +10,15 @@ import { SimLibrary } from '@/components/simulations/SimLibrary';
 import { SimPreview } from '@/components/simulations/SimPreview';
 import { CreateLessonModal } from '@/components/courses/CreateLessonModal';
 import { UploadMaterialModal } from '@/components/courses/UploadMaterialModal';
+import { EditModuleModal } from '@/components/courses/EditModuleModal';
+import { ConfirmDeleteModal } from '@/components/ui/ConfirmDeleteModal';
+import { SlideStudio } from '@/components/courses/SlideStudio';
 
 interface ModuleData {
   id: string;
   title: string;
   description: string | null;
+  sort_order: number;
   learning_objectives: string[] | null;
   lessons: { id: string; title: string; content_type: string; content_url: string | null; duration_minutes: number | null; sort_order: number }[];
   courses: { code: string; name: string };
@@ -23,6 +27,7 @@ interface ModuleData {
 
 export default function ModuleDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const moduleId = params.moduleId as string;
   const [mod, setMod] = useState<ModuleData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -31,7 +36,11 @@ export default function ModuleDetailPage() {
   const [showUpload, setShowUpload] = useState(false);
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [viewingLesson, setViewingLesson] = useState<{ id: string; title: string } | null>(null);
+  const [studioLesson, setStudioLesson] = useState<{ id: string; title: string; initialSlide?: number } | null>(null);
+  const [showEditModule, setShowEditModule] = useState(false);
+  const [showDeleteModule, setShowDeleteModule] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
+  const viewerIframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
     fetch(`/api/modules/${moduleId}`)
@@ -59,6 +68,16 @@ export default function ModuleDetailPage() {
           <div className="sub">{mod.courses?.code} · {mod.courses?.name}</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            className="btn btn-ghost"
+            onClick={() => setShowDeleteModule(true)}
+            style={{ color: 'var(--danger)', display: 'flex', alignItems: 'center', gap: 6 }}
+          >
+            <Trash2 size={14} />
+          </button>
+          <button className="btn btn-secondary" onClick={() => setShowEditModule(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Pencil size={14} /> Edit Module
+          </button>
           <button className="btn btn-secondary" onClick={() => setShowUpload(true)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <Upload size={14} /> Upload Content
           </button>
@@ -197,6 +216,32 @@ export default function ModuleDetailPage() {
         />
       )}
 
+      {showEditModule && mod && (
+        <EditModuleModal
+          moduleData={mod}
+          onClose={() => setShowEditModule(false)}
+          onSuccess={() => setRefreshKey(k => k + 1)}
+        />
+      )}
+
+      {showDeleteModule && mod && (
+        <ConfirmDeleteModal
+          title="Delete Module"
+          message={`Are you sure you want to delete "${mod.title}"? This action cannot be undone.`}
+          warningDetails={`This will permanently delete the module, all ${mod.lessons?.length || 0} lesson${(mod.lessons?.length || 0) !== 1 ? 's' : ''}, and any generated simulations linked to it.`}
+          confirmLabel="Delete Module"
+          onClose={() => setShowDeleteModule(false)}
+          onConfirm={async () => {
+            const res = await fetch(`/api/modules/${moduleId}`, { method: 'DELETE' });
+            if (!res.ok) {
+              const body = await res.json();
+              throw new Error(body.error || 'Failed to delete module');
+            }
+            router.push(`/courses/${params.courseId}`);
+          }}
+        />
+      )}
+
       {/* Lesson Content Viewer Modal */}
       {viewingLesson && (
         <div className="modal-overlay" onClick={() => setViewingLesson(null)}>
@@ -213,6 +258,34 @@ export default function ModuleDetailPage() {
                 <button
                   className="btn btn-ghost"
                   style={{ padding: '4px 10px', fontSize: 12, color: 'var(--brand)', display: 'flex', alignItems: 'center', gap: 4 }}
+                  onClick={() => {
+                    // Capture current slide index from the viewer iframe before closing
+                    let initialSlide = 0;
+                    try {
+                      const iframeWin = viewerIframeRef.current?.contentWindow as Record<string, unknown> | null;
+                      const iframeDoc = viewerIframeRef.current?.contentDocument;
+                      // Strategy 1: Read window.currentSlide (works if global)
+                      if (iframeWin && typeof iframeWin.currentSlide === 'number') {
+                        initialSlide = iframeWin.currentSlide;
+                      }
+                      // Strategy 2: Parse the "Slide N / M" indicator text from the DOM
+                      else if (iframeDoc) {
+                        const body = iframeDoc.body?.innerText || iframeDoc.body?.textContent || '';
+                        const match = body.match(/Slide\s+(\d+)\s*[/\/]\s*\d+/i);
+                        if (match) {
+                          initialSlide = parseInt(match[1], 10) - 1; // Convert to 0-indexed
+                        }
+                      }
+                    } catch { /* cross-origin or access guard */ }
+                    setStudioLesson({ ...viewingLesson, initialSlide });
+                    setViewingLesson(null);
+                  }}
+                >
+                  <Wand2 size={12} /> Edit with AI
+                </button>
+                <button
+                  className="btn btn-ghost"
+                  style={{ padding: '4px 10px', fontSize: 12, color: 'var(--fg-2)', display: 'flex', alignItems: 'center', gap: 4 }}
                   onClick={() => window.open(`/api/lessons/${viewingLesson.id}/content`, '_blank')}
                 >
                   <ExternalLink size={12} /> Open in new tab
@@ -227,6 +300,7 @@ export default function ModuleDetailPage() {
               </div>
             </div>
             <iframe
+              ref={viewerIframeRef}
               src={`/api/lessons/${viewingLesson.id}/content`}
               className="lesson-viewer-iframe"
               title={viewingLesson.title}
@@ -234,6 +308,17 @@ export default function ModuleDetailPage() {
             />
           </div>
         </div>
+      )}
+
+      {/* Slide Studio — AI Design Editor */}
+      {studioLesson && (
+        <SlideStudio
+          lessonId={studioLesson.id}
+          lessonTitle={studioLesson.title}
+          initialSlide={studioLesson.initialSlide}
+          onClose={() => setStudioLesson(null)}
+          onSaved={() => setRefreshKey(k => k + 1)}
+        />
       )}
     </>
   );

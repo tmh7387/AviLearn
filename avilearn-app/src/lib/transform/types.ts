@@ -12,6 +12,38 @@ export type SlideClassification =
   | 'image_heavy'
   | 'quiz_exercise';
 
+// --- Enriched slide sub-types for visual content ---
+
+export interface SlideImage {
+  id: string;
+  base64: string;
+  width: number;
+  height: number;
+  altText: string;
+  contentType?: string;
+  sizeBytes?: number;
+  groupId?: string;
+}
+
+export interface SlideShape {
+  name: string;
+  type: string;
+  shapeId: number;
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+  fillColor?: string;
+  text?: string;
+  groupId?: string;
+}
+
+export interface SlideTable {
+  rows: string[][];
+}
+
+// --- Core slide type ---
+
 export interface ParsedSlide {
   index: number;
   title?: string;
@@ -19,6 +51,9 @@ export interface ParsedSlide {
   classification: SlideClassification;
   hasImages: boolean;
   hasCharts: boolean;
+  images?: SlideImage[];
+  shapes?: SlideShape[];
+  tables?: SlideTable[];
   notes?: string;
 }
 
