@@ -182,12 +182,15 @@ async function buildProgramme(course) {
       slug: slugify(m.title, `module-${m.id.slice(0, 8)}`),
       title: m.title,
       summary: m.description ?? null,
-      // The engine orders modules but has no notion of teaching days. One
-      // module per day is the honest default; the portal's admin can move them
-      // afterwards, and the day is a property of the programme rather than of
-      // the material.
-      dayNumber: (m.sort_order ?? i) + 1,
-      orderIndex: m.sort_order ?? i,
+      // The engine orders modules but has no notion of teaching days, so one
+      // module per day is the default and the portal's admin moves them
+      // afterwards — the day is a property of the programme, not the material.
+      //
+      // Numbered by position rather than by sort_order, because sort_order is
+      // not reliably distinct: SMS-101 has three modules all sitting at 1,
+      // which put every one of them on day 2 and left day 1 empty.
+      dayNumber: i + 1,
+      orderIndex: i,
       exercises: buildExercises(m),
     })),
     // Knowledge resources are not modelled in the engine yet either. When they
