@@ -6,7 +6,8 @@
     "dev": "next dev --webpack",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "publish:portal": "node scripts/publish-to-portal.mjs"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.76",
