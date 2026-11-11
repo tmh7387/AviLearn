@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AviLearn Stage v2 — Zero-Clutter Visual Deck</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: #090b10;
+      color: #e6e9f2;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      user-select: none;
+    }
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+    .smooth { transition: all 550ms cubic-bezier(0.22, 1, 0.36, 1); }
+  </style>
+</head>
+<body class="p-3 space-y-3">
+
+  <!-- Minimal External Switcher (Off the Projector Canvas) -->
+  <div class="flex flex-wrap items-center justify-between gap-2 bg-[#11141c] border border-[#2c3142] rounded px-3 py-1.5">
+    <div class="flex flex-wrap gap-1.5" id="tabs"></div>
+    <div class="flex items-center gap-2">
+      <span id="word-count" class="mono text-xs text-[#22c55e] font-semibold"></span>
+      <button onclick="prev()" class="mono text-xs px-2.5 py-1 rounded bg-[#1c1f2a] border border-[#2c3142] text-[#e6e9f2] cursor-pointer">←</button>
+      <span id="step-count" class="mono text-xs text-[#a4a9bd]"></span>
+      <button onclick="next()" class="mono text-xs px-2.5 py-1 rounded bg-[#2dd4bf] text-[#14171f] font-bold cursor-pointer">→</button>
+    </div>
+  </div>
+
+  <!-- PURE 16:9 PROJECTOR STAGE (Zero Headers, Zero Footers, <=15 Words Total) -->
+  <div onclick="next()" title="Click anywhere to advance step"
+       class="bg-[#14171f] rounded border border-[#2c3142] relative overflow-hidden flex flex-col justify-between px-10 py-8 min-h-[420px] cursor-pointer">
+    <h1 id="headline" class="text-2xl md:text-3xl font-bold text-[#e6e9f2] tracking-tight m-0"></h1>
+    <div id="graphic" class="flex-1 flex items-center justify-center my-2"></div>
+    <div id="progress" class="absolute bottom-0 left-0 h-1 bg-[#2dd4bf] smooth"></div>
+  </div>
+
+  <!-- Spoken Narration Bar (Below the slide — what the instructor/TTS says while slide stays visual) -->
+  <div class="bg-[#11141c] border border-[#2c3142] rounded px-4 py-2.5 flex items-center gap-3 text-xs">
+    <span class="mono text-[#2dd4bf] font-bold whitespace-nowrap">SPOKEN AUDIO:</span>
+    <span id="notes" class="text-[#a4a9bd] italic"></span>
+  </div>
+
+  <script>
+    const SLIDES = [
+      {
+        tab: '01 · TITLE',
+        headline: '',
+        words: 5,
+        steps: ['Welcome to Module 14: Root Cause Analysis. We look past cockpit errors to find and fix the system traps behind them.'],
+        svg: () => `
+          <div class="text-center">
+            <svg width="88" height="88" viewBox="0 0 140 140" class="mx-auto mb-4">
+              <circle cx="70" cy="70" r="60" fill="none" stroke="#2dd4bf" stroke-width="2.5" stroke-dasharray="10 8" opacity="0.5"/>
+              <circle cx="70" cy="70" r="42" fill="rgba(45,212,191,0.1)" stroke="#2dd4bf" stroke-width="3"/>
+              <path d="M70 36 L94 94 L70 80 L46 94 Z" fill="#2dd4bf"/>
+            </svg>
+            <div class="mono text-xs tracking-[0.25em] text-[#2dd4bf] font-semibold mb-2">MODULE 14</div>
+            <div class="text-4xl md:text-5xl font-extrabold text-[#e6e9f2] tracking-tight">Root Cause Analysis</div>
+          </div>
+        `
+      },
+      {
+        tab: '02 · SWISS CHEESE',
+        headline: 'Accidents happen only when holes align across every barrier.',
+        words: 13,
+        steps: [
+          'First barrier: Organization. Deferred simulator training opens a hole in Layer 1, but the next barrier blocks the hazard.',
+          'Second barrier: Supervision. Pairing two low-time pilots in night monsoon weather opens an aligned hole in Layer 2.',
+          'Third barrier: Preconditions. Crew fatigue plus a confusing MEL placard opens the third aligned hole.',
+          'Fourth barrier: Action. Spoilers left unarmed. With all four holes aligned, the hazard shoots straight through.'
+        ],
+        svg: (step) => {
+          const slices = [
+            { x: 180, label: 'Organization', c: '#f59e0b' },
+            { x: 430, label: 'Supervision', c: '#f59e0b' },
+            { x: 680, label: 'Preconditions', c: '#f59e0b' },
+            { x: 930, label: 'Action', c: '#ef4444' },
+          ];
+          const laserEnd = step === 3 ? 1120 : slices[step].x + 55;
+          return `
+            <svg viewBox="0 0 1200 360" class="w-full h-72">
+              <g transform="translate(55, 175)">
+                <circle r="20" fill="rgba(239,68,68,0.2)" stroke="#ef4444" stroke-width="2.5"/>
+                <polygon points="-5,-8 10,0 -5,8" fill="#ef4444"/>
+              </g>
+              ${slices.map((s, i) => {
+                const active = i <= step;
+                const cur = i === step;
+                return `
+                  <g transform="translate(${s.x}, 30)" style="opacity:${active ? 1 : 0.18}" class="smooth">
+                    <polygon points="0,24 110,0 110,240 0,264" fill="#1c1f2a" stroke="${cur ? s.c : '#3a4055'}" stroke-width="${cur ? 3.5 : 2}"/>
+                    <ellipse cx="38" cy="68" rx="14" ry="10" fill="#0d0f15" stroke="#2c3142" stroke-width="1.5"/>
+                    <ellipse cx="78" cy="205" rx="16" ry="11" fill="#0d0f15" stroke="#2c3142" stroke-width="1.5"/>
+                    <ellipse cx="55" cy="145" rx="24" ry="18" fill="#090b10" stroke="${s.c}" stroke-width="${cur ? 3.5 : 2}" stroke-dasharray="5 3"/>
+                    <text x="55" y="305" text-anchor="middle" fill="${cur ? '#e6e9f2' : '#a4a9bd'}" font-size="20" font-weight="700">${s.label}</text>
+                  </g>
+                `;
+              }).join('')}
+              <line x1="75" y1="175" x2="${laserEnd}" y2="175" stroke="#ef4444" stroke-width="7" stroke-linecap="round" class="smooth"/>
+              ${step === 3 ? `<circle cx="1120" cy="175" r="16" fill="#ef4444"/>` : ''}
+            </svg>
+          `;
+        }
+      },
+      {
+        tab: '03 · 5-WHY',
+        headline: 'Five "Whys" trace a loose bolt to a broken procurement rule.',
+        words: 15,
+        steps: [
+          'Why 1: Oil leak in climb.',
+          'Why 2: B-nut hand-tightened overnight.',
+          'Why 3: Zero torque wrenches in the station crib.',
+          'Why 4: All three wrenches sent to the lab on the same day.',
+          'Why 5: ERP software batches calibration by purchase date instead of staggering tools.'
+        ],
+        svg: (step) => {
+          const pts = [
+            { x: 120, y: 75, t: 'Oil Leak', c: '#ef4444' },
+            { x: 350, y: 125, t: 'Loose Nut', c: '#f59e0b' },
+            { x: 580, y: 175, t: 'No Wrench', c: '#f59e0b' },
+            { x: 810, y: 225, t: 'All at Lab', c: '#3b82f6' },
+            { x: 1040, y: 275, t: 'ERP Rule', c: '#2dd4bf' },
+          ];
+          return `
+            <svg viewBox="0 0 1180 350" class="w-full h-72">
+              ${pts.slice(0, -1).map((p, i) => {
+                const n = pts[i + 1];
+                return `<path d="M ${p.x+80} ${p.y} C ${p.x+140} ${p.y}, ${n.x-140} ${n.y}, ${n.x-80} ${n.y}" fill="none" stroke="${i < step ? n.c : '#2c3142'}" stroke-width="4" opacity="${i < step ? 1 : 0.2}"/>`;
+              }).join('')}
+              ${pts.map((p, i) => `
+                <g transform="translate(${p.x}, ${p.y})" style="opacity:${i <= step ? 1 : 0.18}" class="smooth">
+                  <rect x="-82" y="-38" width="164" height="76" rx="8" fill="#1c1f2a" stroke="${i === step ? p.c : '#3a4055'}" stroke-width="${i === step ? 3.5 : 2}"/>
+                  <text x="0" y="7" text-anchor="middle" fill="#e6e9f2" font-size="21" font-weight="700">${p.t}</text>
+                </g>
+              `).join('')}
+            </svg>
+          `;
+        }
+      },
+      {
+        tab: '04 · BOWTIE',
+        headline: 'Prevention blocks the threat; recovery contains the loss.',
+        words: 11,
+        steps: [
+          'Left wing: Preventive barriers block threats before control is lost.',
+          'Center Knot: Top Event — Loss of Control on touchdown.',
+          'Right wing: Recovery barriers prevent a hull loss after control is lost.'
+        ],
+        svg: (step) => `
+          <svg viewBox="0 0 1180 340" class="w-full h-72">
+            <g style="opacity:${step === 0 ? 1 : 0.2}" class="smooth">
+              <polygon points="90,40 520,145 520,195 90,300" fill="rgba(45,212,191,0.12)" stroke="#2dd4bf" stroke-width="3"/>
+              <rect x="230" y="75" width="10" height="190" rx="3" fill="#2dd4bf"/>
+              <rect x="380" y="110" width="10" height="120" rx="3" fill="#2dd4bf"/>
+              <text x="260" y="330" text-anchor="middle" fill="#2dd4bf" font-size="22" font-weight="700">Prevention</text>
+            </g>
+            <g style="opacity:${step === 2 ? 1 : 0.2}" class="smooth">
+              <polygon points="660,145 1090,40 1090,300 660,195" fill="rgba(239,68,68,0.12)" stroke="#ef4444" stroke-width="3"/>
+              <rect x="790" y="110" width="10" height="120" rx="3" fill="#ef4444"/>
+              <rect x="940" y="75" width="10" height="190" rx="3" fill="#ef4444"/>
+              <text x="920" y="330" text-anchor="middle" fill="#ef4444" font-size="22" font-weight="700">Recovery</text>
+            </g>
+            <g transform="translate(590, 170)" style="opacity:${step === 1 ? 1 : 0.45}" class="smooth">
+              <circle r="72" fill="#1c1f2a" stroke="#f59e0b" stroke-width="4"/>
+              <text x="0" y="7" text-anchor="middle" fill="#e6e9f2" font-size="20" font-weight="800">Loss of Control</text>
+            </g>
+          </svg>
+        `
+      },
+      {
+        tab: '05 · APPROACH PATH',
+        headline: 'Three missed cues in 42 seconds sealed the overrun.',
+        words: 13,
+        steps: [
+          '1,000 ft: 22 knots above Vref — first missed go-around gate.',
+          '500 ft: 14-knot tailwind shear spikes groundspeed.',
+          'Touchdown: Aircraft floats 1,150m past threshold.',
+          'Overrun: Unarmed spoilers delay braking by 6 seconds.'
+        ],
+        svg: (step) => {
+          const pts = [
+            { x: 160, y: 75, top: '+22 kt', bot: '1,000 ft', c: '#f59e0b' },
+            { x: 440, y: 155, top: 'Tailwind', bot: '500 ft', c: '#f59e0b' },
+            { x: 760, y: 260, top: '+1,150 m', bot: 'Touchdown', c: '#ef4444' },
+            { x: 1050, y: 260, top: 'Overrun', bot: 'No Spoilers', c: '#ef4444' },
+          ];
+          return `
+            <svg viewBox="0 0 1180 340" class="w-full h-72">
+              <line x1="110" y1="95" x2="580" y2="260" stroke="#2dd4bf" stroke-width="2" stroke-dasharray="7 7" opacity="0.4"/>
+              <rect x="530" y="260" width="580" height="14" rx="3" fill="#2c3142"/>
+              <path d="M 160 75 L 440 155 Q 620 215 760 260 L 1050 260" fill="none" stroke="#ef4444" stroke-width="4.5"/>
+              ${pts.map((p, i) => `
+                <g transform="translate(${p.x}, ${p.y})" style="opacity:${i <= step ? 1 : 0.18}" class="smooth">
+                  <circle r="${i === step ? 13 : 9}" fill="${p.c}"/>
+                  <text x="0" y="-32" text-anchor="middle" fill="${p.c}" font-size="22" font-weight="800" class="mono">${p.top}</text>
+                  <text x="0" y="-12" text-anchor="middle" fill="#e6e9f2" font-size="16" font-weight="600">${p.bot}</text>
+                </g>
+              `).join('')}
+            </svg>
+          `;
+        }
+      },
+      {
+        tab: '06 · CONTRAST',
+        headline: 'Just Culture triples hazard reporting.',
+        words: 9,
+        steps: [
+          'Punishing honest mistakes drops hazard reporting by 68%.',
+          'Protecting honest disclosure increases safety reporting by 340%.'
+        ],
+        svg: (step) => `
+          <div class="w-full grid grid-cols-2 gap-8 text-center items-center py-6">
+            <div style="opacity:${step === 0 ? 1 : 0.18}" class="smooth">
+              <div class="mono text-6xl md:text-7xl font-extrabold text-[#ef4444]">-68%</div>
+              <div class="text-xl font-bold text-[#a4a9bd] mt-3">Blame Culture</div>
+            </div>
+            <div style="opacity:${step === 1 ? 1 : 0.18}" class="smooth">
+              <div class="mono text-6xl md:text-7xl font-extrabold text-[#2dd4bf]">+340%</div>
+              <div class="text-xl font-bold text-[#e6e9f2] mt-3">Just Culture</div>
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    let sIdx = 1, stIdx = 0;
+
+    function select(i) { sIdx = i; stIdx = 0; render(); }
+    function next() {
+      if (stIdx < SLIDES[sIdx].steps.length - 1) stIdx++;
+      else { sIdx = (sIdx + 1) % SLIDES.length; stIdx = 0; }
+      render();
+    }
+    function prev() {
+      if (stIdx > 0) stIdx--;
+      else { sIdx = (sIdx - 1 + SLIDES.length) % SLIDES.length; stIdx = SLIDES[sIdx].steps.length - 1; }
+      render();
+    }
+
+    function render() {
+      const s = SLIDES[sIdx];
+      document.getElementById('tabs').innerHTML = SLIDES.map((sl, i) => `
+        <button onclick="select(${i})" class="mono text-xs px-2.5 py-1 rounded font-semibold cursor-pointer ${
+          i === sIdx ? 'bg-[#2dd4bf] text-[#14171f]' : 'text-[#a4a9bd] border border-[#2c3142]'
+        }">${sl.tab}</button>
+      `).join('');
+      document.getElementById('word-count').textContent = `${s.words} WORDS TOTAL`;
+      document.getElementById('step-count').textContent = `STEP ${stIdx + 1}/${s.steps.length}`;
+      document.getElementById('headline').textContent = s.headline;
+      document.getElementById('graphic').innerHTML = s.svg(stIdx);
+      document.getElementById('notes').textContent = `“${s.steps[stIdx]}”`;
+      document.getElementById('progress').style.width = `${((stIdx + 1) / s.steps.length) * 100}%`;
+    }
+    render();
+  </script>
+</body>
+</html>
+
