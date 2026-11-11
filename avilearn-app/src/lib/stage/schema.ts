@@ -8,12 +8,22 @@ import { countWords } from './html';
  */
 
 export const TEMPLATE_IDS = [
+  // course opening
+  'course-title',
+  'facilitator',
+  'icebreaker',
+  'day-overview',
+  'course-materials',
+  // module start and end
+  'module-opener',
+  'key-points',
+  'break',
+  'day-close',
   // structure
   'title-bumper',
   'section-divider',
   'agenda',
   'objectives',
-  'summary',
   'questions',
   // evidence
   'assertion-image',
@@ -38,7 +48,11 @@ const maxWords = (n: number, what: string) =>
 
 export const AssetSchema = z.object({
   id: z.string().min(1),
-  /** Supabase Storage URL. data: URIs are allowed only for samples and tests. */
+  /**
+   * Supabase Storage URL, or `illustration:<id>` for a drawing from the
+   * AviLearn illustration library (illustrations.ts). data: URIs are allowed
+   * only for samples and tests.
+   */
   url: z.string().min(1),
   alt: z.string().min(1, 'Every image needs alt text'),
   /** Dark line drawing on a clear background. It is inverted in the dark theme so it stays visible. */
