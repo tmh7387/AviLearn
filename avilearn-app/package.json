@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:factory": "tsc test/factory-runner.test.ts src/lib/factory/runner.ts src/lib/factory/types.ts --outDir ../env/tmp/factory-test --module commonjs --moduleResolution node --target es2022 --strict --skipLibCheck --esModuleInterop --types node && node --test ../env/tmp/factory-test/test/factory-runner.test.js"
+    "test:factory": "tsc test/factory-runner.test.ts src/lib/factory/runner.ts src/lib/factory/types.ts --outDir ../env/tmp/factory-test --module commonjs --moduleResolution node --target es2022 --strict --skipLibCheck --esModuleInterop --types node && node --test ../env/tmp/factory-test/test/factory-runner.test.js",
     "publish:portal": "node scripts/publish-to-portal.mjs"
   },
   "dependencies": {
