@@ -444,7 +444,9 @@ export function SlideStudio({ lessonId, lessonTitle, initialSlide, onClose, onSa
         throw new Error(errorDetail);
       }
 
-      // Parse SSE stream
+      // Parse SSE stream — split on \n\n event boundaries (NOT single \n)
+      // to prevent large payloads from being silently dropped when they
+      // span multiple network chunks.
       const reader = res.body?.getReader();
       if (!reader) throw new Error('No response body');
 
@@ -453,42 +455,66 @@ export function SlideStudio({ lessonId, lessonTitle, initialSlide, onClose, onSa
       let finalExplanation = '';
       let newHtml: string | null = null;
 
+      // Client-side timeout: abort if no data arrives for 120 seconds
+      // (matches the API's maxDuration of 120s)
+      let lastDataTime = Date.now();
+      const STREAM_TIMEOUT_MS = 120_000;
+
+      function processEvent(rawEvent: string) {
+        const lines = rawEvent.split('\n');
+        let eventType = '';
+        let eventData = '';
+        for (const line of lines) {
+          if (line.startsWith('event: ')) eventType = line.slice(7).trim();
+          else if (line.startsWith('data: ')) eventData = line.slice(6);
+        }
+        if (!eventType || !eventData) return;
+        try {
+          const data = JSON.parse(eventData);
+          if (eventType === 'explanation') {
+            finalExplanation = data;
+            setStreamingExplanation(data);
+          } else if (eventType === 'html') {
+            newHtml = data;
+          } else if (eventType === 'heartbeat') {
+            // Server is still generating HTML — show progress and reset timer
+            setStreamingExplanation(data);
+            lastDataTime = Date.now();
+          } else if (eventType === 'error') {
+            throw new Error(data);
+          }
+        } catch (e) {
+          if (e instanceof SyntaxError) return; // Ignore malformed JSON
+          throw e;
+        }
+      }
+
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
+        // Check for stream timeout
+        if (Date.now() - lastDataTime > STREAM_TIMEOUT_MS) {
+          reader.cancel();
+          throw new Error('Stream timed out — the AI took too long to respond. Try a simpler edit or edit a single slide.');
+        }
+        lastDataTime = Date.now();
+
         buffer += decoder.decode(value, { stream: true });
 
-        // Parse SSE events from buffer
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // Keep incomplete line in buffer
+        // Split on double-newline (SSE event boundary)
+        const events = buffer.split('\n\n');
+        buffer = events.pop() || ''; // Keep incomplete event in buffer
 
-        // Process lines with proper index tracking (fixes indexOf bug)
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-          if (line.startsWith('event: ')) {
-            const eventType = line.slice(7).trim();
-            // Next line should be data:
-            const nextIdx = i + 1;
-            if (nextIdx < lines.length && lines[nextIdx].startsWith('data: ')) {
-              try {
-                const data = JSON.parse(lines[nextIdx].slice(6));
-                if (eventType === 'explanation') {
-                  finalExplanation = data;
-                  setStreamingExplanation(data);
-                } else if (eventType === 'html') {
-                  newHtml = data;
-                } else if (eventType === 'error') {
-                  throw new Error(data);
-                }
-                i++; // Skip the data line since we consumed it
-              } catch (e) {
-                if (e instanceof SyntaxError) continue; // Ignore JSON parse errors on partial data
-                throw e;
-              }
-            }
-          }
+        for (const rawEvent of events) {
+          if (!rawEvent.trim()) continue;
+          processEvent(rawEvent);
         }
+      }
+
+      // Process any remaining buffered event after stream ends
+      if (buffer.trim()) {
+        processEvent(buffer);
       }
 
       // Apply the result

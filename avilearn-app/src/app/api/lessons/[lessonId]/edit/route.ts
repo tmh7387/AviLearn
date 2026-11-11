@@ -121,17 +121,37 @@ export async function POST(
 
         // Collect the full text while streaming
         let fullText = '';
+        let inHtmlPhase = false;
+        let lastHeartbeat = Date.now();
+        const HEARTBEAT_INTERVAL_MS = 8_000; // Send heartbeat every 8 seconds
 
         const resolved = await streamResult;
 
         for await (const chunk of resolved.textStream) {
           fullText += chunk;
 
-          // Try to parse explanation progressively
-          const explanationMatch = fullText.match(/EXPLANATION:\s*([\s\S]*?)(?=---HTML---|$)/i);
-          if (explanationMatch && !fullText.includes('---HTML---')) {
-            // Still in explanation phase — stream it
-            sendEvent('explanation', explanationMatch[1].trim());
+          if (!inHtmlPhase && fullText.includes('---HTML---')) {
+            inHtmlPhase = true;
+            // Send the final explanation before entering HTML phase
+            const explanationMatch = fullText.match(/EXPLANATION:\s*([\s\S]*?)(?=---HTML---)/i);
+            if (explanationMatch) {
+              sendEvent('explanation', explanationMatch[1].trim());
+            }
+          }
+
+          if (!inHtmlPhase) {
+            // Still in explanation phase — stream it progressively
+            const explanationMatch = fullText.match(/EXPLANATION:\s*([\s\S]*?)$/i);
+            if (explanationMatch) {
+              sendEvent('explanation', explanationMatch[1].trim());
+            }
+          } else {
+            // In HTML phase — send periodic heartbeats so client knows we're alive
+            const now = Date.now();
+            if (now - lastHeartbeat > HEARTBEAT_INTERVAL_MS) {
+              lastHeartbeat = now;
+              sendEvent('heartbeat', `Generating HTML... (${(fullText.length / 1000).toFixed(0)}K chars received)`);
+            }
           }
         }
 
