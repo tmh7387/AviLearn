@@ -150,10 +150,13 @@ export const SLIDE_CSS = `
 .st-ex-facts{display:flex;gap:20px;flex-wrap:wrap}
 .st-ex-url{font:600 34px/1 ${F.mono};color:var(--s-ink)}
 
-/* illustrations (code-drawn, token colours) */
-.st-illo{display:block;width:100%;height:auto}
-.st-img .st-illo{flex:1;min-height:0;height:100%}
-.st-ann-frame{width:100%;max-width:1060px}
+/* images: theme variants, photos, credits */
+.st-slide img.st-th-d{display:none}
+[data-theme="dark"] .st-slide img.st-th-l{display:none}
+[data-theme="dark"] .st-slide img.st-th-d{display:block}
+.st-credit{display:block;font:500 22px/1.3 ${F.mono};color:var(--s-ink-muted);margin-top:8px;text-transform:none;letter-spacing:0}
+.st-ann-frame{width:100%;max-width:1080px}
+.st-ann-frame img{width:100%;max-height:600px;object-fit:contain}
 
 /* shared numbered boxes */
 .st-boxes{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:32px;align-items:stretch}
@@ -162,7 +165,10 @@ export const SLIDE_CSS = `
 /* course-title */
 .t-course-title .st-body,.t-module-opener .st-body,.t-break .st-body,.t-day-close .st-body,.t-facilitator .st-body{justify-content:center}
 .st-ct{display:grid;grid-template-columns:1fr 1.3fr;gap:56px;align-items:center}
-.st-ct-art{margin-right:-${C.safe.x}px}
+.st-ct-art{margin:0 -${C.safe.x}px 0 0}
+.st-ct-art img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:6px 0 0 6px}
+.st-ct-art img:not(.st-photo){aspect-ratio:auto;object-fit:contain}
+.st-ct-art figcaption{padding-right:${C.safe.x}px}
 .st-ct-org{font:600 ${T.eyebrow}px/1 ${F.mono};letter-spacing:.12em;text-transform:uppercase;color:var(--s-teal)}
 .st-ct-title{font:700 116px/.95 ${F.display};text-transform:uppercase;margin:28px 0 0;text-wrap:balance}
 .st-ct-sub{font:500 44px/1.2 ${F.body};color:var(--s-ink-muted);margin:28px 0 0}
@@ -170,12 +176,10 @@ export const SLIDE_CSS = `
 .st-ct-facts{display:flex;flex-direction:column;gap:14px;margin-top:48px;font:600 30px/1.2 ${F.mono};color:var(--s-ink-muted)}
 
 /* facilitator */
-.st-fac{display:grid;grid-template-columns:1fr 1fr;gap:88px;align-items:center}
-.st-fac-photo{display:block;width:240px;height:240px;border-radius:50%;object-fit:cover;margin-bottom:32px;border:5px solid var(--s-teal-fill)}
-.st-fac-k{font:600 ${T.eyebrow}px/1 ${F.mono};letter-spacing:.12em;text-transform:uppercase;color:var(--s-teal)}
-.st-fac-name{font:700 116px/.95 ${F.display};text-transform:uppercase;margin-top:24px}
-.st-fac-role{font:500 42px/1.2 ${F.body};color:var(--s-ink-muted);margin-top:24px}
-.st-fac-list .st-row-v{font-size:38px}
+.st-fac-name{font:500 46px/1.2 ${F.body};color:var(--s-ink-muted);margin:20px 0 48px}
+.st-logos{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;max-width:1000px}
+.st-logo{background:var(--s-paper);border:${STAGE.stroke.box}px solid var(--s-line);border-radius:${STAGE.radius.box}px;height:180px;display:flex;align-items:center;justify-content:center;padding:20px}
+.st-logo img{max-width:100%;max-height:100%;object-fit:contain}
 
 /* course-materials */
 .st-mat{display:flex;gap:88px;align-items:center}
@@ -189,10 +193,13 @@ export const SLIDE_CSS = `
 
 /* module-opener */
 .st-mo{display:grid;grid-template-columns:520px 1fr;gap:96px;align-items:center}
-.t-module-opener::before{content:"";position:absolute;left:0;top:0;bottom:0;width:610px;background:var(--s-teal-tint);border-right:4px solid var(--s-teal-fill)}
-.st-mo-panel{position:absolute;left:-${C.safe.x}px;top:-${C.safe.top}px;bottom:0;width:610px;display:flex;align-items:center;justify-content:center;padding:48px}
-.st-mo-panel.st-mo-wide{justify-content:flex-end;overflow:hidden;padding:48px 32px 48px 0}
-.st-mo-wide .st-illo{flex:none;width:175%}
+.t-module-opener::before,.t-facilitator::before{content:"";position:absolute;left:0;top:0;bottom:0;width:610px;background:var(--s-teal-tint);border-right:4px solid var(--s-teal-fill)}
+.st-panel{position:absolute;left:-${C.safe.x}px;top:-${C.safe.top}px;bottom:0;width:610px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px}
+.st-panel img{display:block;width:100%;height:auto}
+.st-panel-photo{padding:0;bottom:-${C.safe.bottom}px;overflow:hidden}
+.st-panel-photo img{width:100%;height:100%;object-fit:cover}
+.st-panel-photo .st-credit{position:absolute;left:24px;right:24px;top:20px;color:var(--s-paper);text-shadow:0 1px 3px var(--s-ink)}
+.st-panel-photo::after{content:'';position:absolute;left:0;right:0;bottom:0;height:200px;background:linear-gradient(transparent,color-mix(in srgb,var(--s-bg) 88%,transparent))}
 .st-mo-text{grid-column:2}
 .st-mo-k{font:600 32px/1 ${F.mono};letter-spacing:.12em;text-transform:uppercase;color:var(--s-teal)}
 .st-mo-title{font:700 100px/.98 ${F.display};text-transform:uppercase;margin:22px 0 44px;text-wrap:balance}

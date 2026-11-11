@@ -18,7 +18,7 @@ No AI writes HTML, CSS or SVG. Templates draw everything from `tokens.ts`.
 | `tokens.ts` | All colours, fonts, sizes, word limits, step opacities, motion, video format |
 | `schema.ts` | Deck and slide spec (Zod) |
 | `templates/` | 25 platform templates. Each has a data schema, a build plan and a renderer. `opening.ts` holds the course opening and module start/end slides |
-| `illustrations.ts` | Code-drawn technical illustrations (`illustration:<id>` assets) in token colours |
+| `public/stage/kestrel/` | Kestrel Pacific 3D renders (light and dark PNG) and media kit images. Make new renders with `scripts/kestrel-render.py` |
 | `voice.ts` | Banned phrases. The compiler rejects them |
 | `compiler.ts` | `compileDeck`, `renderSlide`, QA issues (schema, steps, words, colours, voice) |
 | `styles.ts`, `runtime.ts` | Slide CSS and the presenter script inlined into each deck |

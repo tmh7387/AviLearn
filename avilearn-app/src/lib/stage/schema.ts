@@ -48,12 +48,14 @@ const maxWords = (n: number, what: string) =>
 
 export const AssetSchema = z.object({
   id: z.string().min(1),
-  /**
-   * Supabase Storage URL, or `illustration:<id>` for a drawing from the
-   * AviLearn illustration library (illustrations.ts). data: URIs are allowed
-   * only for samples and tests.
-   */
+  /** Supabase Storage URL (or a /public path). data: URIs are allowed only for samples and tests. */
   url: z.string().min(1),
+  /** Optional version for the dark theme, e.g. a 3D render with light lines. */
+  urlDark: z.string().min(1).optional(),
+  /** photo: fills its frame (crop). drawing: shown whole (renders, diagrams, logos). */
+  kind: z.enum(['photo', 'drawing']).default('drawing'),
+  /** Source or licence line shown with the image, e.g. "Kestrel Pacific is fictional. AI image." */
+  credit: z.string().max(90).optional(),
   alt: z.string().min(1, 'Every image needs alt text'),
   /** Dark line drawing on a clear background. It is inverted in the dark theme so it stays visible. */
   lineArt: z.boolean().optional(),

@@ -15,11 +15,36 @@ import type { SlideDeckSpecInput } from '../schema';
 
 const n = (...notes: string[]) => notes.map((speakerNotes) => ({ speakerNotes }));
 
+const KESTREL = 'Kestrel Pacific is a fictional airline.';
+const render = (id: string, file: string, alt: string, extra = '') => ({
+  id,
+  url: `/stage/kestrel/${file}-light.png`,
+  urlDark: `/stage/kestrel/${file}-dark.png`,
+  kind: 'drawing' as const,
+  alt,
+  credit: `Kestrel Pacific 3D model, Blender render${extra}. Fictional airline.`,
+});
+const photo = (id: string, url: string, alt: string, credit?: string) => ({ id, url, alt, kind: 'photo' as const, credit });
+const logo = (id: string, alt: string) => ({ id, url: `/stage/samples/${id}.png`, alt, kind: 'drawing' as const });
+
 const assets = [
-  { id: 'aircraft', url: 'illustration:aircraft-side', alt: 'Narrow-body airliner, left side view, gear down' },
-  { id: 'ramp', url: 'illustration:aircraft-ramp', alt: 'Airliner on the ramp with a belt loader at the aft cargo door, chocks and cones' },
-  { id: 'flight-deck', url: 'illustration:flight-deck', alt: 'Two-pilot glass flight deck on approach, seen from behind the seats' },
+  render('a321-34', 'a321-three-quarter', 'Kestrel Pacific A321neo, front three-quarter view, gear down'),
+  render('a321-side', 'a321-side', 'Kestrel Pacific A321neo, left side view'),
+  render('b787-side', 'b787-side', 'Kestrel Pacific 787-9, left side view, gear down', ' (Sketchfab model, CC BY)'),
+  render('b787-34', 'b787-three-quarter', 'Kestrel Pacific 787-9, front three-quarter view', ' (Sketchfab model, CC BY)'),
+  photo('fleet', '/stage/kestrel/fleet-apron-sunrise.jpg', 'Kestrel Pacific aircraft on the apron at sunrise', `${KESTREL} AI image, not for technical teaching.`),
+  photo('cruise', '/stage/kestrel/787-cruise-cloud.jpg', 'Kestrel Pacific 787 in cruise above cloud', `${KESTREL} AI image, not for technical teaching.`),
+  photo('approach', '/stage/kestrel/a321-approach-coast.jpg', 'Kestrel Pacific A321 on approach along a coastline', `${KESTREL} AI image, not for technical teaching.`),
+  photo('fac-photo', '/stage/samples/facilitator-aircraft.jpg', 'Military transport aircraft on the ramp'),
+  logo('usaf', 'United States Air Force'),
+  logo('faa', 'Federal Aviation Administration'),
+  logo('iata', 'IATA'),
+  logo('nokscoot', 'NokScoot'),
+  logo('nok', 'Nok Air'),
+  logo('aviation-synergy', 'Aviation Synergy'),
 ];
+
+const FAC_DATA = { name: 'Anthony Houston', logos: ['usaf', 'faa', 'iata', 'nokscoot', 'nok', 'aviation-synergy'], photo: 'fac-photo' };
 
 const FACILITATOR = 'Anthony Houston';
 
@@ -33,7 +58,7 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
   slides: [
     {
       id: 'title', templateId: 'course-title',
-      data: { title: 'Safety Management Systems', subtitle: 'Practical SMS for Airline Managers', dates: '2–4 March 2027', facilitator: FACILITATOR, image: 'ramp' },
+      data: { title: 'Safety Management Systems', subtitle: 'Practical SMS for Airline Managers', dates: '2–4 March 2027', facilitator: FACILITATOR, image: 'fleet' },
       steps: n('Welcome everyone. Confirm the room, the timings and the breaks before we start.'),
     },
     {
@@ -49,7 +74,7 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
     },
     {
       id: 'fac', templateId: 'facilitator',
-      data: { name: FACILITATOR, role: 'Facilitator, Aviation Synergy', credentials: ['Aviation quality management', 'IOSA audit methodology', 'Safety Management Systems'] },
+      data: FAC_DATA,
       steps: n('Short introduction. Keep it to one minute and move to the group.'),
     },
     {
@@ -82,7 +107,7 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
     },
     {
       id: 'm2', templateId: 'module-opener',
-      data: { number: '2', title: 'Hazard Identification', objectives: ['Explain where hazards come from', 'Write a hazard statement in house format', 'Separate hazards from their consequences'], image: 'ramp' },
+      data: { number: '2', title: 'Hazard Identification', objectives: ['Explain where hazards come from', 'Write a hazard statement in house format', 'Separate hazards from their consequences'], image: 'approach' },
       steps: n('Module 2. Read the three objectives aloud. We test the third one with a quick check later.'),
     },
     {
@@ -92,7 +117,7 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
     },
     {
       id: 'img', templateId: 'assertion-image', eyebrow: 'Where Hazards Sit', assertion: 'Most Hazards Sit in Normal Daily Work',
-      data: { image: 'ramp', caption: 'Several teams work one aircraft at turnaround' },
+      data: { image: 'fleet', caption: 'Several teams work one aircraft at turnaround' },
       steps: n('Most hazards are found in routine work, not only in accidents. Ask: how many teams touch this aircraft in forty minutes?'),
     },
     {
@@ -153,7 +178,7 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
     { id: 'title', templateId: 'title-bumper', data: { title: 'Non-Technical Skills', subtitle: 'What effective crews do beyond handling skills' }, steps: n('Open with a question: what makes a crew effective, beyond handling skills?') },
     {
       id: 'm2', templateId: 'module-opener',
-      data: { number: '2', title: 'NOTECHS and the Flight Deck', objectives: ['Name the four NOTECHS categories', 'Rate observable behaviour, not intent', 'Apply the rating scale consistently'], image: 'flight-deck' },
+      data: { number: '2', title: 'NOTECHS and the Flight Deck', objectives: ['Name the four NOTECHS categories', 'Rate observable behaviour, not intent', 'Apply the rating scale consistently'], image: 'cruise' },
       steps: n('Module 2. These three objectives set up the scoring exercise at the end.'),
     },
     { id: 'agenda', templateId: 'agenda', eyebrow: 'Module 2', assertion: 'Module 2 Sessions', data: { items: ['NOTECHS framework', 'Flight deck roles', 'Workload', 'Scoring exercise'] }, steps: n('Walk the four sessions. The scoring exercise closes the module.') },
@@ -164,14 +189,14 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
       steps: n('Co-operation: team building, consideration of others.', 'Leadership and managerial skills.', 'Situation awareness: systems, environment, time.', 'Decision making: define, consider, select, review.', 'These are the headings on the Portal score card.'),
     },
     {
-      id: 'deck', templateId: 'annotated-image', eyebrow: 'Flight Deck', assertion: 'Roles Are Set Before Engine Start',
-      data: { image: 'flight-deck', callouts: [{ x: 12.3, y: 55, label: 'Captain PFD' }, { x: 50, y: 36.5, label: 'Flight control unit' }, { x: 50, y: 88, label: 'Thrust levers' }, { x: 87.7, y: 55, label: 'First officer PFD' }] },
+      id: 'deck', templateId: 'annotated-image', eyebrow: 'Walkround', assertion: 'The Walkround Is a Shared Check',
+      data: { image: 'a321-34', callouts: [{ x: 83, y: 73, label: 'Flight deck' }, { x: 51, y: 75, label: 'Engine' }, { x: 65, y: 25, label: 'Sharklet' }, { x: 81, y: 86, label: 'Nose gear' }] },
       steps: n(
-        'The pilot flying watches the primary flight display.',
-        'Mode changes on the flight control unit are called and confirmed by both pilots.',
-        'Thrust levers are shared controls. Call before you move them.',
-        'The pilot monitoring cross-checks the same parameters on the other side.',
-        'Ask how these roles change after a handover of control.',
+        'Flight deck: agree who flies and who monitors before engine start.',
+        'Engine: report what you find on the walkround to the other pilot.',
+        'Sharklet: ground handling damage is easy to miss. Say what you checked.',
+        'Nose gear: confirm the tow pin and steering status with the ground crew.',
+        'Ask how the captain hears what the first officer found outside. SME to check this walkround content.',
       ),
     },
     {
@@ -186,7 +211,7 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
     },
     {
       id: 'img', templateId: 'assertion-image', eyebrow: 'Shared Mental Model', assertion: 'Both Pilots Must Fly the Same Plan',
-      data: { image: 'aircraft', caption: 'Brief the plan, then monitor against it' },
+      data: { image: 'b787-34', caption: 'Brief the plan, then monitor against it' },
       steps: n('A shared plan lets the monitoring pilot spot a deviation early.'),
     },
     {
@@ -222,7 +247,7 @@ export const IOSA_SAMPLE: SlideDeckSpecInput = {
   slides: [
     {
       id: 'title', templateId: 'course-title',
-      data: { title: 'IOSA Internal Auditor', subtitle: 'Findings, Observations and Root Cause', client: 'Example Airline', dates: '4–6 August 2026', facilitator: FACILITATOR, image: 'aircraft' },
+      data: { title: 'IOSA Internal Auditor', subtitle: 'Findings, Observations and Root Cause', client: 'Example Airline', dates: '4–6 August 2026', facilitator: FACILITATOR, image: 'cruise' },
       steps: n('Welcome back. Day 2 builds on the fundamentals from yesterday.'),
     },
     {
@@ -232,7 +257,7 @@ export const IOSA_SAMPLE: SlideDeckSpecInput = {
     },
     {
       id: 'fac', templateId: 'facilitator',
-      data: { name: FACILITATOR, role: 'Facilitator, Aviation Synergy', credentials: ['IOSA audit methodology', 'Internal audit programme design', 'Root cause analysis'] },
+      data: FAC_DATA,
       steps: n('Short introduction for anyone joining today.'),
     },
     {
@@ -259,7 +284,7 @@ export const IOSA_SAMPLE: SlideDeckSpecInput = {
     },
     {
       id: 'm5', templateId: 'module-opener',
-      data: { number: '5', title: 'Findings and Observations', objectives: ['Classify a nonconformity correctly', 'Trace the root cause to the system', 'Plan corrective action that holds'], image: 'ramp' },
+      data: { number: '5', title: 'Findings and Observations', objectives: ['Classify a nonconformity correctly', 'Trace the root cause to the system', 'Plan corrective action that holds'], image: 'fleet' },
       steps: n('Module 5. Read the objectives. The workshop at the end tests all three.'),
     },
     { id: 'agenda', templateId: 'agenda', eyebrow: 'Module 5', assertion: 'Module 5 Sessions', data: { items: ['ISM structure', 'Findings', 'Observations', 'Root cause'] }, steps: n('Walk the sessions in ten seconds.') },
@@ -298,8 +323,8 @@ export const IOSA_SAMPLE: SlideDeckSpecInput = {
     { id: 'video', templateId: 'title-bumper', data: { title: 'Ramp Audit Walkround', subtitle: 'Watch where the process meets the aircraft' }, steps: n('Short video segment. Ask the group to note every control they see.') },
     {
       id: 'ann', templateId: 'annotated-image', eyebrow: 'Ramp Audit', assertion: 'Audit Where the Process Meets the Aircraft',
-      data: { image: 'ramp', callouts: [{ x: 10.6, y: 45, label: 'Flight deck' }, { x: 16.4, y: 51, label: 'Forward entry door' }, { x: 68, y: 77, label: 'Belt loader' }, { x: 50.9, y: 87, label: 'Main gear chocks' }] },
-      steps: n('Flight deck: documents and checklists.', 'Forward door: boarding and cabin readiness.', 'Belt loader: load sheet against the actual load.', 'Chocks and cones: ramp safety on arrival.', 'Every callout is a place to collect evidence.'),
+      data: { image: 'b787-side', callouts: [{ x: 94, y: 51, label: 'Flight deck' }, { x: 63, y: 62, label: 'Engine' }, { x: 52, y: 74, label: 'Main gear' }, { x: 91, y: 73, label: 'Nose gear' }] },
+      steps: n('Flight deck: documents, technical log and checklists.', 'Engine: the walkround record against the maintenance task.', 'Main gear: chocks and cones on arrival.', 'Nose gear: the pushback interface with ground handling.', 'Every callout is a place to collect evidence.'),
     },
     {
       id: 'kp', templateId: 'key-points', assertion: 'Module 5 — Key Points',

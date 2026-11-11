@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { esc, mediaHtml, s } from '../html';
-import { illustrationFor } from '../illustrations';
+import { creditHtml, esc, mediaHtml, s } from '../html';
 import { label } from '../schema';
 import { defineTemplate, type RenderContext } from './types';
 
@@ -21,8 +20,8 @@ export const assertionImage = defineTemplate({
     const a = asset(ctx, d.image);
     return `
       <figure class="st-img" ${s(1)}>
-        ${mediaHtml(a, illustrationFor)}
-        ${d.caption ? `<figcaption>${ctx.log.t(1, d.caption)}</figcaption>` : ''}
+        ${mediaHtml(a)}
+        ${d.caption || a.credit ? `<figcaption>${d.caption ? ctx.log.t(1, d.caption) : ''}${creditHtml(a)}</figcaption>` : ''}
       </figure>`;
   },
 });
@@ -45,7 +44,7 @@ export const annotatedImage = defineTemplate({
     return `
       <div class="st-ann">
         <div class="st-ann-frame" ${s(1, true)}>
-          ${mediaHtml(a, illustrationFor)}
+          ${mediaHtml(a)}
           ${d.callouts
             .map(
               (c, i) =>

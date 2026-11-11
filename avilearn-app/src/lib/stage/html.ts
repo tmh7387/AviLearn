@@ -64,9 +64,17 @@ export function roseSvg(): string {
   );
 }
 
-/** Image or code-drawn illustration for an asset. */
-export function mediaHtml(asset: { url: string; alt: string; lineArt?: boolean }, illustrationFor: (u: string, a: string) => string | null): string {
-  const svg = illustrationFor(asset.url, asset.alt);
-  if (svg) return svg;
-  return `<img src="${esc(asset.url)}" alt="${esc(asset.alt)}"${asset.lineArt ? ' class="st-line-art"' : ''}>`;
+/** Image markup for an asset. A dark variant swaps in with the theme. */
+export function mediaHtml(asset: { url: string; urlDark?: string; alt: string; lineArt?: boolean; kind?: string }): string {
+  const cls = [asset.lineArt ? 'st-line-art' : '', asset.kind === 'photo' ? 'st-photo' : ''].filter(Boolean).join(' ');
+  if (!asset.urlDark) return `<img src="${esc(asset.url)}" alt="${esc(asset.alt)}"${cls ? ` class="${cls}"` : ''}>`;
+  return (
+    `<img src="${esc(asset.url)}" alt="${esc(asset.alt)}" class="st-th-l ${cls}">` +
+    `<img src="${esc(asset.urlDark)}" alt="" aria-hidden="true" class="st-th-d ${cls}">`
+  );
+}
+
+/** Small credit line for an asset, if it has one. */
+export function creditHtml(asset: { credit?: string }): string {
+  return asset.credit ? `<span class="st-credit">${esc(asset.credit)}</span>` : '';
 }

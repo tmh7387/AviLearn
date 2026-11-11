@@ -11,7 +11,7 @@ The Stage compiler enforces the banned phrases in `avilearn-app/src/lib/stage/vo
 |---|---|---|
 | 1 | Course title: course name, subtitle, client ("for ..."), dates, facilitator, Aviation Synergy | `course-title` |
 | 2 | Course Learning Objectives: 3 to 5 objectives, each starts with a verb | `objectives` |
-| 3 | Facilitator introduction | `facilitator` |
+| 3 | Introductions: "Facilitator — Name", organisation logos, photo panel (see section 5) | `facilitator` |
 | 4 | Breaking the Ice: numbered prompts (Who Are You?, Your Position, Your Duties, Your Experience) | `icebreaker` |
 | 5 | Day N Overview — Theme: module codes and titles (M0, M1 ...) | `day-overview` (one per day) |
 | 6 | Course Materials: link, QR code, PIN and sign-in word | `course-materials` |
@@ -49,8 +49,14 @@ The compiler rejects these patterns:
 - "Takeaways". Use "Key Points".
 - Filler and marketing words: "let's dive in", "deep dive", "journey", "unlock", "game changer", "level up", "in a nutshell", "at a glance", "leverage".
 
-## 4. Illustrations
+## 4. Visuals
 
-- Use the AviLearn illustration library (`illustration:<id>` assets): detailed technical drawings with real proportions, not photos and not cartoons.
-- Current drawings: `aircraft-side`, `aircraft-ramp`, `flight-deck`.
-- Every colour comes from the theme tokens, so each drawing works on light and dark.
+- Technical visuals (walkround, callouts, parts of the aircraft): use renders of the Kestrel Pacific 3D models. Each render has a light and a dark version (`url` and `urlDark`, `kind: 'drawing'`).
+- Make renders with `avilearn-app/scripts/kestrel-render.py` (Blender, headless). Files go in `avilearn-app/public/stage/kestrel/`.
+- Mood visuals (course title, module opener panel): use the Kestrel media kit images (`kind: 'photo'`).
+- Kestrel Pacific is a fictional airline. Every Kestrel asset has a `credit` that says so. AI images also say "not for technical teaching". Renders of the 787-9 credit the Sketchfab model (CC BY).
+- Do not use AI images for technical teaching. Registrations and details in them are not accurate.
+
+## 5. Facilitator slide
+
+Follows slide 4 of the reference deck: "Introductions", then "Facilitator — Name", then the logos of the organisations the facilitator has worked with, and a photo panel on the left. No role line and no list of skills.

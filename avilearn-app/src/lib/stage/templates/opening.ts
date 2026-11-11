@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import QRCode from 'qrcode';
-import { esc, mediaHtml, s } from '../html';
-import { illustrationFor } from '../illustrations';
+import { creditHtml, mediaHtml, s } from '../html';
 import { label } from '../schema';
 import { asset } from './evidence';
 import { defineTemplate, type RenderContext } from './types';
@@ -14,8 +13,18 @@ import { defineTemplate, type RenderContext } from './types';
  * and at the end of the day: day close.
  */
 
-const art = (ctx: RenderContext, id: string | undefined, cls: string) =>
-  id ? `<div class="${cls}" ${s(1)}>${mediaHtml(asset(ctx, id), illustrationFor)}</div>` : '';
+const art = (ctx: RenderContext, id: string | undefined, cls: string) => {
+  if (!id) return '';
+  const a = asset(ctx, id);
+  return `<figure class="${cls}" ${s(1)}>${mediaHtml(a)}${a.credit ? `<figcaption>${creditHtml(a)}</figcaption>` : ''}</figure>`;
+};
+
+/** Full-height side panel (module opener, facilitator). Photos fill it; drawings sit inside it. */
+const panel = (ctx: RenderContext, id: string | undefined) => {
+  if (!id) return '<div class="st-panel" data-bleed></div>';
+  const a = asset(ctx, id);
+  return `<div class="st-panel${a.kind === 'photo' ? ' st-panel-photo' : ''}" data-bleed>${mediaHtml(a)}${creditHtml(a)}</div>`;
+};
 
 export const courseTitle = defineTemplate({
   id: 'course-title',
@@ -49,31 +58,27 @@ export const courseTitle = defineTemplate({
 
 export const facilitator = defineTemplate({
   id: 'facilitator',
-  purpose: 'Introduce the facilitator: name, role and up to 4 short credentials. Photo optional.',
+  purpose: 'Introductions: "Facilitator — Name", the logos of organisations the facilitator has worked with, and a photo panel.',
   schema: z.object({
+    title: label(3).default('Introductions'),
     name: label(4),
-    role: label(6),
-    credentials: z.array(label(6)).min(1).max(4),
+    logos: z.array(z.string().min(1)).max(8).default([]),
     photo: z.string().optional(),
   }),
   needsAssertion: false,
   parts: () => 1,
   fullView: false,
-  render: (d, ctx) => {
-    const photo = d.photo ? asset(ctx, d.photo) : null;
-    return `
-    <div class="st-fac" ${s(1)}>
-      <div class="st-fac-who">
-        ${photo ? `<img class="st-fac-photo" src="${esc(photo.url)}" alt="${esc(photo.alt)}">` : ''}
-        <div class="st-fac-k">${ctx.log.t(1, 'Your Facilitator')}</div>
-        <div class="st-fac-name">${ctx.log.t(1, d.name)}</div>
-        <div class="st-fac-role">${ctx.log.t(1, d.role)}</div>
+  render: (d, ctx) => `
+    <div class="st-mo">
+      ${panel(ctx, d.photo)}
+      <div class="st-mo-text" ${s(1)}>
+        <h2 class="st-h">${ctx.log.t(1, d.title)}</h2>
+        <p class="st-fac-name">${ctx.log.t(1, `Facilitator — ${d.name}`)}</p>
+        <div class="st-logos">
+          ${d.logos.map((id) => `<div class="st-logo">${mediaHtml(asset(ctx, id))}</div>`).join('')}
+        </div>
       </div>
-      <ul class="st-list st-fac-list">
-        ${d.credentials.map((c) => `<li class="st-row"><span class="st-row-v">${ctx.log.t(1, c)}</span></li>`).join('')}
-      </ul>
-    </div>`;
-  },
+    </div>`,
 });
 
 export const icebreaker = defineTemplate({
@@ -165,7 +170,7 @@ export const moduleOpener = defineTemplate({
   fullView: false,
   render: (d, ctx) => `
     <div class="st-mo">
-      <div class="st-mo-panel${d.image && asset(ctx, d.image).url.startsWith('illustration:aircraft') ? ' st-mo-wide' : ''}">${d.image ? mediaHtml(asset(ctx, d.image), illustrationFor) : ''}</div>
+      ${panel(ctx, d.image)}
       <div class="st-mo-text" ${s(1)}>
         <div class="st-mo-k">${ctx.log.t(1, `Module ${d.number}`)}</div>
         <h1 class="st-mo-title">${ctx.log.t(1, d.title)}</h1>

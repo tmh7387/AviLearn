@@ -20,11 +20,8 @@ export interface StageTheme {
   tealTint: string;
   card: string;
   line: string;
-  /** Opaque fills for illustrations: lit surface, shaded surface, dark detail, glass. */
-  illoLight: string;
-  illoMid: string;
-  illoDark: string;
-  illoGlass: string;
+  /** Opaque white behind third-party logos, in both themes. */
+  paper: string;
 }
 
 export const STAGE = {
@@ -40,10 +37,7 @@ export const STAGE = {
       tealTint: 'rgba(11,125,114,.11)',
       card: 'rgba(255,255,255,.78)',
       line: '#12305a',
-      illoLight: '#ffffff',
-      illoMid: '#c5d3e0',
-      illoDark: '#22395a',
-      illoGlass: '#a9c9dc',
+      paper: '#ffffff',
     },
     dark: {
       bg: '#0c1a2c',
@@ -55,10 +49,7 @@ export const STAGE = {
       tealTint: 'rgba(45,212,191,.13)',
       card: 'rgba(255,255,255,.045)',
       line: '#b9cadc',
-      illoLight: '#2a425f',
-      illoMid: '#1d3049',
-      illoDark: '#08111d',
-      illoGlass: '#3a6683',
+      paper: '#ffffff',
     },
   } satisfies Record<StageThemeName, StageTheme>,
   defaultTheme: 'light' as StageThemeName,
