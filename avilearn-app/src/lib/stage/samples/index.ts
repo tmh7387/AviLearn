@@ -37,6 +37,12 @@ const logo = (id: string, alt: string) => ({ id, url: `/stage/samples/${id}.png`
 const assets = [
   livery('a321-34-liv', 'a321-three-quarter', 'Kestrel Pacific A321neo in airline livery, front three-quarter view, gear down'),
   livery('b787-side-liv', 'b787-side', 'Kestrel Pacific 787-9 in airline livery, left side view, gear down', ' (Sketchfab model, CC BY)'),
+  livery('a321-top-liv', 'a321-top', 'Kestrel Pacific A321neo, top view, nose to the right'),
+  livery('b787-top-liv', 'b787-top', 'Kestrel Pacific 787-9, top view, nose to the right', ' (Sketchfab model, CC BY)'),
+  livery('a321-engine-liv', 'a321-engine', 'Kestrel Pacific A321neo, left engine intake and fan, close-up'),
+  livery('b787-engine-liv', 'b787-engine', 'Kestrel Pacific 787-9, left engine intake and fan, close-up', ' (Sketchfab model, CC BY)'),
+  livery('a321-tail-liv', 'a321-tail', 'Kestrel Pacific A321neo, vertical fin with the kestrel emblem'),
+  livery('b787-tail-liv', 'b787-tail', 'Kestrel Pacific 787-9, vertical fin with the kestrel emblem', ' (Sketchfab model, CC BY)'),
   livery('b787-34-liv', 'b787-three-quarter', 'Kestrel Pacific 787-9 in airline livery, front three-quarter view', ' (Sketchfab model, CC BY)'),
   render('a321-34', 'a321-three-quarter', 'Kestrel Pacific A321neo, front three-quarter view, gear down'),
   render('a321-side', 'a321-side', 'Kestrel Pacific A321neo, left side view'),

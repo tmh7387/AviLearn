@@ -5,7 +5,8 @@ Needs Blender's Python module: pip install bpy==5.3.0 (Python 3.13).
 Usage:
   python scripts/kestrel-render.py -- <model.blend> <side|three-quarter|top|front> <tech|photo|livery> <light|dark> <out.png> [x|y] [1|-1]
   arg 6: the fuselage axis of the model (A321neo: x, 787-9: y)
-  arg 7: +1 when the nose points to +axis, -1 when it does not (787-9 three-quarter: -1)
+  arg 7: +1 when the nose points to +axis, -1 when it does not (787-9 three-quarter and top: -1)
+  arg 8 (optional): close-up camera as JSON, e.g. '{"cam":[14,14,-2],"target":[3.5,5.8,-2.7],"lens":60}' (world units)
 Output: transparent PNG, navy lines on white (light) or light lines on navy (dark).
 Copy results to public/stage/kestrel/ as <name>-light.png and <name>-dark.png.
 "livery" keeps the model's own materials. It needs the textures/ folder next to the .blend file.
@@ -15,6 +16,7 @@ argv = sys.argv[sys.argv.index('--')+1:]
 blend, view, style, theme, out = argv[:5]
 axis = argv[5] if len(argv)>5 else 'x'   # fuselage axis
 flip = float(argv[6]) if len(argv)>6 else 1.0  # +1: nose toward +axis
+shot = json.loads(argv[7]) if len(argv)>7 else None  # close-up: {"cam":[x,y,z],"target":[x,y,z],"lens":mm}
 bpy.ops.wm.open_mainfile(filepath=blend)
 sc = bpy.context.scene
 # remove lights and cameras
@@ -72,6 +74,9 @@ co.rotation_euler=(-d).to_track_quat('-Z','Y').to_euler()
 if view=='top':
     import mathutils as mu
     co.rotation_euler=(mu.Matrix.Rotation(math.radians(90),4,'Z')@co.matrix_world.to_3x3().to_4x4()).to_euler() if False else co.rotation_euler
+if view=='top':
+    fwd=vec(flip,0,0); left=mathutils.Vector((0,0,1)).cross(fwd)
+    co.rotation_euler=mathutils.Matrix((fwd,left,(0,0,1))).transposed().to_euler()
 bpy.context.view_layer.update()
 inv=co.matrix_world.inverted()
 pts=[]
@@ -83,6 +88,11 @@ W=x1-x0; H=y1-y0
 RX=1600; RY=max(300,min(1000,int(RX*H/W*1.12)+2))
 cam.ortho_scale=max(W*1.06, H*1.06*RX/RY)
 co.location=co.matrix_world@mathutils.Vector(((x0+x1)/2,(y0+y1)/2,0))
+if shot:
+    cam.type='PERSP'; cam.lens=shot.get('lens',50)
+    co.location=mathutils.Vector(shot['cam'])
+    co.rotation_euler=(mathutils.Vector(shot['target'])-co.location).to_track_quat('-Z','Y').to_euler()
+    RX,RY=1600,1000
 cam.clip_end=10000
 r=sc.render
 r.engine='CYCLES'; sc.cycles.device='CPU'; sc.cycles.samples=24 if style=='tech' else 64
