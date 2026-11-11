@@ -51,7 +51,9 @@ The compiler rejects these patterns:
 
 ## 4. Visuals
 
-- Technical visuals (walkround, callouts, parts of the aircraft): use renders of the Kestrel Pacific 3D models. Each render has a light and a dark version (`url` and `urlDark`, `kind: 'drawing'`).
+- Technical visuals (walkround, callouts, parts of the aircraft): use renders of the Kestrel Pacific 3D models.
+  - Full livery (`*-livery.webp`, style `livery`): the default. One file works on light and dark.
+  - Line drawing (`*-light.png` and `*-dark.png`, style `tech`): for diagrams that need a plain outline.
 - Make renders with `avilearn-app/scripts/kestrel-render.py` (Blender, headless). Files go in `avilearn-app/public/stage/kestrel/`.
 - Mood visuals (course title, module opener panel): use the Kestrel media kit images (`kind: 'photo'`).
 - Kestrel Pacific is a fictional airline. Every Kestrel asset has a `credit` that says so. AI images also say "not for technical teaching". Renders of the 787-9 credit the Sketchfab model (CC BY).

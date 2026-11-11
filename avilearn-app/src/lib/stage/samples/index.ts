@@ -24,10 +24,20 @@ const render = (id: string, file: string, alt: string, extra = '') => ({
   alt,
   credit: `Kestrel Pacific 3D model, Blender render${extra}. Fictional airline.`,
 });
+const livery = (id: string, file: string, alt: string, extra = '') => ({
+  id,
+  url: `/stage/kestrel/${file}-livery.webp`,
+  kind: 'drawing' as const,
+  alt,
+  credit: `Kestrel Pacific 3D model, Blender render${extra}. Fictional airline.`,
+});
 const photo = (id: string, url: string, alt: string, credit?: string) => ({ id, url, alt, kind: 'photo' as const, credit });
 const logo = (id: string, alt: string) => ({ id, url: `/stage/samples/${id}.png`, alt, kind: 'drawing' as const });
 
 const assets = [
+  livery('a321-34-liv', 'a321-three-quarter', 'Kestrel Pacific A321neo in airline livery, front three-quarter view, gear down'),
+  livery('b787-side-liv', 'b787-side', 'Kestrel Pacific 787-9 in airline livery, left side view, gear down', ' (Sketchfab model, CC BY)'),
+  livery('b787-34-liv', 'b787-three-quarter', 'Kestrel Pacific 787-9 in airline livery, front three-quarter view', ' (Sketchfab model, CC BY)'),
   render('a321-34', 'a321-three-quarter', 'Kestrel Pacific A321neo, front three-quarter view, gear down'),
   render('a321-side', 'a321-side', 'Kestrel Pacific A321neo, left side view'),
   render('b787-side', 'b787-side', 'Kestrel Pacific 787-9, left side view, gear down', ' (Sketchfab model, CC BY)'),
@@ -190,7 +200,7 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
     },
     {
       id: 'deck', templateId: 'annotated-image', eyebrow: 'Walkround', assertion: 'The Walkround Is a Shared Check',
-      data: { image: 'a321-34', callouts: [{ x: 83, y: 73, label: 'Flight deck' }, { x: 51, y: 75, label: 'Engine' }, { x: 65, y: 25, label: 'Sharklet' }, { x: 81, y: 86, label: 'Nose gear' }] },
+      data: { image: 'a321-34-liv', callouts: [{ x: 83, y: 73, label: 'Flight deck' }, { x: 51, y: 75, label: 'Engine' }, { x: 65, y: 25, label: 'Sharklet' }, { x: 81, y: 86, label: 'Nose gear' }] },
       steps: n(
         'Flight deck: agree who flies and who monitors before engine start.',
         'Engine: report what you find on the walkround to the other pilot.',
@@ -211,7 +221,7 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
     },
     {
       id: 'img', templateId: 'assertion-image', eyebrow: 'Shared Mental Model', assertion: 'Both Pilots Must Fly the Same Plan',
-      data: { image: 'b787-34', caption: 'Brief the plan, then monitor against it' },
+      data: { image: 'b787-34-liv', caption: 'Brief the plan, then monitor against it' },
       steps: n('A shared plan lets the monitoring pilot spot a deviation early.'),
     },
     {
@@ -323,7 +333,7 @@ export const IOSA_SAMPLE: SlideDeckSpecInput = {
     { id: 'video', templateId: 'title-bumper', data: { title: 'Ramp Audit Walkround', subtitle: 'Watch where the process meets the aircraft' }, steps: n('Short video segment. Ask the group to note every control they see.') },
     {
       id: 'ann', templateId: 'annotated-image', eyebrow: 'Ramp Audit', assertion: 'Audit Where the Process Meets the Aircraft',
-      data: { image: 'b787-side', callouts: [{ x: 94, y: 51, label: 'Flight deck' }, { x: 63, y: 62, label: 'Engine' }, { x: 52, y: 74, label: 'Main gear' }, { x: 91, y: 73, label: 'Nose gear' }] },
+      data: { image: 'b787-side-liv', callouts: [{ x: 94, y: 51, label: 'Flight deck' }, { x: 63, y: 62, label: 'Engine' }, { x: 52, y: 74, label: 'Main gear' }, { x: 91, y: 73, label: 'Nose gear' }] },
       steps: n('Flight deck: documents, technical log and checklists.', 'Engine: the walkround record against the maintenance task.', 'Main gear: chocks and cones on arrival.', 'Nose gear: the pushback interface with ground handling.', 'Every callout is a place to collect evidence.'),
     },
     {

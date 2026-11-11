@@ -3,12 +3,12 @@ Render a Kestrel Pacific .blend model as a technical line drawing for Stage.
 
 Needs Blender's Python module: pip install bpy==5.3.0 (Python 3.13).
 Usage:
-  python scripts/kestrel-render.py -- <model.blend> <side|three-quarter|top|front> <tech|photo> <light|dark> <out.png> [x|y] [1|-1]
+  python scripts/kestrel-render.py -- <model.blend> <side|three-quarter|top|front> <tech|photo|livery> <light|dark> <out.png> [x|y] [1|-1]
   arg 6: the fuselage axis of the model (A321neo: x, 787-9: y)
   arg 7: +1 when the nose points to +axis, -1 when it does not (787-9 three-quarter: -1)
 Output: transparent PNG, navy lines on white (light) or light lines on navy (dark).
 Copy results to public/stage/kestrel/ as <name>-light.png and <name>-dark.png.
-The "photo" style needs the model textures packed into the .blend file.
+"livery" keeps the model's own materials. It needs the textures/ folder next to the .blend file.
 """
 import bpy, sys, math, mathutils, json
 argv = sys.argv[sys.argv.index('--')+1:]
@@ -38,9 +38,8 @@ if style=='tech':
 else:
     p.inputs['Base Color'].default_value=(*srgb2lin(TOK['paint']),1); p.inputs['Roughness'].default_value=0.32
     p.inputs['Coat Weight'].default_value=0.3
-for o in meshes:
+for o in (meshes if style!='livery' else []):
     o.data.materials.clear(); o.data.materials.append(m)
-    o.material_slots[0].link='OBJECT' if False else 'DATA'
 # world
 w=bpy.data.worlds.new('w'); sc.world=w; w.use_nodes=True
 bg=w.node_tree.nodes['Background']
@@ -86,12 +85,15 @@ cam.ortho_scale=max(W*1.06, H*1.06*RX/RY)
 co.location=co.matrix_world@mathutils.Vector(((x0+x1)/2,(y0+y1)/2,0))
 cam.clip_end=10000
 r=sc.render
-r.engine='CYCLES'; sc.cycles.device='CPU'; sc.cycles.samples=24 if style=='tech' else 48
+r.engine='CYCLES'; sc.cycles.device='CPU'; sc.cycles.samples=24 if style=='tech' else 64
 sc.cycles.use_denoising=True
 r.resolution_x=RX; r.resolution_y=RY; r.resolution_percentage=100
 r.film_transparent=True
 r.image_settings.file_format='PNG'; r.image_settings.color_mode='RGBA'
-sc.view_settings.view_transform='Standard'
+sc.view_settings.view_transform='AgX' if style=='livery' else 'Standard'
+if style=='livery':
+    try: sc.view_settings.look='AgX - Medium High Contrast'
+    except Exception: pass
 if style=='tech':
     r.use_freestyle=True; r.line_thickness_mode='ABSOLUTE'; r.line_thickness=2.2
     vl=sc.view_layers[0]; vl.use_freestyle=True
@@ -100,7 +102,7 @@ if style=='tech':
     ls.select_by_visibility=True; ls.select_by_edge_types=True
     ls.select_silhouette=True; ls.select_border=True; ls.select_crease=True; ls.select_contour=True; ls.select_external_contour=True
     ls.linestyle.color=srgb2lin(TOK['line']); ls.linestyle.thickness=2.2
-else:
+elif style=='photo':
     # shadow catcher ground
     bpy.ops.mesh.primitive_plane_add(size=size.length*4, location=(ctr.x,ctr.y,mn.z))
     bpy.context.active_object.is_shadow_catcher=True
