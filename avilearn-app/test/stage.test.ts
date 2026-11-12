@@ -88,3 +88,12 @@ test('every step needs speaker notes', () => {
   const out = compileDeck(base({ id: 'q', templateId: 'questions', data: {}, steps: [{ speakerNotes: '' }] }));
   assert.ok(out.issues.some((i) => i.code === 'schema'));
 });
+
+test('the voice check rejects stock AI phrases', () => {
+  for (const assertion of ['Five Parts, One Risk Cycle', 'Three Things to Take Back', 'By the end you can run one risk cycle']) {
+    const out = compileDeck(base({ id: 'v', templateId: 'hero-number', assertion, data: { value: '4', label: 'Things' }, steps: [{ speakerNotes: 'x' }] }));
+    assert.ok(out.issues.some((i) => i.code === 'voice'), assertion);
+  }
+  const ok = compileDeck(base({ id: 'v', templateId: 'hero-number', assertion: 'Which ISM Edition Governs You', data: { value: '19', label: 'Edition from 2027' }, steps: [{ speakerNotes: 'x' }] }));
+  assert.ok(!ok.issues.some((i) => i.code === 'voice'));
+});

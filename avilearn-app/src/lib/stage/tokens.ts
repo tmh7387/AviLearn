@@ -20,6 +20,8 @@ export interface StageTheme {
   tealTint: string;
   card: string;
   line: string;
+  /** Opaque white behind third-party logos, in both themes. */
+  paper: string;
 }
 
 export const STAGE = {
@@ -35,6 +37,7 @@ export const STAGE = {
       tealTint: 'rgba(11,125,114,.11)',
       card: 'rgba(255,255,255,.78)',
       line: '#12305a',
+      paper: '#ffffff',
     },
     dark: {
       bg: '#0c1a2c',
@@ -46,6 +49,7 @@ export const STAGE = {
       tealTint: 'rgba(45,212,191,.13)',
       card: 'rgba(255,255,255,.045)',
       line: '#b9cadc',
+      paper: '#ffffff',
     },
   } satisfies Record<StageThemeName, StageTheme>,
   defaultTheme: 'light' as StageThemeName,

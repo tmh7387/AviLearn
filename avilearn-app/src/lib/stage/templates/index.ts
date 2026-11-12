@@ -1,6 +1,7 @@
 import type { TemplateId } from '../schema';
 import type { TemplateDef } from './types';
-import { agenda, objectives, questions, sectionDivider, summary, titleBumper } from './structure';
+import { agenda, objectives, questions, sectionDivider, titleBumper } from './structure';
+import { breakSlide, courseMaterials, courseTitle, dayClose, dayOverview, facilitator, icebreaker, keyPoints, moduleOpener } from './opening';
 import { annotatedImage, assertionImage, heroNumber, quoteReference, splitContrast } from './evidence';
 import { causeChain, checklist, flightTimeline, procedureFlow } from './process';
 import { exerciseLaunch, knowledgeCheck } from './interaction';
@@ -11,11 +12,19 @@ import { exerciseLaunch, knowledgeCheck } from './interaction';
  * card-sort) arrive in Phase 2 through the avilearn-course-tools package.
  */
 const ALL = [
+  courseTitle,
+  facilitator,
+  icebreaker,
+  dayOverview,
+  courseMaterials,
+  moduleOpener,
+  keyPoints,
+  breakSlide,
+  dayClose,
   titleBumper,
   sectionDivider,
   agenda,
   objectives,
-  summary,
   questions,
   assertionImage,
   annotatedImage,

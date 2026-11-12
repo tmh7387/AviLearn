@@ -53,30 +53,23 @@ export const agenda = defineTemplate({
     </ol>`,
 });
 
-const pointList = (marker: 'check' | 'num') =>
-  defineTemplate({
-    id: marker === 'check' ? 'objectives' : 'summary',
-    purpose:
-      marker === 'check'
-        ? 'Learning objectives, one per step. Start each with a verb.'
-        : 'Key takeaways at the end of a lesson, one per step.',
-    schema: z.object({ items: z.array(short(6)).min(2).max(5) }),
-    needsAssertion: true,
-    parts: (d: { items: string[] }) => d.items.length,
-    fullView: true,
-    render: (d: { items: string[] }, ctx) => `
-      <ol class="st-list st-points">
-        ${d.items
-          .map(
-            (it, i) =>
-              `<li class="st-row" ${s(i + 1)}><span class="st-row-k">${marker === 'check' ? '<svg viewBox="0 0 40 40" aria-hidden="true"><rect class="st-cb" x="2" y="2" width="36" height="36"/><path class="st-tk" d="M10 21l7 7 13-15"/></svg>' : String(i + 1)}</span><span class="st-row-v">${ctx.log.t(i + 1, it)}</span></li>`,
-          )
-          .join('')}
-      </ol>`,
-  });
-
-export const objectives = pointList('check');
-export const summary = pointList('num');
+export const objectives = defineTemplate({
+  id: 'objectives',
+  purpose: 'Learning objectives, one per step. Start each with a verb (Explain, Describe, Apply, Identify).',
+  schema: z.object({ items: z.array(short(6)).min(2).max(5) }),
+  needsAssertion: true,
+  parts: (d) => d.items.length,
+  fullView: true,
+  render: (d, ctx) => `
+    <ol class="st-list st-points">
+      ${d.items
+        .map(
+          (it, i) =>
+            `<li class="st-row" ${s(i + 1)}><span class="st-row-k"><svg viewBox="0 0 40 40" aria-hidden="true"><rect class="st-cb" x="2" y="2" width="36" height="36"/><path class="st-tk" d="M10 21l7 7 13-15"/></svg></span><span class="st-row-v">${ctx.log.t(i + 1, it)}</span></li>`,
+        )
+        .join('')}
+    </ol>`,
+});
 
 export const questions = defineTemplate({
   id: 'questions',
