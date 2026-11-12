@@ -33,8 +33,8 @@ export function countWords(text: string): number {
 /** The AviLearn mark, drawn with theme tokens so it works on light and dark. */
 export const MARK_SVG =
   '<svg class="st-mark-ico" viewBox="0 0 24 24" aria-hidden="true">' +
-  '<path d="M2 14 L22 2 L16 22 L11 14 Z" fill="var(--s-teal-tint)" stroke="var(--s-teal)" stroke-width="2" stroke-linejoin="round"/>' +
-  '<path d="M11 14 L22 2" stroke="var(--s-teal)" stroke-width="2" stroke-linecap="round"/></svg>';
+  '<path d="M2 14 L22 2 L16 22 L11 14 Z" fill="var(--s-accent-tint)" stroke="var(--s-accent)" stroke-width="2" stroke-linejoin="round"/>' +
+  '<path d="M11 14 L22 2" stroke="var(--s-accent)" stroke-width="2" stroke-linecap="round"/></svg>';
 
 /** Compass rose for title slides (hidden in sober tone). Cardinal letters sit outside the ring. */
 export function roseSvg(): string {
@@ -48,13 +48,13 @@ export function roseSvg(): string {
   const star = (rot: number, long: number, fill: string) =>
     `<g transform="rotate(${rot} 100 100)"><path d="M100 ${100 - long} L108 100 L100 100 Z" fill="${fill}"/><path d="M100 ${100 - long} L92 100 L100 100 Z" fill="${fill}" fill-opacity=".55"/></g>`;
   const letter = (x: number, y: number, t: string, hot = false) =>
-    `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="${hot ? 21 : 17}" fill="var(${hot ? '--s-teal' : '--s-ink'})">${t}</text>`;
+    `<text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-family="Barlow Condensed, sans-serif" font-weight="700" font-size="${hot ? 21 : 17}" fill="var(${hot ? '--s-accent' : '--s-ink'})">${t}</text>`;
   return (
     '<svg class="st-rose" viewBox="-24 -24 248 248" aria-hidden="true">' +
     '<g fill="none" stroke="var(--s-line)" stroke-opacity=".4" stroke-width="1.5"><circle cx="100" cy="100" r="94"/><circle cx="100" cy="100" r="66"/></g>' +
     `<g stroke="var(--s-line)" stroke-opacity=".4">${ticks}</g>` +
     `<g opacity=".35">${star(45, 46, 'var(--s-ink)')}${star(135, 46, 'var(--s-ink)')}${star(225, 46, 'var(--s-ink)')}${star(315, 46, 'var(--s-ink)')}</g>` +
-    `<g class="st-rose-needle">${star(0, 84, 'var(--s-teal-fill)')}${star(90, 64, 'var(--s-ink)')}${star(180, 64, 'var(--s-ink)')}${star(270, 64, 'var(--s-ink)')}</g>` +
+    `<g class="st-rose-needle">${star(0, 84, 'var(--s-accent-fill)')}${star(90, 64, 'var(--s-ink)')}${star(180, 64, 'var(--s-ink)')}${star(270, 64, 'var(--s-ink)')}</g>` +
     '<circle cx="100" cy="100" r="5" fill="var(--s-bg)" stroke="var(--s-line)" stroke-width="2"/>' +
     letter(100, -12, 'N', true) +
     letter(212, 100, 'E') +

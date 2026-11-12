@@ -1,4 +1,5 @@
 import type { SlideDeckSpecInput } from '../schema';
+import { GENERAL_SAMPLE } from './general';
 
 /**
  * Sample decks from three different programmes. They prove that every
@@ -67,6 +68,8 @@ const FACILITATOR = 'Anthony Houston';
 export const SMS_SAMPLE: SlideDeckSpecInput = {
   specVersion: 'stage/1',
   programme: 'sms-airlines',
+  theme: 'nav-chart',
+  vertical: 'aviation',
   course: 'SMS for Airline Managers',
   module: { code: 'SMS D1', title: 'Day 1 — Fundamentals' },
   lesson: { title: 'Day 1 — Fundamentals', objectives: ['Explain the four SMS components', 'Write a hazard statement'] },
@@ -185,6 +188,8 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
 export const CRM_SAMPLE: SlideDeckSpecInput = {
   specVersion: 'stage/1',
   programme: 'crm-instructor',
+  theme: 'nav-chart',
+  vertical: 'aviation',
   course: 'CRM Instructor',
   module: { code: 'CRM 02', title: 'Non-Technical Skills' },
   lesson: { title: 'NOTECHS and the Flight Deck', objectives: ['Name the NOTECHS categories'] },
@@ -256,6 +261,8 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
 export const IOSA_SAMPLE: SlideDeckSpecInput = {
   specVersion: 'stage/1',
   programme: 'iosa-auditor',
+  theme: 'nav-chart',
+  vertical: 'aviation',
   course: 'IOSA Internal Auditor',
   module: { code: 'IOSA D2', title: 'Day 2 — Audit Principles' },
   lesson: { title: 'Day 2 — Audit Principles', objectives: ['Classify a nonconformity'] },
@@ -327,7 +334,7 @@ export const IOSA_SAMPLE: SlideDeckSpecInput = {
       steps: n('Record it with the ISARP reference.', 'Root cause, highlighted: most closures fail here.', 'Plan the action.', 'Implement.', 'Verify: evidence that the action works.', 'Ask which step their organisation skips most often.'),
     },
     {
-      id: 'tl', templateId: 'flight-timeline', eyebrow: 'Audit Cycle', assertion: 'A Finding Stays Open After the Audit Ends',
+      id: 'tl', templateId: 'timeline', eyebrow: 'Audit Cycle', assertion: 'A Finding Stays Open After the Audit Ends',
       data: { pins: [{ at: 'Before', label: 'Document review' }, { at: 'On site', label: 'Finding raised', key: true }, { at: 'After', label: 'Corrective action' }, { at: 'Closure', label: 'Evidence accepted' }] },
       steps: n('Before the visit: documents.', 'On site: the finding is raised.', 'After: the operator acts.', 'Closure: evidence is accepted.', 'The audit report is not the end of the finding.'),
     },
@@ -368,4 +375,5 @@ export const SAMPLE_DECKS: Record<string, SlideDeckSpecInput> = {
   sms: SMS_SAMPLE,
   crm: CRM_SAMPLE,
   iosa: IOSA_SAMPLE,
+  general: GENERAL_SAMPLE,
 };

@@ -1,17 +1,20 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { STAGE, contrast } from '../src/lib/stage/tokens';
+import { contrast } from '../src/lib/stage/tokens';
+import { NAV_CHART, THEME_PACKS, ownerOf } from '../src/lib/stage/packs';
 import { compileDeck, auditColors } from '../src/lib/stage/compiler';
 import { TEMPLATES, stepCount } from '../src/lib/stage/templates';
 import { SAMPLE_DECKS } from '../src/lib/stage/samples';
 import type { SlideDeckSpecInput } from '../src/lib/stage/schema';
 
-test('text tokens meet WCAG AA (4.5:1) on the canvas in both themes', () => {
-  for (const name of ['light', 'dark'] as const) {
-    const t = STAGE.themes[name];
-    for (const key of ['ink', 'inkMuted', 'teal'] as const) {
-      const ratio = contrast(t[key], t.bg);
-      assert.ok(ratio >= 4.5, `${name}.${key} is ${ratio.toFixed(2)}:1`);
+test('text tokens meet WCAG AA (4.5:1) on the canvas in both modes of every theme pack', () => {
+  for (const pack of THEME_PACKS.values()) {
+    for (const name of ['light', 'dark'] as const) {
+      const t = pack.modes[name];
+      for (const key of ['ink', 'inkMuted', 'accent'] as const) {
+        const ratio = contrast(t[key], t.bg);
+        assert.ok(ratio >= 4.5, `${pack.id}.${name}.${key} is ${ratio.toFixed(2)}:1`);
+      }
     }
   }
 });
@@ -25,7 +28,7 @@ test('every sample deck compiles with no QA errors', () => {
   }
 });
 
-test('every template is used by at least 2 sample courses', () => {
+test('core templates are used by at least 2 sample courses, industry templates by 1', () => {
   const used = new Map<string, Set<string>>();
   for (const spec of Object.values(SAMPLE_DECKS)) {
     for (const s of spec.slides) {
@@ -33,7 +36,10 @@ test('every template is used by at least 2 sample courses', () => {
       used.get(s.templateId)!.add(spec.course);
     }
   }
-  for (const id of TEMPLATES.keys()) assert.ok((used.get(id)?.size ?? 0) >= 2, `${id} is used by fewer than 2 courses`);
+  for (const id of TEMPLATES.keys()) {
+    const need = ownerOf(id) ? 1 : 2;
+    assert.ok((used.get(id)?.size ?? 0) >= need, `${id} is used by fewer than ${need} course(s)`);
+  }
 });
 
 const base = (slide: unknown): SlideDeckSpecInput => ({
@@ -80,8 +86,8 @@ test('content templates need an assertion headline', () => {
 });
 
 test('colour audit flags literals that are not tokens', () => {
-  assert.equal(auditColors('<div style="color:#ef4444"></div>').length, 1);
-  assert.equal(auditColors(`<div style="color:${STAGE.themes.light.ink}"></div>`).length, 0);
+  assert.equal(auditColors('<div style="color:#ef4444"></div>', NAV_CHART).length, 1);
+  assert.equal(auditColors(`<div style="color:${NAV_CHART.modes.light.ink}"></div>`, NAV_CHART).length, 0);
 });
 
 test('every step needs speaker notes', () => {
@@ -96,4 +102,27 @@ test('the voice check rejects stock AI phrases', () => {
   }
   const ok = compileDeck(base({ id: 'v', templateId: 'hero-number', assertion: 'Which ISM Edition Governs You', data: { value: '19', label: 'Edition from 2027' }, steps: [{ speakerNotes: 'x' }] }));
   assert.ok(!ok.issues.some((i) => i.code === 'voice'));
+});
+
+test('a domain template is rejected outside its industry pack', () => {
+  const slide = { id: 't', templateId: 'flight-timeline', assertion: 'Workload Peaks Twice', data: { pins: [{ at: 'A', label: 'One' }, { at: 'B', label: 'Two' }, { at: 'C', label: 'Three' }] }, steps: [1, 2, 3, 4].map(() => ({ speakerNotes: 'x' })) };
+  const general = compileDeck({ ...base(slide), theme: 'studio-neutral', vertical: 'general' });
+  assert.ok(general.issues.some((i) => i.code === 'pack'));
+  const aviation = compileDeck({ ...base(slide), vertical: 'aviation' });
+  assert.ok(!aviation.issues.some((i) => i.code === 'pack'));
+});
+
+test('an unknown theme pack is a QA error', () => {
+  const out = compileDeck({ ...base({ id: 'q', templateId: 'questions', data: {}, steps: [{ speakerNotes: 'x' }] }), theme: 'no-such-pack' });
+  assert.ok(out.issues.some((i) => i.code === 'pack'));
+  assert.equal(out.html, '');
+});
+
+test('the theme pack sets brand text, fonts and colours', () => {
+  const slide = { id: 'c', templateId: 'course-title', data: { title: 'Giving Useful Feedback' }, steps: [{ speakerNotes: 'x' }] };
+  const nav = compileDeck(base(slide));
+  assert.ok(nav.html.includes('Aviation Synergy') && nav.html.includes('Barlow'));
+  const neutral = compileDeck({ ...base(slide), theme: 'studio-neutral', vertical: 'general' });
+  assert.ok(neutral.html.includes('Sample Organisation') && neutral.html.includes('Inter'));
+  assert.ok(!neutral.html.includes('Aviation Synergy') && !neutral.html.includes('AviLearn'));
 });

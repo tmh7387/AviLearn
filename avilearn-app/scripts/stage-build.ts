@@ -1,6 +1,6 @@
 /**
  * Build the stage gallery and sample decks as static files.
- *   npm run stage:build      -> ../env/tmp/stage/{gallery,sms,crm,iosa}.html
+ *   npm run stage:build      -> ../env/tmp/stage/{gallery,<deck keys>}.html
  * Exits with code 1 when any sample deck has a QA error.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';

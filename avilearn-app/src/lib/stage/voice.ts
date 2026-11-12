@@ -1,6 +1,7 @@
 /**
- * AviLearn voice rules, taken from the courses Anthony Houston teaches
- * (reference: IOSA RBI Day 1 deck). Full guide: docs/VOICE-avilearn.md.
+ * Core voice rules for every pack, first taken from the courses Anthony
+ * Houston teaches (reference: IOSA RBI Day 1 deck). Industry packs add their
+ * own rules. Full guide: docs/VOICE-avilearn.md.
  *
  * The compiler rejects any visible text that matches a banned pattern.
  * These are stock phrases that make slides sound machine-written.
@@ -24,7 +25,7 @@ export const BANNED_PHRASES: VoiceRule[] = [
   { pattern: /\b(simply put|the bottom line|here'?s the thing|the secret)\b/i, why: 'Filler.' },
 ];
 
-export function voiceProblems(text: string): string[] {
+export function voiceProblems(text: string, extra: VoiceRule[] = []): string[] {
   const t = text.trim();
-  return BANNED_PHRASES.filter((r) => r.pattern.test(t)).map((r) => `"${t}": ${r.why}`);
+  return [...BANNED_PHRASES, ...extra].filter((r) => r.pattern.test(t)).map((r) => `"${t}": ${r.why}`);
 }

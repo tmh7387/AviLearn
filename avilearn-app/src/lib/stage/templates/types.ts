@@ -1,11 +1,14 @@
 import type { z } from 'zod';
 import type { TextLog } from '../html';
 import type { SlideDeckSpec, StageAsset, TemplateId } from '../schema';
+import type { ThemePack, VerticalPack } from '../packs';
 
 export interface RenderContext {
   deck: SlideDeckSpec;
   assets: Map<string, StageAsset>;
   log: TextLog;
+  theme: ThemePack;
+  vertical: VerticalPack;
 }
 
 export interface TemplateDef<T = unknown> {

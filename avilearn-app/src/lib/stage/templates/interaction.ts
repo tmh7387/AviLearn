@@ -33,7 +33,7 @@ export const knowledgeCheck = defineTemplate({
 
 export const exerciseLaunch = defineTemplate({
   id: 'exercise-launch',
-  purpose: 'Sends the room to a live AviLearn Portal tool. Names the exercise, the tool, the task and the time.',
+  purpose: 'Sends the room to a live workshop tool on the Portal. Names the exercise, the tool, the task and the time.',
   schema: z.object({
     exercise: label(6),
     tool: label(3),
@@ -48,7 +48,7 @@ export const exerciseLaunch = defineTemplate({
   fullView: false,
   render: (d, ctx) => `
     <div class="st-ex">
-      <div class="st-ex-k" ${s(1)}>Exercise · AviLearn Portal</div>
+      <div class="st-ex-k" ${s(1)}>Exercise · ${esc(ctx.theme.portal)}</div>
       <h2 class="st-ex-title" ${s(1)}>${ctx.log.t(1, d.exercise)}</h2>
       <p class="st-ex-task" ${s(1)}>${ctx.log.t(1, d.task)}</p>
       <div class="st-ex-facts" ${s(1)}>

@@ -1,14 +1,15 @@
 import { esc, MARK_SVG, TextLog, countWords, type VisibleText } from './html';
 import { SlideDeckSpecSchema, type SlideDeckSpec, type SlideDeckSpecInput, type SlideSpec, type StageAsset } from './schema';
 import { getTemplate, stepCount } from './templates';
-import { PRESENTER_CSS, SLIDE_CSS, themeBlocks } from './styles';
+import { PRESENTER_CSS, SLIDE_CSS } from './styles';
 import { PRESENTER_JS } from './runtime';
-import { STAGE, allowedColors } from './tokens';
+import { STAGE } from './tokens';
 import { voiceProblems } from './voice';
+import { allowedColors, getThemePack, getVertical, ownerOf, packCss, templateAllowed, type ThemePack, type VerticalPack } from './packs';
 
 export interface StageIssue {
   level: 'error' | 'warn';
-  code: 'schema' | 'template' | 'assertion' | 'steps' | 'words' | 'words-step' | 'color' | 'voice';
+  code: 'schema' | 'pack' | 'template' | 'assertion' | 'steps' | 'words' | 'words-step' | 'color' | 'voice';
   slideId?: string;
   message: string;
 }
@@ -29,9 +30,24 @@ export interface RenderedSlide {
 const W = STAGE.words;
 
 /** Render one slide to markup. Validation problems come back as issues, not exceptions. */
-export function renderSlide(deck: SlideDeckSpec, slide: SlideSpec, index: number, assets: Map<string, StageAsset>): RenderedSlide {
+export function renderSlide(
+  deck: SlideDeckSpec,
+  slide: SlideSpec,
+  index: number,
+  assets: Map<string, StageAsset>,
+  theme: ThemePack,
+  vertical: VerticalPack,
+): RenderedSlide {
   const issues: StageIssue[] = [];
   const def = getTemplate(slide.templateId);
+  if (!templateAllowed(vertical, slide.templateId)) {
+    issues.push({
+      level: 'error',
+      code: 'pack',
+      slideId: slide.id,
+      message: `${slide.templateId} belongs to the ${ownerOf(slide.templateId)?.name} pack; this deck uses the ${vertical.name} pack`,
+    });
+  }
   const parsed = def.schema.safeParse(slide.data);
   const base = { id: slide.id, templateId: slide.templateId, notes: slide.steps.map((st) => st.speakerNotes) };
 
@@ -46,7 +62,7 @@ export function renderSlide(deck: SlideDeckSpec, slide: SlideSpec, index: number
   const log = new TextLog();
   let body: string;
   try {
-    body = def.render(data, { deck, assets, log });
+    body = def.render(data, { deck, assets, log, theme, vertical });
   } catch (e) {
     issues.push({ level: 'error', code: 'template', slideId: slide.id, message: (e as Error).message });
     return { ...base, html: errorSlide(slide, issues), steps: slide.steps.length, fullView: false, words: 0, texts: [], issues };
@@ -88,14 +104,14 @@ export function renderSlide(deck: SlideDeckSpec, slide: SlideSpec, index: number
   const html =
     `<section class="st-slide t-${slide.templateId}" data-id="${esc(slide.id)}" aria-label="Slide ${index + 1}">` +
     `<div class="st-in">${head}<div class="st-body">${body}</div></div>` +
-    `<div class="st-foot"><span class="st-mark">${MARK_SVG}AviLearn</span><span>${esc(deck.module.code)} · ${index + 1} / ${deck.slides.length}</span></div>` +
+    `<div class="st-foot"><span class="st-mark">${theme.markIcon ? MARK_SVG : ''}${esc(theme.product)}</span><span>${esc(deck.module.code)} · ${index + 1} / ${deck.slides.length}</span></div>` +
     `</section>`;
 
   for (const text of [slide.eyebrow ?? '', slide.assertion ?? '', ...log.items.map((t) => t.text)]) {
-    for (const message of voiceProblems(text)) issues.push({ level: 'error', code: 'voice', slideId: slide.id, message });
+    for (const message of voiceProblems(text, vertical.voice)) issues.push({ level: 'error', code: 'voice', slideId: slide.id, message });
   }
 
-  issues.push(...auditColors(html, slide.id));
+  issues.push(...auditColors(html, theme, slide.id));
   return { ...base, html, steps, fullView, words, texts: log.items, issues };
 }
 
@@ -108,8 +124,8 @@ function errorSlide(slide: SlideSpec, issues: StageIssue[]): string {
 const COLOR_RE = /#[0-9a-f]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\)/gi;
 
 /** Any colour literal in slide markup must be a token value. */
-export function auditColors(html: string, slideId?: string): StageIssue[] {
-  const allowed = allowedColors();
+export function auditColors(html: string, theme: ThemePack, slideId?: string): StageIssue[] {
+  const allowed = allowedColors(theme);
   const found = new Set<string>();
   for (const m of html.matchAll(COLOR_RE)) {
     const v = m[0].toLowerCase().replace(/\s+/g, '');
@@ -120,6 +136,8 @@ export function auditColors(html: string, slideId?: string): StageIssue[] {
 
 export interface CompiledDeck {
   spec: SlideDeckSpec;
+  theme: ThemePack;
+  vertical: VerticalPack;
   slides: RenderedSlide[];
   issues: StageIssue[];
   html: string;
@@ -130,35 +148,44 @@ export function compileDeck(input: SlideDeckSpecInput | unknown): CompiledDeck {
   const parsed = SlideDeckSpecSchema.safeParse(input);
   if (!parsed.success) {
     const issues: StageIssue[] = parsed.error.issues.map((i) => ({ level: 'error', code: 'schema', message: `${i.path.join('.')}: ${i.message}` }));
-    return { spec: input as SlideDeckSpec, slides: [], issues, html: '' };
+    return { spec: input as SlideDeckSpec, theme: undefined as unknown as ThemePack, vertical: undefined as unknown as VerticalPack, slides: [], issues, html: '' };
   }
   const spec = parsed.data;
+  const theme = getThemePack(spec.theme);
+  const vertical = getVertical(spec.vertical);
+  if (!theme || !vertical) {
+    const issues: StageIssue[] = [];
+    if (!theme) issues.push({ level: 'error', code: 'pack', message: `Unknown theme pack "${spec.theme}"` });
+    if (!vertical) issues.push({ level: 'error', code: 'pack', message: `Unknown industry pack "${spec.vertical}"` });
+    return { spec, theme: theme!, vertical: vertical!, slides: [], issues, html: '' };
+  }
+  const mode = spec.defaultTheme ?? theme.defaultMode;
   const assets = new Map(spec.assets.map((a) => [a.id, a]));
   const ids = new Set<string>();
   const issues: StageIssue[] = [];
   const slides = spec.slides.map((sl, i) => {
     if (ids.has(sl.id)) issues.push({ level: 'error', code: 'schema', slideId: sl.id, message: `Duplicate slide id "${sl.id}"` });
     ids.add(sl.id);
-    return renderSlide(spec, sl, i, assets);
+    return renderSlide(spec, sl, i, assets, theme, vertical);
   });
   issues.push(...slides.flatMap((s) => s.issues));
 
   const meta = {
-    theme: spec.defaultTheme,
+    theme: mode,
     steps: slides.map((s) => s.steps),
     full: slides.map((s) => s.fullView),
     notes: slides.map((s) => s.notes),
   };
 
   const html = `<!doctype html>
-<html lang="en" data-theme="${spec.defaultTheme}">
+<html lang="en" data-theme="${mode}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(spec.module.code)} · ${esc(spec.lesson.title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="${STAGE.fonts.googleHref}">
-<style>${themeBlocks()}${SLIDE_CSS}${PRESENTER_CSS}</style>
+<link rel="stylesheet" href="${theme.fonts.googleHref}">
+<style>${packCss(theme)}${SLIDE_CSS}${PRESENTER_CSS}</style>
 </head>
 <body>
 <main class="st-stage" aria-label="${esc(spec.lesson.title)}">
@@ -176,5 +203,5 @@ ${slides.map((s) => s.html).join('\n')}
 </body>
 </html>`;
 
-  return { spec, slides, issues, html };
+  return { spec, theme, vertical, slides, issues, html };
 }

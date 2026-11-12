@@ -62,3 +62,9 @@ The compiler rejects these patterns:
 ## 5. Facilitator slide
 
 Follows slide 4 of the reference deck: "Introductions", then "Facilitator — Name", then the logos of the organisations the facilitator has worked with, and a photo panel on the left. No role line and no list of skills.
+
+## 6. Other brands and industries
+
+- This voice guide is for Aviation Synergy (`nav-chart` theme, `aviation` industry).
+- The core banned phrases in `voice.ts` apply to every pack.
+- An industry pack can add its own rules. See `docs/STUDIO-packs.md`.

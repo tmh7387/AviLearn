@@ -39,21 +39,24 @@ export const checklist = defineTemplate({
     </div>`,
 });
 
-export const flightTimeline = defineTemplate({
-  id: 'flight-timeline',
-  purpose: 'Events along a time or flight-phase axis, 3 to 6 pins. `at` is a time, phase or altitude.',
-  schema: z.object({
-    pins: z
-      .array(z.object({ at: z.string().min(1).max(10), label: label(4), key: z.boolean().optional() }))
-      .min(3)
-      .max(6),
-  }),
-  needsAssertion: true,
-  parts: (d) => d.pins.length,
-  fullView: true,
-  render: (d, ctx) => {
-    const n = d.pins.length;
-    return `
+const timelineSchema = z.object({
+  pins: z
+    .array(z.object({ at: z.string().min(1).max(10), label: label(4), key: z.boolean().optional() }))
+    .min(3)
+    .max(6),
+});
+
+const makeTimeline = (id: 'timeline' | 'flight-timeline', purpose: string) =>
+  defineTemplate({
+    id,
+    purpose,
+    schema: timelineSchema,
+    needsAssertion: true,
+    parts: (d) => d.pins.length,
+    fullView: true,
+    render: (d, ctx) => {
+      const n = d.pins.length;
+      return `
       <div class="st-tl">
         <div class="st-tl-axis" ${s(1, true)}></div>
         ${d.pins
@@ -65,8 +68,14 @@ export const flightTimeline = defineTemplate({
           })
           .join('')}
       </div>`;
-  },
-});
+    },
+  });
+
+/** Core: any sequence of events in time. */
+export const timeline = makeTimeline('timeline', 'Events along a time axis, 3 to 6 pins. `at` is a time, date or stage. key marks the events that matter most.');
+
+/** Aviation pack: the same build, with phases of flight on the axis. */
+export const flightTimeline = makeTimeline('flight-timeline', 'Aviation pack. Events along the phases of flight, 3 to 6 pins. `at` is a phase, time or altitude.');
 
 export const causeChain = defineTemplate({
   id: 'cause-chain',

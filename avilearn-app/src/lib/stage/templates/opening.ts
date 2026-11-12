@@ -7,7 +7,8 @@ import { defineTemplate, type RenderContext } from './types';
 
 /**
  * Course opening, module start and module end.
- * Order and wording follow the courses Anthony teaches (IOSA RBI Day 1):
+ * Core templates for every industry. Order and wording were first taken from
+ * the courses Anthony teaches (IOSA RBI Day 1):
  * course title, course objectives, facilitator, icebreaker, day overview,
  * course materials; then per module: module opener ... key points, break;
  * and at the end of the day: day close.
@@ -28,7 +29,7 @@ const panel = (ctx: RenderContext, id: string | undefined) => {
 
 export const courseTitle = defineTemplate({
   id: 'course-title',
-  purpose: 'First slide of a course: course name, subtitle, client, dates and facilitator. Aviation Synergy brand.',
+  purpose: 'First slide of a course: organisation (from the theme pack), course name, subtitle, client, dates and facilitator.',
   schema: z.object({
     title: label(7),
     subtitle: label(8).optional(),
@@ -43,7 +44,7 @@ export const courseTitle = defineTemplate({
   render: (d, ctx) => `
     <div class="st-ct">
       <div class="st-ct-text" ${s(1)}>
-        <div class="st-ct-org">${ctx.log.t(1, 'Aviation Synergy')}</div>
+        <div class="st-ct-org">${ctx.log.t(1, ctx.theme.org)}</div>
         <h1 class="st-ct-title">${ctx.log.t(1, d.title)}</h1>
         ${d.subtitle ? `<p class="st-ct-sub">${ctx.log.t(1, d.subtitle)}</p>` : ''}
         ${d.client ? `<p class="st-ct-client">${ctx.log.t(1, `for ${d.client}`)}</p>` : ''}

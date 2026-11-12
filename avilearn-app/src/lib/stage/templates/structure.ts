@@ -7,13 +7,13 @@ const short = (n: number) => label(n);
 
 export const titleBumper = defineTemplate({
   id: 'title-bumper',
-  purpose: 'Opening slide of a module or lesson. Compass rose, module code, title, one-line subtitle.',
+  purpose: 'Opening slide of a module or lesson. Module code, title, one-line subtitle, and the theme ornament (compass rose in Nav Chart).',
   schema: z.object({ title: short(5), subtitle: short(10).optional() }),
   needsAssertion: false,
   parts: () => 1,
   fullView: false,
   render: (d, ctx) => `
-    ${roseSvg()}
+    ${ctx.theme.ornament === 'compass' ? roseSvg() : ''}
     <div class="st-tb">
       <div class="st-tb-meta" ${s(1)}>${ctx.log.t(1, ctx.deck.module.code)} · ${esc(ctx.deck.course)}</div>
       <h1 class="st-tb-title" ${s(1)}>${ctx.log.t(1, d.title)}</h1>

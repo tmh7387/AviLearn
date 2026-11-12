@@ -34,6 +34,7 @@ export const TEMPLATE_IDS = [
   // process
   'procedure-flow',
   'checklist',
+  'timeline',
   'flight-timeline',
   'cause-chain',
   // interaction
@@ -88,8 +89,13 @@ export const SlideDeckSpecSchema = z.object({
   course: z.string().min(1),
   module: z.object({ code: z.string().min(1), title: z.string().min(1) }),
   lesson: z.object({ title: z.string().min(1), objectives: z.array(z.string()).default([]) }),
+  /** Theme pack id (brand): see ./packs/themes.ts. */
+  theme: z.string().min(1).default('nav-chart'),
+  /** Industry pack id: see ./packs/verticals.ts. */
+  vertical: z.string().min(1).default('aviation'),
   tone: z.enum(['standard', 'sober']).default('standard'),
-  defaultTheme: z.enum(['light', 'dark']).default(STAGE.defaultTheme),
+  /** Light or dark at start. Defaults to the theme pack's mode. */
+  defaultTheme: z.enum(['light', 'dark']).optional(),
   assets: z.array(AssetSchema).default([]),
   slides: z.array(SlideSpecSchema).min(1),
 });
