@@ -1,0 +1,17 @@
+{
+  "_note": "Camera settings for scripts/kestrel-render.py. Run: python scripts/kestrel-render.py -- <blend> <view> livery light <out.png> <axis> <flip> [shot JSON]. Models: Kestrel_A321neo v0.4, Kestrel_B787-9 v0.1 (Anthony's D:\\App development\\Kestrel_Pacific\\Fleet). Convert to webp and save as public/stage/kestrel/<name>-livery.webp.",
+  "a321": { "axis": "x",
+    "three-quarter": { "view": "three-quarter", "flip": 1 },
+    "side": { "view": "side", "flip": 1 },
+    "top": { "view": "top", "flip": 1 },
+    "engine": { "view": "close", "flip": 1, "shot": { "cam": [14, 14, -2], "target": [3.5, 5.8, -2.7], "lens": 60 } },
+    "tail": { "view": "close", "flip": 1, "shot": { "cam": [-2, 26, 6], "target": [-18.5, 0, 3.6], "lens": 68 } }
+  },
+  "b787": { "axis": "y",
+    "three-quarter": { "view": "three-quarter", "flip": -1 },
+    "side": { "view": "side", "flip": 1 },
+    "top": { "view": "top", "flip": -1 },
+    "engine": { "view": "close", "flip": -1, "shot": { "cam": [20.5, -23, 3.4], "target": [9.4, -8.5, 2.5], "lens": 60 } },
+    "tail": { "view": "close", "flip": -1, "shot": { "cam": [33, 6, 13], "target": [0, 27, 10.5], "lens": 62 } }
+  }
+}
