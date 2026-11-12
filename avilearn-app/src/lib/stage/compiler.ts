@@ -4,10 +4,11 @@ import { getTemplate, stepCount } from './templates';
 import { PRESENTER_CSS, SLIDE_CSS, themeBlocks } from './styles';
 import { PRESENTER_JS } from './runtime';
 import { STAGE, allowedColors } from './tokens';
+import { voiceProblems } from './voice';
 
 export interface StageIssue {
   level: 'error' | 'warn';
-  code: 'schema' | 'template' | 'assertion' | 'steps' | 'words' | 'words-step' | 'color';
+  code: 'schema' | 'template' | 'assertion' | 'steps' | 'words' | 'words-step' | 'color' | 'voice';
   slideId?: string;
   message: string;
 }
@@ -77,7 +78,7 @@ export function renderSlide(deck: SlideDeckSpec, slide: SlideSpec, index: number
   } else if (words > W.slideTarget) {
     issues.push({ level: 'warn', code: 'words', slideId: slide.id, message: `${words} words on screen; the target is ${W.slideTarget}.` });
   }
-  for (let st = 1; st <= steps; st++) {
+  for (let st = 1; steps > 1 && st <= steps; st++) {
     const added = log.items.filter((t) => t.step === st).reduce((n, t) => n + countWords(t.text), 0);
     if (added > W.perStep) {
       issues.push({ level: 'warn', code: 'words-step', slideId: slide.id, message: `Step ${st} adds ${added} words; the target is ${W.perStep} or fewer.` });
@@ -89,6 +90,10 @@ export function renderSlide(deck: SlideDeckSpec, slide: SlideSpec, index: number
     `<div class="st-in">${head}<div class="st-body">${body}</div></div>` +
     `<div class="st-foot"><span class="st-mark">${MARK_SVG}AviLearn</span><span>${esc(deck.module.code)} · ${index + 1} / ${deck.slides.length}</span></div>` +
     `</section>`;
+
+  for (const text of [slide.eyebrow ?? '', slide.assertion ?? '', ...log.items.map((t) => t.text)]) {
+    for (const message of voiceProblems(text)) issues.push({ level: 'error', code: 'voice', slideId: slide.id, message });
+  }
 
   issues.push(...auditColors(html, slide.id));
   return { ...base, html, steps, fullView, words, texts: log.items, issues };

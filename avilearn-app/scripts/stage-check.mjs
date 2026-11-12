@@ -42,9 +42,13 @@ for (const file of decks) {
         const slide = [...document.querySelectorAll('.st-slide')].find((s) => !s.hidden);
         const box = slide.getBoundingClientRect();
         const k = box.width / 1920;
+        // Panels marked data-bleed run to the slide edge on purpose; leave them out of the overflow check.
+        const bleed = [...slide.querySelectorAll('[data-bleed]')];
+        bleed.forEach((b) => (b.style.display = 'none'));
         for (const el of slide.querySelectorAll('.st-in, .st-body')) {
           if (el.scrollHeight > el.clientHeight + 2) out.push(`content overflows ${el.className} by ${el.scrollHeight - el.clientHeight}px`);
         }
+        bleed.forEach((b) => (b.style.display = ''));
         const walker = document.createTreeWalker(slide, NodeFilter.SHOW_TEXT);
         let node;
         while ((node = walker.nextNode())) {

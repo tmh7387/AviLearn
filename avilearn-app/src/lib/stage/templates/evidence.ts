@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { esc, s } from '../html';
+import { creditHtml, esc, mediaHtml, s } from '../html';
 import { label } from '../schema';
 import { defineTemplate, type RenderContext } from './types';
 
-function asset(ctx: RenderContext, id: string) {
+export function asset(ctx: RenderContext, id: string) {
   const a = ctx.assets.get(id);
   if (!a) throw new Error(`Unknown asset "${id}". Add it to deck.assets.`);
   return a;
@@ -20,8 +20,8 @@ export const assertionImage = defineTemplate({
     const a = asset(ctx, d.image);
     return `
       <figure class="st-img" ${s(1)}>
-        <img src="${esc(a.url)}" alt="${esc(a.alt)}"${a.lineArt ? ' class="st-line-art"' : ''}>
-        ${d.caption ? `<figcaption>${ctx.log.t(1, d.caption)}</figcaption>` : ''}
+        ${mediaHtml(a)}
+        ${d.caption || a.credit ? `<figcaption>${d.caption ? ctx.log.t(1, d.caption) : ''}${creditHtml(a)}</figcaption>` : ''}
       </figure>`;
   },
 });
@@ -44,7 +44,7 @@ export const annotatedImage = defineTemplate({
     return `
       <div class="st-ann">
         <div class="st-ann-frame" ${s(1, true)}>
-          <img src="${esc(a.url)}" alt="${esc(a.alt)}"${a.lineArt ? ' class="st-line-art"' : ''}>
+          ${mediaHtml(a)}
           ${d.callouts
             .map(
               (c, i) =>
