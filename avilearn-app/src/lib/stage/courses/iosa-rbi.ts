@@ -221,11 +221,6 @@ export const IOSA_RBI_M1: SlideDeckSpecInput = {
       ),
     },
     {
-      id: 'm1-why-q', templateId: 'quote-reference', eyebrow: 'ISO 19011:2018', assertion: 'Why Risk Must Drive Audits', sourceRefs: src(14),
-      data: { quote: 'The concept of risk should substantively influence the planning, execution and reporting of audits.', reference: 'ISO 19011:2018' },
-      steps: n('So why must risk drive audits? Back to ISO 19011:2018: "The concept of risk should substantively influence the planning, execution and reporting of audits."'),
-    },
-    {
       id: 'm1-why', templateId: 'card-row', assertion: 'Why Risk Must Drive Audits', sourceRefs: src(14),
       data: {
         cards: [
@@ -234,7 +229,7 @@ export const IOSA_RBI_M1: SlideDeckSpecInput = {
         ],
       },
       steps: n(
-        'Two reasons why risk must drive audits.',
+        'Remember the ISO 19011 line: risk should shape the planning, execution and reporting of audits. Here are two reasons why.',
         'Focus on significance. Rather than mechanically checking every box, auditors direct their attention to the areas where failures would have the greatest operational or safety impact.',
         'Greater audit value. The value of the audit increases substantially when the process addresses high-risk issues.',
       ),
