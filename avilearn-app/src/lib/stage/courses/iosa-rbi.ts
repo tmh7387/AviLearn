@@ -15,13 +15,21 @@ const n = (...notes: string[]) => notes.map((speakerNotes) => ({ speakerNotes })
 const SOURCE = { 1: 'IOSA-RBI-Day1_v3-6.pdf', 2: 'IOSA-RBI-Day2_v3-3.pdf', 3: 'IOSA-RBI-Day3_v3-2.pdf' } as const;
 const src = (slide: number, day: 1 | 2 | 3 = 1) => [{ file: SOURCE[day], slide }];
 
+/**
+ * Image credits (Anthony, 13 Nov 2026): no per-slide credit lines. The title
+ * slide says once that Kestrel Pacific is the airline simulation that supports
+ * the course workshops. Keep the CC BY credit if a 787-9 render is ever used.
+ */
+const KESTREL_NOTE = 'Kestrel Pacific is the airline simulation that supports the course workshops.';
+const COURSE_ASSETS = assets.map((a) => ({ ...a, credit: a.id === 'fleet' ? KESTREL_NOTE : a.id.startsWith('b787') && 'credit' in a ? a.credit : undefined }));
+
 const BASE = {
   specVersion: 'stage/1' as const,
   programme: 'iosa-rbi',
   theme: 'nav-chart',
   vertical: 'aviation',
   course: 'IOSA Risk-Based Audit (RBI)',
-  assets,
+  assets: COURSE_ASSETS,
 };
 
 /** Module 0 · Welcome and Course Overview (Day 1, source slides 1–9). */
@@ -40,7 +48,7 @@ export const IOSA_RBI_M0: SlideDeckSpecInput = {
         facilitator: 'Anthony Houston',
         image: 'fleet',
       },
-      steps: n('Welcome to IOSA Risk-Based Audit: internal audit and renewal readiness training for Thai Airways. Three days, 4 to 6 August.'),
+      steps: n('Welcome to IOSA Risk-Based Audit: internal audit and renewal readiness training for Thai Airways. Three days, 4 to 6 August. The aircraft you see in this course belong to Kestrel Pacific, the airline simulation that supports our workshops.'),
     },
     {
       id: 'm0-objectives', templateId: 'objectives', assertion: 'Course Learning Objectives', sourceRefs: src(2),
@@ -163,11 +171,16 @@ export const IOSA_RBI_M1: SlideDeckSpecInput = {
         ],
       },
       steps: n(
-        'Two ISO standards set the foundation. ISO 19011 says it plainly: "The concept of risk should substantively influence the planning, execution and reporting of audits."',
+        'Two ISO standards set the foundation, and a new concept that joins them.',
         'ISO 9001:2015 introduces risk-based thinking. Organisations must identify risks and opportunities, and plan actions to address them.',
         'ISO 19011:2018 sets the standards for auditing management systems. Risk should drive audit planning, sampling decisions, and the depth of examination during audits.',
         'Together they give a new concept: a unified framework. Risk-awareness is embedded throughout the audit lifecycle, from programme design to final reporting.',
       ),
+    },
+    {
+      id: 'm1-iso-q', templateId: 'quote-reference', eyebrow: 'ISO Standards Foundation', assertion: 'ISO 19011:2018', sourceRefs: src(11),
+      data: { quote: 'The concept of risk should substantively influence the planning, execution and reporting of audits.', reference: 'ISO 19011:2018' },
+      steps: n('ISO 19011 says it plainly: "The concept of risk should substantively influence the planning, execution and reporting of audits." Planning, execution and reporting. Not just planning.'),
     },
     {
       id: 'm1-annex', templateId: 'card-row', assertion: 'Risk-Based Thinking — Annex A.4', sourceRefs: src(12),
@@ -208,6 +221,11 @@ export const IOSA_RBI_M1: SlideDeckSpecInput = {
       ),
     },
     {
+      id: 'm1-why-q', templateId: 'quote-reference', eyebrow: 'ISO 19011:2018', assertion: 'Why Risk Must Drive Audits', sourceRefs: src(14),
+      data: { quote: 'The concept of risk should substantively influence the planning, execution and reporting of audits.', reference: 'ISO 19011:2018' },
+      steps: n('So why must risk drive audits? Back to ISO 19011:2018: "The concept of risk should substantively influence the planning, execution and reporting of audits."'),
+    },
+    {
       id: 'm1-why', templateId: 'card-row', assertion: 'Why Risk Must Drive Audits', sourceRefs: src(14),
       data: {
         cards: [
@@ -216,7 +234,7 @@ export const IOSA_RBI_M1: SlideDeckSpecInput = {
         ],
       },
       steps: n(
-        'Why must risk drive audits? ISO 19011:2018: "The concept of risk should substantively influence the planning, execution and reporting of audits."',
+        'Two reasons why risk must drive audits.',
         'Focus on significance. Rather than mechanically checking every box, auditors direct their attention to the areas where failures would have the greatest operational or safety impact.',
         'Greater audit value. The value of the audit increases substantially when the process addresses high-risk issues.',
       ),
