@@ -8,7 +8,7 @@ import { assets, FAC_DATA } from '../samples';
  * next one is built (guided build). `src` on each slide is the source slide
  * number in the Day PDF.
  *
- * Status: Module 0 approved (13 Nov 2026). Module 1 — draft for review.
+ * Status: Module 0 approved (13 Nov 2026). Module 1 approved. Module 2 — draft for review.
  */
 
 const n = (...notes: string[]) => notes.map((speakerNotes) => ({ speakerNotes }));
@@ -384,4 +384,129 @@ export const IOSA_RBI_M1: SlideDeckSpecInput = {
   ],
 };
 
-export const IOSA_RBI_MODULES = { 'rbi-m0': IOSA_RBI_M0, 'rbi-m1': IOSA_RBI_M1 };
+/** Module 2 · RBI, SMS and Internal Assurance (Day 1, source slides 27–34). */
+export const IOSA_RBI_M2: SlideDeckSpecInput = {
+  ...BASE,
+  module: { code: 'RBI M2', title: 'RBI, SMS and Internal Assurance' },
+  lesson: { title: 'Day 1 — Fundamentals', objectives: ['Connect RBI principles with SMS processes'] },
+  slides: [
+    {
+      id: 'm2-open', templateId: 'module-opener', sourceRefs: src(27),
+      data: {
+        number: '2',
+        title: 'RBI, SMS and Internal Assurance',
+        objectives: [
+          'Connect RBI principles with SMS processes',
+          "Trace the auditor's SRM process",
+          'See how hazard data focuses audits',
+          'Describe quality and safety assurance roles',
+        ],
+        image: 'a321-34',
+      },
+      steps: n('Module 2: RBI, SMS and internal assurance. Four objectives. Connect RBI principles with SMS processes. Trace the safety risk management process the auditor follows. See how hazard data supports audit focus. And describe the quality and safety assurance roles.'),
+    },
+    {
+      id: 'm2-sms', templateId: 'checklist', assertion: 'Your SMS Tells the Auditor Where to Focus', sourceRefs: src(28),
+      data: {
+        items: [
+          'Hazard and occurrence reports',
+          'Safety trends and SPIs',
+          'Risk assessments and register',
+          'Mitigation effectiveness evidence',
+          'Management review conclusions',
+          'Action tracking and closure',
+        ],
+      },
+      steps: n(
+        'RBI concentrates audit effort where safety risk is greatest, and your SMS is the primary source. These are the SMS inputs that drive audit readiness. First: hazard and occurrence reporting.',
+        'Safety trend analysis, and the movement of your safety performance indicators.',
+        'Risk assessments, and the outputs of your risk register.',
+        'Evidence that your mitigations are effective.',
+        'The conclusions of your management reviews.',
+        'And the records of action tracking and closure.',
+        'If these six are strong, the auditor knows where to look. So do you.',
+      ),
+    },
+    {
+      id: 'm2-signal', templateId: 'card-row', assertion: 'From Signal to Audit Decision', sourceRefs: src(29),
+      data: {
+        cards: [
+          { title: 'The Signal', detail: 'Report, SPI, trend, finding', icon: 'bell-ring' },
+          { title: 'Interpret It', detail: 'Control problem or one-off?', icon: 'search' },
+          { title: 'Audit Trigger', detail: 'What, how deep, which sample?', icon: 'crosshair' },
+          { title: 'Assurance Owner', detail: 'Who acts, who verifies?', icon: 'user-check' },
+        ],
+      },
+      steps: n(
+        'From safety signal to audit decision, in four steps.',
+        'The signal. A hazard report, an SPI movement, an occurrence trend, or an unclosed previous finding.',
+        'Interpret it. Is this a control problem or a one-off event? Does the trend point at a process or at a person?',
+        'The audit trigger. What would we go and look at, how deeply, and what sample would make the answer credible?',
+        'The assurance owner. Who acts on the outcome, and who independently verifies that the action worked?',
+      ),
+    },
+    {
+      id: 'm2-roles', templateId: 'card-row', assertion: 'Internal Assurance Roles Must Connect', sourceRefs: src(30),
+      data: {
+        cards: [
+          { title: 'Operational Management', detail: 'Owns processes and daily compliance', icon: 'users' },
+          { title: 'Performance Monitoring', detail: 'Monitors, reviews, challenges performance', icon: 'gauge' },
+          { title: 'Internal Audit', detail: 'Independent assurance to management', icon: 'shield-check' },
+        ],
+      },
+      steps: n(
+        'Three roles: operational management, safety and QA, and internal audit. They must connect. Operational management owns the processes and the daily compliance.',
+        'Safety and QA do performance monitoring. They monitor, review and challenge performance.',
+        'Internal audit provides independent assurance to management.',
+        'If one link is missing, the loop does not close.',
+      ),
+    },
+    {
+      id: 'm2-ws1', templateId: 'compare-columns', eyebrow: 'Load Control, Outstation', assertion: 'Workshop 1 — Compliance vs. Risk', sourceRefs: src(31),
+      data: {
+        left: { heading: 'Team A: Compliance', icon: 'list-checks', items: ['Same checklist, every cycle', 'Proves the control exists'] },
+        right: { heading: 'Team B: Risk-Based', icon: 'crosshair', items: ['Scope driven by risk data', 'Tests if the control works'] },
+      },
+      steps: n(
+        'Workshop 1: compliance versus risk. The process is load control and weight and balance at an outstation. Team A audits as a compliance team: same checklist, same depth, every cycle. That proves the control exists.',
+        'Team B audits risk-based: scope and depth are driven by risk data. That tests whether the control works.',
+        'The output is an RBI Working Charter. Please refer to your Participant Workbook.',
+      ),
+    },
+    {
+      id: 'm2-ws1-steps', templateId: 'procedure-flow', eyebrow: 'Workshop 1 · 40 Minutes', assertion: 'Load Control and Weight and Balance at an Outstation', sourceRefs: src(32),
+      data: { steps: ['Read Your Brief', 'Set Your Scope', 'Size the Sample', 'Name the Evidence', 'Build the Charter'] },
+      steps: n(
+        'Read your brief. Groups A and C audit as a compliance team. Groups B, D and E audit as a risk team. Same process, different mandate.',
+        'Set your scope. Decide exactly what you will audit, and what you will deliberately leave out.',
+        'Size the sample. State how much you will examine, and the reason that amount is enough.',
+        'Name the evidence. List what you will ask to see, read, watch or hear. Then write the finding you expect.',
+        'Build the charter. Report out, compare the two approaches, and agree six working rules for Thai Airways internal audit.',
+        'You have 40 minutes.',
+      ),
+    },
+    {
+      id: 'm2-kp', templateId: 'key-points', assertion: 'Module 2 — Key Points', sourceRefs: src(33),
+      data: {
+        points: [
+          { title: 'SMS Points First', detail: 'Primary source of the risk picture' },
+          { title: 'Convert the Signal', detail: 'Into a scoped audit decision' },
+          { title: 'The Loop Must Close', detail: 'Or the same weakness recurs' },
+        ],
+      },
+      steps: n(
+        'Your SMS is the auditor\'s map. SMS points first. The SMS is the primary source of the risk picture that decides where audit effort is spent.',
+        'Convert the signal. A safety signal is only useful once it becomes an audit decision with a defined scope and depth.',
+        'The loop must close. Operations, assurance and internal audit must connect, or the same weakness recurs unseen.',
+        'That closes Module 2.',
+      ),
+    },
+    {
+      id: 'm2-lunch', templateId: 'break', sourceRefs: src(34),
+      data: { kind: 'Lunch Break', ended: 'Module 2', next: { code: 'Module 3', title: 'IOSA Renewal Readiness' } },
+      steps: n('Lunch break. We will resume at the scheduled time. The afternoon sessions cover IOSA renewal readiness, process-based thinking, and the renewal timeline workshop.'),
+    },
+  ],
+};
+
+export const IOSA_RBI_MODULES = { 'rbi-m0': IOSA_RBI_M0, 'rbi-m1': IOSA_RBI_M1, 'rbi-m2': IOSA_RBI_M2 };
