@@ -46,17 +46,17 @@ export const IOSA_RBI_M0: SlideDeckSpecInput = {
       id: 'm0-objectives', templateId: 'objectives', assertion: 'Course Learning Objectives', sourceRefs: src(2),
       data: {
         items: [
-          'Explain IOSA and RBI principles',
-          'Link RBI to SMS and assurance',
-          'Apply process-based auditing',
-          'Analyse maturity and plan corrective action',
+          { text: 'Explain IOSA and RBI principles', icon: 'book-open' },
+          { text: 'Link RBI to SMS and assurance', icon: 'link' },
+          { text: 'Apply process-based auditing', icon: 'workflow' },
+          { text: 'Analyse maturity and plan corrective action', icon: 'gauge' },
         ],
       },
       steps: n(
-        'By the end of this 3-day programme you will be able to do four things. First: describe the purpose and principles of IOSA and the Risk-Based IOSA (RBI) framework in airline operations.',
-        'Second: connect RBI expectations with SMS, internal assurance and renewal preparation.',
-        'Third: apply process-based auditing across airline operational processes.',
-        'Fourth: run RBI-oriented gap analysis, prioritise findings by risk, and build corrective action plans.',
+        'By the end of this 3-day programme, you will be able to do four things. First, explain IOSA and RBI principles. That means you can describe the purpose and principles of IOSA, and of the Risk-Based IOSA framework, in airline operations.',
+        'Second, link RBI to SMS and internal assurance. You will connect RBI expectations with your Safety Management System, your internal assurance, and your renewal preparation.',
+        'Third, apply process-based auditing. You will apply process-based auditing across airline operational processes, not only check the standards one by one.',
+        'Fourth, conduct maturity analysis and plan corrective action. You will run an RBI-oriented gap analysis, prioritise findings by risk, and build corrective action plans.',
         'Day 1 covers the first three. Days 2 and 3 put them into practice.',
       ),
     },
@@ -89,39 +89,45 @@ export const IOSA_RBI_M0: SlideDeckSpecInput = {
       id: 'm0-day1', templateId: 'day-overview', assertion: 'Day 1 Overview — Fundamentals', sourceRefs: src(6),
       data: {
         modules: [
-          { code: 'M0', title: 'Welcome and Course Overview' },
-          { code: 'M1', title: 'Foundations of Risk-Based IOSA' },
-          { code: 'M2', title: 'RBI, SMS and Internal Assurance' },
-          { code: 'M3', title: 'IOSA Renewal Readiness' },
-          { code: 'M4', title: 'Process-Based Thinking in Audits' },
+          { code: 'M0', title: 'Welcome and Course Overview', icon: 'handshake' },
+          { code: 'M1', title: 'Foundations of Risk-Based IOSA', icon: 'layers' },
+          { code: 'M2', title: 'RBI, SMS and Internal Assurance', icon: 'shield-check' },
+          { code: 'M3', title: 'IOSA Renewal Readiness', icon: 'badge-check' },
+          { code: 'M4', title: 'Process-Based Thinking in Audits', icon: 'workflow' },
         ],
         current: 0,
       },
-      steps: n('Day 1 is the fundamentals: five modules, from the welcome to process-based thinking.'),
+      steps: n(
+        'Day 1 is the fundamentals. We start here, with Module 0: the welcome and course overview. Module 1 covers the foundations of Risk-Based IOSA: how RBI differs from traditional IOSA, and why the programme focuses on safety-critical areas. Module 2 links RBI with SMS and internal assurance. Module 3 looks at IOSA renewal readiness. Module 4 closes the day with process-based thinking in audits.',
+      ),
     },
     {
       id: 'm0-day2', templateId: 'day-overview', assertion: 'Day 2 Overview — Audit Principles', sourceRefs: src(7),
       data: {
         modules: [
-          { code: 'M5', title: 'Internal Audit Principles for RBI' },
-          { code: 'M6', title: 'Audit Planning and Scoping' },
-          { code: 'M7', title: 'Gap Analysis and Maturity Assessment' },
-          { code: 'M8', title: 'Findings, Corrective Action, Follow-Up' },
+          { code: 'M5', title: 'Internal Audit Principles for RBI', icon: 'clipboard-check' },
+          { code: 'M6', title: 'RBI-Oriented Audit Planning and Scoping', icon: 'crosshair' },
+          { code: 'M7', title: 'Gap Analysis and Maturity Assessment', icon: 'gauge' },
+          { code: 'M8', title: 'Findings, Corrective Action, Follow-Up', icon: 'list-checks' },
         ],
       },
-      steps: n('Day 2 is audit principles: internal audit principles, RBI-oriented planning and scoping, gap analysis and maturity assessment, then findings, corrective action and follow-up.'),
+      steps: n(
+        'Day 2 is audit principles. Module 5 sets out the internal audit principles for RBI. Module 6 covers RBI-oriented audit planning and scoping. Module 7 is gap analysis and maturity assessment. Module 8 closes the day with findings, corrective action and follow-up.',
+      ),
     },
     {
       id: 'm0-day3', templateId: 'day-overview', assertion: 'Day 3 Overview — Simulation and Closeout', sourceRefs: src(8),
       data: {
         modules: [
-          { code: 'M9', title: 'Risk Workshop Using Operational Data' },
-          { code: 'M10', title: 'Mock RBI Internal Audit' },
-          { code: 'M11', title: 'Audit Debrief and Findings' },
-          { code: 'M12', title: 'Renewal Readiness Action Planning' },
+          { code: 'M9', title: 'Risk Workshop Using Operational Data', icon: 'chart-line' },
+          { code: 'M10', title: 'Mock RBI Internal Audit Simulation', icon: 'file-search' },
+          { code: 'M11', title: 'Audit Debrief and Finding Development', icon: 'messages-square' },
+          { code: 'M12', title: 'Renewal Readiness Action Planning', icon: 'flag' },
         ],
       },
-      steps: n('Day 3 is simulation and closeout: the risk workshop, the mock RBI internal audit, the debrief, and your renewal readiness action plan.'),
+      steps: n(
+        'Day 3 is simulation and closeout. Module 9 is a risk workshop that uses operational data. In Module 10 you run a mock RBI internal audit simulation. Module 11 is the audit debrief, where you develop your findings. Module 12 closes the course with your renewal readiness action planning.',
+      ),
     },
     {
       id: 'm0-mat', templateId: 'course-materials', assertion: 'Course Materials', sourceRefs: src(9),

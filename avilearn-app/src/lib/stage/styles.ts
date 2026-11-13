@@ -95,6 +95,21 @@ export const SLIDE_CSS = `
 /* lists: agenda, objectives, summary */
 .st-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
 .st-agenda{display:grid;grid-template-columns:1fr 1fr;gap:16px 32px}
+.st-ic{width:100%;height:100%;display:block}
+.st-obj{gap:32px}
+.st-obj-ic{flex:none;width:88px;height:88px;padding:18px;border-radius:${STAGE.radius.box}px;background:var(--s-accent-tint);color:var(--s-accent)}
+.st-obj .st-row-v{flex:1}
+.st-obj-tk{min-width:0}
+.st-route{list-style:none;margin:0;padding:0;position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:calc(84px - var(--n)*10px);max-width:1300px}
+.st-route-line{position:absolute;left:47px;top:48px;bottom:48px;width:${STAGE.stroke.main}px;pointer-events:none}
+.st-route-line i{display:block;height:100%;width:100%;background:repeating-linear-gradient(to bottom,var(--s-ink-muted) 0 14px,transparent 14px 26px)}
+.st-wp{position:relative;display:flex;align-items:center;gap:40px}
+.st-wp-k{flex:none;width:96px;height:96px;border-radius:50%;display:grid;place-items:center;font:600 30px/1 var(--s-font-mono);color:var(--s-accent);background:var(--s-bg);border:${STAGE.stroke.main}px solid var(--s-accent);position:relative;z-index:1}
+.st-wp-card{flex:1;display:flex;align-items:center;gap:28px;padding:18px 32px;border:${STAGE.stroke.box}px solid var(--s-line);background:var(--s-card);border-radius:${STAGE.radius.box}px;min-height:96px}
+.st-wp-ic{flex:none;width:56px;height:56px;color:var(--s-accent)}
+.st-wp-t{flex:1;font:500 42px/1.15 var(--s-font-body)}
+.st-wp-hot .st-wp-k{background:var(--s-accent-fill);color:var(--s-bg);border-color:var(--s-accent-fill)}
+.st-wp-hot .st-wp-card{background:var(--s-accent-tint);border-color:var(--s-accent)}
 .st-row{display:flex;align-items:center;gap:28px;padding:20px 28px;border:${STAGE.stroke.box}px solid var(--s-line);background:var(--s-card);border-radius:${STAGE.radius.box}px}
 .st-row-k{font:600 32px/1 var(--s-font-mono);color:var(--s-accent);min-width:56px;display:flex}
 .st-row-k svg{width:48px;height:48px}
@@ -215,7 +230,7 @@ export const SLIDE_CSS = `
 .st-ct-art img:not(.st-photo){aspect-ratio:auto;object-fit:contain}
 .st-ct-art figcaption{padding-right:${C.safe.x}px}
 .st-ct-org{font:600 ${T.eyebrow}px/1 var(--s-font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--s-accent)}
-.st-ct-rule{width:140px;height:${STAGE.stroke.main}px;background:var(--s-accent-fill)}
+.st-ct-rule{margin-top:36px;width:140px;height:${STAGE.stroke.main}px;background:var(--s-accent-fill)}
 .st-ct-title{font:700 calc(116px*var(--s-dscale))/.95 var(--s-font-display);text-transform:var(--s-head-case);margin:28px 0 0;text-wrap:balance}
 .st-ct-sub{font:500 44px/1.2 var(--s-font-body);color:var(--s-ink-muted);margin:28px 0 0}
 .st-ct-client{font:600 42px/1.2 var(--s-font-body);margin:14px 0 0}

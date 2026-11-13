@@ -2,6 +2,7 @@ import { z } from 'zod';
 import QRCode from 'qrcode';
 import { creditHtml, mediaHtml, s } from '../html';
 import { label } from '../schema';
+import { IconSchema, iconSvg } from '../icons';
 import { asset } from './evidence';
 import { defineTemplate, type RenderContext } from './types';
 
@@ -46,8 +47,8 @@ export const courseTitle = defineTemplate({
     <div class="st-ct">
       <div class="st-ct-text" ${s(1)}>
         <div class="st-ct-org" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, ctx.theme.org)}</div>
-        <div class="st-ct-rule" aria-hidden="true" ${ctx.motion.m(1, 'draw')}></div>
         <h1 class="st-ct-title" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, d.title)}</h1>
+        <div class="st-ct-rule" aria-hidden="true" ${ctx.motion.m(1, 'draw')}></div>
         ${d.subtitle ? `<p class="st-ct-sub" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, d.subtitle)}</p>` : ''}
         ${d.client ? `<p class="st-ct-client" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, `for ${d.client}`)}</p>` : ''}
         <div class="st-ct-facts" ${ctx.motion.m(1, 'reveal')}>
@@ -110,20 +111,28 @@ export const icebreaker = defineTemplate({
 
 export const dayOverview = defineTemplate({
   id: 'day-overview',
-  purpose: 'The modules of one course day, with their codes (M0, M1 ...). Optionally marks the current module.',
+  purpose:
+    'The modules of one course day as a route: one waypoint per module, top to bottom, with its code (M0, M1 ...) and an optional icon. Optionally marks the current module.',
   schema: z.object({
-    modules: z.array(z.object({ code: z.string().min(1).max(4), title: label(5) })).min(2).max(6),
+    modules: z.array(z.object({ code: z.string().min(1).max(4), title: label(5), icon: IconSchema.optional() })).min(2).max(6),
     current: z.number().int().min(0).optional(),
   }),
   needsAssertion: true,
   parts: () => 1,
   fullView: false,
   render: (d, ctx) => `
-    <ol class="st-list st-agenda">
+    <ol class="st-route" style="--n:${d.modules.length}" ${s(1)}>
+      <li class="st-route-line" aria-hidden="true"><i ${ctx.motion.m(1, 'draw-v')}></i></li>
       ${d.modules
         .map(
-          (m, i) =>
-            `<li class="st-row${d.current === i ? ' st-hot' : ''}" ${s(1)}><span class="st-row-k">${ctx.log.t(1, m.code)}</span><span class="st-row-v">${ctx.log.t(1, m.title)}</span></li>`,
+          (m, i) => `
+        <li class="st-wp${d.current === i ? ' st-wp-hot' : ''}" ${ctx.motion.m(1, 'reveal')}>
+          <span class="st-wp-k">${ctx.log.t(1, m.code)}</span>
+          <span class="st-wp-card">
+            ${m.icon ? `<span class="st-wp-ic">${iconSvg(m.icon)}</span>` : ''}
+            <span class="st-wp-t">${ctx.log.t(1, m.title)}</span>
+          </span>
+        </li>`,
         )
         .join('')}
     </ol>`,

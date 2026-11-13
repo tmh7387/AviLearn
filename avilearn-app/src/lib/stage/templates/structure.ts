@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { esc, roseSvg, s } from '../html';
 import { label } from '../schema';
+import { IconSchema, iconSvg } from '../icons';
 import { defineTemplate } from './types';
 
 const short = (n: number) => label(n);
@@ -57,18 +58,24 @@ export const agenda = defineTemplate({
 
 export const objectives = defineTemplate({
   id: 'objectives',
-  purpose: 'Learning objectives, one per step. Start each with a verb (Explain, Describe, Apply, Identify).',
-  schema: z.object({ items: z.array(short(6)).min(2).max(5) }),
+  purpose:
+    'Learning objectives, one per step. Start each with a verb (Explain, Describe, Apply, Identify). Give each an icon that shows its meaning. Put the full objective in the speaker notes.',
+  schema: z.object({
+    items: z.array(z.union([short(6), z.object({ text: short(6), icon: IconSchema })])).min(2).max(5),
+  }),
   needsAssertion: true,
   parts: (d) => d.items.length,
   fullView: true,
   render: (d, ctx) => `
     <ol class="st-list st-points">
       ${d.items
-        .map(
-          (it, i) =>
-            `<li class="st-row" ${s(i + 1)}><span class="st-row-k"><svg viewBox="0 0 40 40" aria-hidden="true"><rect class="st-cb" x="2" y="2" width="36" height="36"/><path class="st-tk" pathLength="1" ${ctx.motion.m(i + 1, 'draw')} d="M10 21l7 7 13-15"/></svg></span><span class="st-row-v">${ctx.log.t(i + 1, it)}</span></li>`,
-        )
+        .map((raw, i) => {
+          const it = typeof raw === 'string' ? { text: raw, icon: undefined } : raw;
+          const tick = `<svg viewBox="0 0 40 40" aria-hidden="true"><rect class="st-cb" x="2" y="2" width="36" height="36"/><path class="st-tk" pathLength="1" ${ctx.motion.m(i + 1, 'draw')} d="M10 21l7 7 13-15"/></svg>`;
+          return it.icon
+            ? `<li class="st-row st-obj" ${s(i + 1)}><span class="st-obj-ic" ${ctx.motion.m(i + 1, 'pin')}>${iconSvg(it.icon)}</span><span class="st-row-v">${ctx.log.t(i + 1, it.text)}</span><span class="st-row-k st-obj-tk">${tick}</span></li>`
+            : `<li class="st-row" ${s(i + 1)}><span class="st-row-k">${tick}</span><span class="st-row-v">${ctx.log.t(i + 1, it.text)}</span></li>`;
+        })
         .join('')}
     </ol>`,
 });
