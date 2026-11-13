@@ -7,6 +7,7 @@ const short = (n: number) => label(n);
 
 export const titleBumper = defineTemplate({
   id: 'title-bumper',
+  sequence: 'bumper',
   purpose: 'Opening slide of a module or lesson. Module code, title, one-line subtitle, and the theme ornament (compass rose in Nav Chart).',
   schema: z.object({ title: short(5), subtitle: short(10).optional() }),
   needsAssertion: false,
@@ -23,6 +24,7 @@ export const titleBumper = defineTemplate({
 
 export const sectionDivider = defineTemplate({
   id: 'section-divider',
+  sequence: 'bumper',
   purpose: 'Start of a new section inside a lesson.',
   schema: z.object({ number: z.string().max(4).optional(), title: short(6) }),
   needsAssertion: false,
@@ -65,7 +67,7 @@ export const objectives = defineTemplate({
       ${d.items
         .map(
           (it, i) =>
-            `<li class="st-row" ${s(i + 1)}><span class="st-row-k"><svg viewBox="0 0 40 40" aria-hidden="true"><rect class="st-cb" x="2" y="2" width="36" height="36"/><path class="st-tk" d="M10 21l7 7 13-15"/></svg></span><span class="st-row-v">${ctx.log.t(i + 1, it)}</span></li>`,
+            `<li class="st-row" ${s(i + 1)}><span class="st-row-k"><svg viewBox="0 0 40 40" aria-hidden="true"><rect class="st-cb" x="2" y="2" width="36" height="36"/><path class="st-tk" pathLength="1" ${ctx.motion.m(i + 1, 'draw')} d="M10 21l7 7 13-15"/></svg></span><span class="st-row-v">${ctx.log.t(i + 1, it)}</span></li>`,
         )
         .join('')}
     </ol>`,

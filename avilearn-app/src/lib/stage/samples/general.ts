@@ -28,6 +28,7 @@ export const GENERAL_SAMPLE: SlideDeckSpecInput = {
     },
     {
       id: 'ice', templateId: 'icebreaker', assertion: 'Breaking the Ice',
+      lowerThird: { name: 'Sam Sample', role: 'SAMPLE trainer' },
       data: { prompts: [{ title: 'Who Are You?', detail: 'Name and team' }, { title: 'Your Role', detail: 'What you do each day' }, { title: 'Recent Feedback', detail: 'One you found useful' }] },
       steps: n('Name and team.', 'Role.', 'Feedback example.', 'Full view.'),
     },

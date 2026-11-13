@@ -23,7 +23,7 @@ export const knowledgeCheck = defineTemplate({
           .map(
             (o, i) =>
               `<div class="st-box st-kc-opt" ${s(1, true)}><span class="st-kc-k">${String.fromCharCode(65 + i)}</span><span class="st-box-t">${ctx.log.t(1, o)}</span>${
-                i === d.answerIndex ? `<span class="st-kc-mark" ${s(2)}></span>` : ''
+                i === d.answerIndex ? `<span class="st-kc-mark" ${s(2)} ${ctx.motion.m(2, 'pin')}></span>` : ''
               }</div>`,
           )
           .join('')}

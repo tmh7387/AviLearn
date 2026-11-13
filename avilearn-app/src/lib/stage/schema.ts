@@ -80,6 +80,8 @@ export const SlideSpecSchema = z.object({
   assertion: maxWords(STAGE.words.headline, 'Assertion headline').optional(),
   data: z.unknown(),
   steps: z.array(StepSchema).min(1).max(8),
+  /** Name bar at the bottom: shows for 5 s when the slide opens (facilitator, guest speaker). */
+  lowerThird: z.object({ name: maxWords(4, 'Lower third name'), role: maxWords(6, 'Lower third role').optional() }).optional(),
   sourceRefs: z.array(SourceRefSchema).default([]),
 });
 
