@@ -6,6 +6,7 @@ import { compileDeck, auditColors } from '../src/lib/stage/compiler';
 import { TEMPLATES, stepCount } from '../src/lib/stage/templates';
 import { SAMPLE_DECKS } from '../src/lib/stage/samples';
 import type { SlideDeckSpecInput } from '../src/lib/stage/schema';
+import { MotionLog, fitStagger, motionPlan } from '../src/lib/stage/motion';
 
 test('text tokens meet WCAG AA (4.5:1) on the canvas in both modes of every theme pack', () => {
   for (const pack of THEME_PACKS.values()) {
@@ -125,4 +126,24 @@ test('the theme pack sets brand text, fonts and colours', () => {
   const neutral = compileDeck({ ...base(slide), theme: 'studio-neutral', vertical: 'general' });
   assert.ok(neutral.html.includes('Sample Organisation') && neutral.html.includes('Inter'));
   assert.ok(!neutral.html.includes('Aviation Synergy') && !neutral.html.includes('AviLearn'));
+});
+
+test('motion: stagger stays inside the 1200 ms rule', () => {
+  assert.equal(fitStagger(1, 600), 120);
+  assert.equal(fitStagger(4, 600), 120);
+  assert.equal(fitStagger(7, 600), 100);
+  const log = new MotionLog();
+  log.m(1, 'draw');
+  const [p] = motionPlan(1, [3], log);
+  assert.ok(p.total <= 1200, `total ${p.total}`);
+});
+
+test('motion: templates carry their verbs and sequences', () => {
+  const hero = compileDeck(base({ id: 'h', templateId: 'hero-number', assertion: 'Edition 19 Applies From 2027', data: { value: '19', label: 'Edition' }, steps: [{ speakerNotes: 'x' }] }));
+  assert.ok(hero.html.includes('data-m="count"'));
+  const title = compileDeck(base({ id: 'c', templateId: 'course-title', data: { title: 'Test' }, steps: [{ speakerNotes: 'x' }] }));
+  assert.ok(title.html.includes('data-seq="intro"'));
+  const l3 = compileDeck(base({ id: 'q', templateId: 'questions', lowerThird: { name: 'Sam Sample', role: 'Trainer' }, data: {}, steps: [{ speakerNotes: 'x' }] }));
+  assert.ok(l3.html.includes('class="st-l3"') && l3.html.includes('Sam Sample'));
+  assert.ok(!l3.issues.some((i) => i.code === 'motion'));
 });

@@ -48,7 +48,7 @@ export const annotatedImage = defineTemplate({
           ${d.callouts
             .map(
               (c, i) =>
-                `<div class="st-ann-pin" style="left:${c.x}%;top:${c.y}%" ${s(i + 1)}><span class="st-ann-dot">${i + 1}</span></div>`,
+                `<div class="st-ann-pin" style="left:${c.x}%;top:${c.y}%" ${s(i + 1)} ${ctx.motion.m(i + 1, 'pin')}><span class="st-ann-dot">${i + 1}</span></div>`,
             )
             .join('')}
         </div>
@@ -70,7 +70,7 @@ export const heroNumber = defineTemplate({
   fullView: false,
   render: (d, ctx) => `
     <div class="st-hero" ${s(1)}>
-      <div class="st-hero-v">${ctx.log.t(1, d.value)}${d.unit ? `<span class="st-hero-u">${ctx.log.t(1, d.unit)}</span>` : ''}</div>
+      <div class="st-hero-v"><span ${ctx.motion.m(1, 'count')}>${ctx.log.t(1, d.value)}</span>${d.unit ? `<span class="st-hero-u">${ctx.log.t(1, d.unit)}</span>` : ''}</div>
       <div class="st-hero-l">${ctx.log.t(1, d.label)}</div>
     </div>`,
 });
@@ -87,9 +87,9 @@ export const splitContrast = defineTemplate({
   lastIsFull: true,
   render: (d, ctx) => `
     <div class="st-split">
-      <div class="st-split-side" ${s(1)}><div class="st-split-v">${ctx.log.t(1, d.left.value)}</div><div class="st-split-l">${ctx.log.t(1, d.left.label)}</div></div>
-      <div class="st-split-rule" aria-hidden="true" ${s(1, true)}></div>
-      <div class="st-split-side st-hot-text" ${s(2)}><div class="st-split-v">${ctx.log.t(2, d.right.value)}</div><div class="st-split-l">${ctx.log.t(2, d.right.label)}</div></div>
+      <div class="st-split-side" ${s(1)}><div class="st-split-v" ${ctx.motion.m(1, 'count')}>${ctx.log.t(1, d.left.value)}</div><div class="st-split-l">${ctx.log.t(1, d.left.label)}</div></div>
+      <div class="st-split-rule" aria-hidden="true" ${s(1, true)} ${ctx.motion.m(1, 'draw-v')}></div>
+      <div class="st-split-side st-hot-text" ${s(2)}><div class="st-split-v" ${ctx.motion.m(2, 'count')}>${ctx.log.t(2, d.right.value)}</div><div class="st-split-l">${ctx.log.t(2, d.right.label)}</div></div>
     </div>`,
 });
 

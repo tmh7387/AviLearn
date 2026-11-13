@@ -33,7 +33,7 @@ export const checklist = defineTemplate({
       ${d.items
         .map(
           (t, i) =>
-            `<div class="st-check" ${s(i + 1)}><svg viewBox="0 0 40 40" aria-hidden="true"><rect class="st-cb" x="2" y="2" width="36" height="36"/><path class="st-tk" d="M10 21l7 7 13-15"/></svg><span>${ctx.log.t(i + 1, t)}</span></div>`,
+            `<div class="st-check" ${s(i + 1)}><svg viewBox="0 0 40 40" aria-hidden="true"><rect class="st-cb" x="2" y="2" width="36" height="36"/><path class="st-tk" pathLength="1" ${ctx.motion.m(i + 1, 'draw')} d="M10 21l7 7 13-15"/></svg><span>${ctx.log.t(i + 1, t)}</span></div>`,
         )
         .join('')}
     </div>`,
@@ -57,7 +57,7 @@ export const timeline = defineTemplate({
       const n = d.pins.length;
       return `
       <div class="st-tl">
-        <div class="st-tl-axis" ${s(1, true)}></div>
+        <div class="st-tl-axis" ${s(1, true)} ${ctx.motion.m(1, 'draw')}></div>
         ${d.pins
           .map((p, i) => {
             const left = n === 1 ? 50 : 4 + (i * 92) / (n - 1);
@@ -85,13 +85,15 @@ export const FLIGHT_PHASES = [
 
 // Route in a 1000 x 100 box, same shape as the Portal diagram: ground at 80,
 // cruise at 20, each arrow stops short of the column line.
+// Drawn at true size (1690 px = the safe width) so the draw verb's pathLength works.
+const FP_W = 1690;
 const FP_SEGMENTS = [
   [40, 80, 180, 80],
   [215, 80, 385, 20],
   [415, 20, 585, 20],
   [615, 20, 785, 80],
   [820, 80, 960, 80],
-];
+].map(([x1, y1, x2, y2]) => [(x1 * FP_W) / 1000, y1, (x2 * FP_W) / 1000, y2]);
 
 /** Aviation pack: any topic by phase of flight (threats, errors, workload). */
 export const phaseOfFlight = defineTemplate({
@@ -116,19 +118,19 @@ export const phaseOfFlight = defineTemplate({
         return `<div class="st-fp-col${p.key ? ' st-hot-text' : ''}" ${s(i + 1)}>
           <div class="st-fp-ph">${ctx.log.t(i + 1, FLIGHT_PHASES[i].label)}</div>
           <div class="st-fp-v">${ctx.log.t(i + 1, p.value)}</div>
-          ${bars ? `<div class="st-fp-bar"><i style="height:${h}%"></i></div>` : ''}
+          ${bars ? `<div class="st-fp-bar"><i style="height:${h}%" ${ctx.motion.m(i + 1, 'grow')}></i></div>` : ''}
         </div>`;
       })
       .join('');
     const route = FP_SEGMENTS.map(
-      ([x1, y1, x2, y2]) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#st-fp-arrow)"/>`,
+      ([x1, y1, x2, y2]) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" pathLength="1" ${ctx.motion.m(1, 'draw')} marker-end="url(#st-fp-arrow)"/>`,
     ).join('');
     const ls = d.phases.length + 1;
     return `
       <div class="st-fp${bars ? ' st-fp-bars' : ''}">
         <div class="st-fp-cols">${cols}</div>
         <div class="st-fp-route" ${s(1, true)}>
-          <svg viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true">
+          <svg viewBox="0 0 ${FP_W} 100" aria-hidden="true">
             <defs><marker id="st-fp-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z"/></marker></defs>
             ${route}
           </svg>

@@ -26,12 +26,42 @@ export const SLIDE_CSS = `
 .st-mark{display:flex;align-items:center;gap:12px;font:600 24px/1 var(--s-font-body);letter-spacing:0;color:var(--s-ink)}
 .st-mark-ico{width:34px;height:34px}
 
-/* step states: future hidden, active 100%, past 30%. With no script, everything shows (full view). */
-.st-slide [data-s]{transition:opacity ${M.step}ms ${M.ease},transform ${M.step}ms ${M.ease}}
-.st-slide .st-fut{opacity:${STAGE.steps.future};transform:translateY(15px)}
+/* step states: future hidden, active 100%, past 30%. With no script, everything shows (full view).
+   Motion (motion.ts): enter ${M.enter} ms, dim ${M.dim} ms, one easing curve. The presenter sets
+   transition-delay for the stagger. */
+.st-slide [data-s],.st-slide [data-m]{transition-property:opacity,transform,stroke-dashoffset;transition-duration:${M.enter}ms;transition-timing-function:${M.ease}}
+.st-slide .st-fut{opacity:${STAGE.steps.future};transform:translateY(${M.rise}px)}
 .st-slide .st-act{opacity:${STAGE.steps.active}}
-.st-slide .st-past{opacity:${STAGE.steps.past}}
+.st-slide .st-past{opacity:${STAGE.steps.past};transition-duration:${M.dim}ms;transition-delay:0s!important}
 .st-slide .st-past[data-keep]{opacity:${STAGE.steps.structurePast}}
+/* verbs on a part (same element) or inside a part (child) */
+.st-slide .st-fut [data-m=reveal]{opacity:0;transform:translateY(${M.rise}px)}
+.st-slide [data-m^=draw]{transition-duration:${M.verbs.draw}ms}
+.st-slide svg [data-m=draw]{stroke-dasharray:1;stroke-dashoffset:0}
+.st-slide .st-fut svg [data-m=draw],.st-slide svg .st-fut[data-m=draw]{stroke-dashoffset:1}
+.st-slide div[data-m=draw],.st-slide span[data-m=draw],.st-slide i[data-m=draw]{transform-origin:0 50%}
+.st-slide div[data-m=draw-v],.st-slide span[data-m=draw-v]{transform-origin:50% 0}
+.st-slide .st-fut[data-m=draw]:not(svg *),.st-slide .st-fut [data-m=draw]:not(svg *){transform:scaleX(0)}
+.st-slide .st-fut[data-m=draw-v],.st-slide .st-fut [data-m=draw-v]{transform:scaleY(0)}
+.st-slide [data-m^=grow]{transition-duration:${M.verbs.grow}ms}
+.st-slide [data-m=grow]{transform-origin:50% 100%}.st-slide [data-m=grow-x]{transform-origin:0 50%}
+.st-slide .st-fut[data-m=grow],.st-slide .st-fut [data-m=grow]{transform:scaleY(0)}
+.st-slide .st-fut[data-m=grow-x],.st-slide .st-fut [data-m=grow-x]{transform:scaleX(0)}
+.st-slide [data-m=pin]{transition-timing-function:${M.easeBack}}
+.st-slide .st-fut[data-m=pin],.st-slide .st-fut [data-m=pin]{opacity:0;transform:scale(.4)}
+/* motion off: presenter key M, or the system "reduce motion" setting */
+.st-still .st-slide *,.st-still .st-slide{transition:none!important;animation:none!important}
+.st-still .st-slide .st-fut{transform:none}
+.st-still .st-l3{opacity:1;transform:none}
+
+/* lower third: name bar for ${M.sequences.lowerThird} ms when the slide opens */
+.st-l3{position:absolute;left:${C.safe.x}px;bottom:120px;display:flex;flex-direction:column;gap:6px;padding:18px 34px 18px 28px;
+  background:var(--s-card);border:${STAGE.stroke.box}px solid var(--s-line);border-left:10px solid var(--s-accent-fill);border-radius:${STAGE.radius.box}px;
+  opacity:0;transform:translateX(-40px);pointer-events:none;z-index:2}
+.st-l3 b{font:700 calc(46px*var(--s-dscale))/1 var(--s-font-display);text-transform:var(--s-head-case)}
+.st-l3 span{font:500 28px/1.1 var(--s-font-body);color:var(--s-ink-muted)}
+.st-play .st-l3{animation:st-l3 ${M.sequences.lowerThird}ms ${M.ease} both}
+@keyframes st-l3{0%{opacity:0;transform:translateX(-40px)}12%,88%{opacity:1;transform:none}100%{opacity:0;transform:translateX(-40px)}}
 
 /* shared parts */
 .st-hot{background:var(--s-accent-tint)!important;border-color:var(--s-accent)!important}
@@ -48,7 +78,7 @@ export const SLIDE_CSS = `
 /* title-bumper */
 .st-rose{position:absolute;right:${C.safe.x}px;top:${C.safe.top}px;width:420px;height:420px}
 .st-rose-needle{transform-box:view-box;transform-origin:100px 100px}
-.st-play .st-rose-needle{animation:st-north ${M.bumper}ms ${M.ease} both}
+.st-play .st-rose-needle{animation:st-north ${M.sequences.bumper}ms ${M.ease} both}
 @keyframes st-north{from{transform:rotate(-140deg)}to{transform:rotate(0)}}
 .st-tone-sober .st-rose{display:none}
 .t-title-bumper .st-body{justify-content:flex-end;padding-bottom:40px}
@@ -141,7 +171,7 @@ export const SLIDE_CSS = `
 .st-fp-col.st-hot-text .st-fp-ph{color:var(--s-accent)}
 .st-fp-route{position:relative;height:150px}
 .st-fp-route svg{display:block;width:100%;height:110px;overflow:visible}
-.st-fp-route line{stroke:var(--s-ink);stroke-width:${STAGE.stroke.main};vector-effect:non-scaling-stroke}
+.st-fp-route line{stroke:var(--s-ink);stroke-width:${STAGE.stroke.main}}
 .st-fp-dot{position:absolute;top:88px;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--s-bg);border:${STAGE.stroke.main}px solid var(--s-ink)}
 .st-fp-route marker path{fill:var(--s-ink)}
 .st-fp-a,.st-fp-b{position:absolute;bottom:0;font:700 30px/1 var(--s-font-mono)}
@@ -185,6 +215,7 @@ export const SLIDE_CSS = `
 .st-ct-art img:not(.st-photo){aspect-ratio:auto;object-fit:contain}
 .st-ct-art figcaption{padding-right:${C.safe.x}px}
 .st-ct-org{font:600 ${T.eyebrow}px/1 var(--s-font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--s-accent)}
+.st-ct-rule{width:140px;height:${STAGE.stroke.main}px;background:var(--s-accent-fill)}
 .st-ct-title{font:700 calc(116px*var(--s-dscale))/.95 var(--s-font-display);text-transform:var(--s-head-case);margin:28px 0 0;text-wrap:balance}
 .st-ct-sub{font:500 44px/1.2 var(--s-font-body);color:var(--s-ink-muted);margin:28px 0 0}
 .st-ct-client{font:600 42px/1.2 var(--s-font-body);margin:14px 0 0}
@@ -242,7 +273,7 @@ export const SLIDE_CSS = `
 .st-dc-next{font:500 44px/1.25 var(--s-font-body);margin:0;max-width:1400px;border-left:8px solid var(--s-accent-fill);padding-left:28px}
 
 [data-theme="dark"] .st-line-art{filter:invert(1) hue-rotate(180deg) brightness(1.1)}
-@media (prefers-reduced-motion: reduce){.st-slide [data-s]{transition:none}.st-slide .st-fut{transform:none}.st-play .st-rose-needle{animation:none}}
+@media (prefers-reduced-motion: reduce){.st-slide [data-s],.st-slide [data-m]{transition:none}.st-slide .st-fut{transform:none}.st-play .st-rose-needle,.st-play .st-l3{animation:none}.st-play .st-l3{opacity:1;transform:none}}
 `;
 
 export const PRESENTER_CSS = `

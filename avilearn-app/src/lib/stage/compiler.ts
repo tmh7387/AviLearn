@@ -4,12 +4,13 @@ import { getTemplate, stepCount } from './templates';
 import { PRESENTER_CSS, SLIDE_CSS } from './styles';
 import { PRESENTER_JS } from './runtime';
 import { STAGE } from './tokens';
+import { MotionLog, motionPlan } from './motion';
 import { voiceProblems } from './voice';
 import { allowedColors, getThemePack, getVertical, ownerOf, packCss, templateAllowed, type ThemePack, type VerticalPack } from './packs';
 
 export interface StageIssue {
   level: 'error' | 'warn';
-  code: 'schema' | 'pack' | 'template' | 'assertion' | 'steps' | 'words' | 'words-step' | 'color' | 'voice';
+  code: 'schema' | 'pack' | 'template' | 'assertion' | 'steps' | 'words' | 'words-step' | 'color' | 'voice' | 'motion';
   slideId?: string;
   message: string;
 }
@@ -60,9 +61,10 @@ export function renderSlide(
 
   const data = parsed.data;
   const log = new TextLog();
+  const motion = new MotionLog();
   let body: string;
   try {
-    body = def.render(data, { deck, assets, log, theme, vertical });
+    body = def.render(data, { deck, assets, log, theme, vertical, motion });
   } catch (e) {
     issues.push({ level: 'error', code: 'template', slideId: slide.id, message: (e as Error).message });
     return { ...base, html: errorSlide(slide, issues), steps: slide.steps.length, fullView: false, words: 0, texts: [], issues };
@@ -88,6 +90,11 @@ export function renderSlide(
     ? `${slide.eyebrow ? `<div class="st-eyebrow">${esc(slide.eyebrow)}</div>` : ''}${slide.assertion ? `<h2 class="st-h">${esc(slide.assertion)}</h2>` : ''}`
     : '';
 
+  let l3 = '';
+  if (slide.lowerThird) {
+    const lt = slide.lowerThird;
+    l3 = `<div class="st-l3" aria-hidden="true"><b>${log.t(1, lt.name)}</b>${lt.role ? `<span>${log.t(1, lt.role)}</span>` : ''}</div>`;
+  }
   const words = log.items.reduce((n, t) => n + countWords(t.text), 0) + countWords(slide.assertion ?? '');
   if (words > W.slideMax) {
     issues.push({ level: 'error', code: 'words', slideId: slide.id, message: `${words} words on screen; the limit is ${W.slideMax}. Move detail to speaker notes.` });
@@ -101,10 +108,27 @@ export function renderSlide(
     }
   }
 
+  if (def.sequence) {
+    // Branded sequence: no step limit, but its parts still enter one after another.
+  } else {
+    const parts = Array.from({ length: steps }, (_, k) => (body.match(new RegExp(`data-s="${k + 1}"`, 'g')) ?? []).length);
+    for (const p of motionPlan(steps, parts, motion)) {
+      if (p.longest > STAGE.motion.maxMove || p.stagger < STAGE.motion.minStagger) {
+        issues.push({
+          level: 'error',
+          code: 'motion',
+          slideId: slide.id,
+          message: `Step ${p.step} moves ${p.movers} parts; they cannot all enter inside ${STAGE.motion.maxMove} ms. Split the step.`,
+        });
+      }
+    }
+  }
+
+  const outro = def.sequence === 'outro';
   const html =
-    `<section class="st-slide t-${slide.templateId}" data-id="${esc(slide.id)}" aria-label="Slide ${index + 1}">` +
-    `<div class="st-in">${head}<div class="st-body">${body}</div></div>` +
-    `<div class="st-foot"><span class="st-mark">${theme.markIcon ? MARK_SVG : ''}${esc(theme.product)}</span><span>${esc(deck.module.code)} · ${index + 1} / ${deck.slides.length}</span></div>` +
+    `<section class="st-slide t-${slide.templateId}"${def.sequence ? ` data-seq="${def.sequence}"` : ''}${slide.lowerThird ? ' data-l3' : ''} data-id="${esc(slide.id)}" aria-label="Slide ${index + 1}">` +
+    `<div class="st-in">${head}<div class="st-body">${body}</div></div>${l3}` +
+    `<div class="st-foot"><span class="st-mark"${outro ? ` data-s="1" ${motion.m(1, 'pin')}` : ''}>${theme.markIcon ? MARK_SVG : ''}${esc(theme.product)}</span><span>${esc(deck.module.code)} · ${index + 1} / ${deck.slides.length}</span></div>` +
     `</section>`;
 
   for (const text of [slide.eyebrow ?? '', slide.assertion ?? '', ...log.items.map((t) => t.text)]) {
@@ -196,7 +220,7 @@ ${slides.map((s) => s.html).join('\n')}
 <aside class="st-notes" hidden><b>Speaker notes</b><p></p></aside>
 <nav class="st-hud" aria-label="Presenter controls">
 <button type="button" data-a="prev" aria-label="Back">‹</button><span class="st-pos"></span><button type="button" data-a="next" aria-label="Next">›</button>
-<button type="button" data-a="notes">Notes</button><button type="button" data-a="theme">Light/Dark</button><button type="button" data-a="fs">Full screen</button>
+<button type="button" data-a="notes">Notes</button><button type="button" data-a="theme">Light/Dark</button><button type="button" data-a="fs">Full screen</button><button type="button" data-a="motion">Motion</button>
 </nav>
 <script type="application/json" id="st-meta">${JSON.stringify(meta).replace(/</g, '\\u003c')}</script>
 <script>${PRESENTER_JS}</script>

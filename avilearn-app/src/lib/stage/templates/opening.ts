@@ -29,6 +29,7 @@ const panel = (ctx: RenderContext, id: string | undefined) => {
 
 export const courseTitle = defineTemplate({
   id: 'course-title',
+  sequence: 'intro',
   purpose: 'First slide of a course: organisation (from the theme pack), course name, subtitle, client, dates and facilitator.',
   schema: z.object({
     title: label(7),
@@ -44,11 +45,12 @@ export const courseTitle = defineTemplate({
   render: (d, ctx) => `
     <div class="st-ct">
       <div class="st-ct-text" ${s(1)}>
-        <div class="st-ct-org">${ctx.log.t(1, ctx.theme.org)}</div>
-        <h1 class="st-ct-title">${ctx.log.t(1, d.title)}</h1>
-        ${d.subtitle ? `<p class="st-ct-sub">${ctx.log.t(1, d.subtitle)}</p>` : ''}
-        ${d.client ? `<p class="st-ct-client">${ctx.log.t(1, `for ${d.client}`)}</p>` : ''}
-        <div class="st-ct-facts">
+        <div class="st-ct-org" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, ctx.theme.org)}</div>
+        <div class="st-ct-rule" aria-hidden="true" ${ctx.motion.m(1, 'draw')}></div>
+        <h1 class="st-ct-title" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, d.title)}</h1>
+        ${d.subtitle ? `<p class="st-ct-sub" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, d.subtitle)}</p>` : ''}
+        ${d.client ? `<p class="st-ct-client" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, `for ${d.client}`)}</p>` : ''}
+        <div class="st-ct-facts" ${ctx.motion.m(1, 'reveal')}>
           ${d.dates ? `<span>${ctx.log.t(1, d.dates)}</span>` : ''}
           ${d.facilitator ? `<span>${ctx.log.t(1, `Facilitator: ${d.facilitator}`)}</span>` : ''}
         </div>
@@ -159,6 +161,7 @@ export const courseMaterials = defineTemplate({
 
 export const moduleOpener = defineTemplate({
   id: 'module-opener',
+  sequence: 'bumper',
   purpose: 'First slide of a module: number, title and its objectives (verbs first). Illustration panel on the left.',
   schema: z.object({
     number: z.string().min(1).max(4),
@@ -173,10 +176,10 @@ export const moduleOpener = defineTemplate({
     <div class="st-mo">
       ${panel(ctx, d.image)}
       <div class="st-mo-text" ${s(1)}>
-        <div class="st-mo-k">${ctx.log.t(1, `Module ${d.number}`)}</div>
-        <h1 class="st-mo-title">${ctx.log.t(1, d.title)}</h1>
+        <div class="st-mo-k" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, `Module ${d.number}`)}</div>
+        <h1 class="st-mo-title" ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, d.title)}</h1>
         <ul class="st-mo-list">
-          ${d.objectives.map((o) => `<li>${ctx.log.t(1, o)}</li>`).join('')}
+          ${d.objectives.map((o) => `<li ${ctx.motion.m(1, 'reveal')}>${ctx.log.t(1, o)}</li>`).join('')}
         </ul>
       </div>
     </div>`,
@@ -230,6 +233,7 @@ export const breakSlide = defineTemplate({
 
 export const dayClose = defineTemplate({
   id: 'day-close',
+  sequence: 'outro',
   purpose: 'End of a course day: the modules covered, then one line on what the next day builds.',
   schema: z.object({
     day: z.string().min(1).max(10),

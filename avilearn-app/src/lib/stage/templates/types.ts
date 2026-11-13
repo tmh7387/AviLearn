@@ -2,6 +2,7 @@ import type { z } from 'zod';
 import type { TextLog } from '../html';
 import type { SlideDeckSpec, StageAsset, TemplateId } from '../schema';
 import type { ThemePack, VerticalPack } from '../packs';
+import type { MotionLog, MotionSequence } from '../motion';
 
 export interface RenderContext {
   deck: SlideDeckSpec;
@@ -9,6 +10,8 @@ export interface RenderContext {
   log: TextLog;
   theme: ThemePack;
   vertical: VerticalPack;
+  /** Motion verbs: ctx.motion.m(step, 'draw') on an element returns its attribute. */
+  motion: MotionLog;
 }
 
 export interface TemplateDef<T = unknown> {
@@ -24,6 +27,8 @@ export interface TemplateDef<T = unknown> {
   fullView: boolean;
   /** True when the last part completes the picture, so the last step shows everything at 100%. */
   lastIsFull?: boolean;
+  /** Branded sequence the slide plays on entry (intro, bumper, outro). Exempt from the 1200 ms rule. */
+  sequence?: MotionSequence;
   /** Markup for the evidence area. Use s(step) on elements and ctx.log.t() for visible text. */
   render(data: T, ctx: RenderContext): string;
 }

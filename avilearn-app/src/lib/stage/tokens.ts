@@ -45,7 +45,26 @@ export const STAGE = {
   },
   words: { headline: 12, label: 4, slideTarget: 20, slideMax: 30, perStep: 12 },
   steps: { active: 1, past: 0.3, structurePast: 0.55, future: 0 },
-  motion: { step: 450, draw: 600, slide: 300, ease: 'cubic-bezier(.2,.7,.2,1)', bumper: 3000 },
+  /**
+   * Motion rules (strategy doc, phase B). One easing curve for the studio.
+   * enter: a part appears. dim: an active part goes to 30%. stagger: gap
+   * between parts that enter on one step. maxMove: the longest move on a
+   * content slide. Sequences (intro, bumper, outro, lower third) are branded
+   * moments and may run longer. The deck and the video read these values.
+   */
+  motion: {
+    enter: 600,
+    dim: 300,
+    stagger: 120,
+    minStagger: 60,
+    maxMove: 1200,
+    rise: 24,
+    slide: 300,
+    ease: 'cubic-bezier(.2,.7,.2,1)',
+    easeBack: 'cubic-bezier(.3,1.5,.5,1)',
+    verbs: { reveal: 600, draw: 900, grow: 900, count: 900, pin: 600 },
+    sequences: { intro: 3000, bumper: 1500, outro: 2000, lowerThird: 5000 },
+  },
   stroke: { main: 4, branch: 3, box: 2, trajectory: 6 },
   radius: { box: 4 },
   video: { width: 1920, height: 1080, fps: 30, codec: 'h264', audioLufs: -16, minStepSec: 2.5, padSec: 0.6 },

@@ -22,6 +22,7 @@ No AI writes HTML, CSS or SVG. Templates draw everything from `tokens.ts`.
 | `schema.ts` | Deck and slide spec (Zod) |
 | `templates/` | 26 templates. Core templates work in every pack. A domain template (for example `phase-of-flight`) works only in its industry pack. Each has a data schema, a build plan and a renderer. `opening.ts` holds the course opening and module start/end slides |
 | `public/stage/kestrel/` | Kestrel Pacific 3D renders (light and dark PNG) and media kit images. Make new renders with `scripts/kestrel-render.py` |
+| `motion.ts` | Motion system: verbs (reveal, draw, grow, count, pin), stagger rule, motion QA plan. Timings live in `tokens.ts` (`STAGE.motion`) |
 | `voice.ts` | Banned phrases. The compiler rejects them |
 | `compiler.ts` | `compileDeck`, `renderSlide`, QA issues (schema, steps, words, colours, voice) |
 | `styles.ts`, `runtime.ts` | Slide CSS and the presenter script inlined into each deck |
@@ -41,7 +42,7 @@ Analysis tools shared with the Portal (fishbone, five-why, swiss-cheese, bowtie,
 
 ## Presenter keys
 
-`Space` / `→` / `PageDown` / click: next step. `←` / `PageUp`: back. `Home` / `End`. `F` full screen. `D` light/dark. `N` speaker notes.
+`Space` / `→` / `PageDown` / click: next step. `←` / `PageUp`: back. `Home` / `End`. `F` full screen. `D` light/dark. `N` speaker notes. `M` motion on or off.
 The address keeps the place as `#<slide>-<step>`.
 
 ## Adding a template
@@ -59,3 +60,11 @@ The address keeps the place as `#<slide>-<step>`.
 ```
 
 Both default to the values above. An unknown pack is a QA error. `defaultTheme` (light or dark) is optional; it falls back to the pack's `defaultMode`.
+
+## Motion (phase B)
+
+- Every part enters in 600 ms on one easing curve. Past parts dim to 30% in 300 ms. Parts that enter on one step start 120 ms apart; the presenter shortens the gap so a step ends inside 1200 ms.
+- A template gives a part its verb with `ctx.motion.m(step, verb)`: `reveal`, `draw` (SVG needs `pathLength="1"`), `draw-v`, `grow`, `grow-x`, `count`, `pin`. Parts with no verb reveal.
+- Branded sequences: `course-title` plays the intro (3 s), `module-opener`, `title-bumper` and `section-divider` the bumper (1.5 s), `day-close` the outro (2 s). A slide's `lowerThird: { name, role }` shows a name bar for 5 s.
+- Motion QA (`code: 'motion'`) fails a step whose parts cannot enter inside 1200 ms. Split the step.
+- The system setting "reduce motion" and the `M` key switch motion off.
