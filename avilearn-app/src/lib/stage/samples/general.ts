@@ -58,6 +58,25 @@ export const GENERAL_SAMPLE: SlideDeckSpecInput = {
       steps: n('Same day.', 'Same week.', 'Next month.', 'Year end.', 'Full view.'),
     },
     {
+      id: 'cards', templateId: 'card-row', eyebrow: 'Delivery', assertion: 'Choose the Right Moment and Place',
+      data: {
+        cards: [
+          { code: '01', title: 'Private', detail: 'Correct one person in private', icon: 'user' },
+          { code: '02', title: 'Timely', detail: 'Same shift, not next week', icon: 'clock' },
+          { code: '03', title: 'Two-Way', detail: 'Ask for their view first', icon: 'messages-square' },
+        ],
+      },
+      steps: n('SAMPLE. Three conditions for feedback that lands.', 'Correct one person in private, not in front of the team.', 'Give it in the same shift while the detail is fresh.', 'Ask for their view first, then give yours.'),
+    },
+    {
+      id: 'cmp', templateId: 'compare-columns', assertion: 'Describe the Behaviour, Not the Person',
+      data: {
+        left: { heading: 'Vague', items: ['You were careless today', 'Be more professional'] },
+        right: { heading: 'Specific', items: ['You skipped the room check', 'Greet each guest at check-in'] },
+      },
+      steps: n('SAMPLE. Vague feedback judges the person and gives no next step.', 'Specific feedback names the behaviour and the fix.', 'Ask the group to rewrite one vague line of their own.'),
+    },
+    {
       id: 'check', templateId: 'checklist', assertion: 'Check Your Message Before You Speak',
       data: { items: ['Based on facts', 'About one behaviour', 'Private setting', 'Ends with a question'] },
       steps: n('Facts.', 'One behaviour.', 'Setting.', 'Question.', 'Full view.'),

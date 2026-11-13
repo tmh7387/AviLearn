@@ -31,6 +31,8 @@ export const TEMPLATE_IDS = [
   'hero-number',
   'split-contrast',
   'quote-reference',
+  'card-row',
+  'compare-columns',
   // process
   'procedure-flow',
   'checklist',

@@ -96,6 +96,23 @@ export const SLIDE_CSS = `
 .st-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
 .st-agenda{display:grid;grid-template-columns:1fr 1fr;gap:16px 32px}
 .st-ic{width:100%;height:100%;display:block}
+.st-cards .st-box{gap:20px;padding:32px 30px}
+.st-card-top{display:flex;align-items:center;gap:20px;min-height:72px}
+.st-card-ic{flex:none;width:72px;height:72px;padding:14px;border-radius:${STAGE.radius.box}px;background:var(--s-accent-tint);color:var(--s-accent)}
+.st-card-t{color:var(--s-ink-muted)}
+.st-cmp{display:grid;grid-template-columns:1fr 72px 1fr;gap:28px;align-items:stretch}
+.st-cmp-col{display:flex;flex-direction:column;gap:24px;padding:36px 40px;border:${STAGE.stroke.box}px solid var(--s-line);background:var(--s-card);border-radius:${STAGE.radius.box}px}
+.st-cmp-hot{border-color:var(--s-accent);background:var(--s-accent-tint)}
+.st-cmp-head{display:flex;align-items:center;gap:20px;font:600 calc(50px*var(--s-dscale))/1.02 var(--s-font-display);text-transform:var(--s-head-case)}
+.st-cmp-hot .st-cmp-head{color:var(--s-accent)}
+.st-cmp-ic{flex:none;width:56px;height:56px;color:var(--s-accent)}
+.st-cmp-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:20px;flex:1}
+.st-cmp-list li{position:relative;padding-left:36px;font:500 36px/1.2 var(--s-font-body)}
+.st-cmp-list li::before{content:"";position:absolute;left:0;top:.45em;width:14px;height:14px;border:3px solid var(--s-accent);transform:rotate(45deg)}
+.st-cmp-tag{font:600 24px/1.2 var(--s-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--s-ink-muted);border-top:2px solid var(--s-line);padding-top:20px}
+.st-cmp-hot .st-cmp-tag{color:var(--s-accent);border-color:var(--s-accent)}
+.st-cmp-arrow{display:grid;place-items:center;color:var(--s-accent)}
+.st-cmp-arrow svg{width:56px;height:56px}
 .st-obj{gap:32px}
 .st-obj-ic{flex:none;width:88px;height:88px;padding:18px;border-radius:${STAGE.radius.box}px;background:var(--s-accent-tint);color:var(--s-accent)}
 .st-obj .st-row-v{flex:1}

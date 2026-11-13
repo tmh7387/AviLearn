@@ -4,6 +4,7 @@ import { agenda, objectives, questions, sectionDivider, titleBumper } from './st
 import { breakSlide, courseMaterials, courseTitle, dayClose, dayOverview, facilitator, icebreaker, keyPoints, moduleOpener } from './opening';
 import { annotatedImage, assertionImage, heroNumber, quoteReference, splitContrast } from './evidence';
 import { causeChain, checklist, phaseOfFlight, procedureFlow, timeline } from './process';
+import { cardRow, compareColumns } from './compare';
 import { exerciseLaunch, knowledgeCheck } from './interaction';
 
 /**
@@ -33,6 +34,8 @@ const ALL = [
   heroNumber,
   splitContrast,
   quoteReference,
+  cardRow,
+  compareColumns,
   procedureFlow,
   checklist,
   timeline,

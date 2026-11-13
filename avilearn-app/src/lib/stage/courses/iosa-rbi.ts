@@ -8,7 +8,7 @@ import { assets, FAC_DATA } from '../samples';
  * next one is built (guided build). `src` on each slide is the source slide
  * number in the Day PDF.
  *
- * Status: Module 0 — draft for review.
+ * Status: Module 0 approved (13 Nov 2026). Module 1 — draft for review.
  */
 
 const n = (...notes: string[]) => notes.map((speakerNotes) => ({ speakerNotes }));
@@ -137,4 +137,238 @@ export const IOSA_RBI_M0: SlideDeckSpecInput = {
   ],
 };
 
-export const IOSA_RBI_MODULES = { 'rbi-m0': IOSA_RBI_M0 };
+/** Module 1 · Foundations of Risk-Based IOSA (Day 1, source slides 10–26; the PDF has no slide 24). */
+export const IOSA_RBI_M1: SlideDeckSpecInput = {
+  ...BASE,
+  module: { code: 'RBI M1', title: 'Foundations of Risk-Based IOSA' },
+  lesson: { title: 'Day 1 — Fundamentals', objectives: ['Explain how RBI differs from traditional IOSA'] },
+  slides: [
+    {
+      id: 'm1-open', templateId: 'module-opener', sourceRefs: src(10),
+      data: {
+        number: '1',
+        title: 'Foundations of Risk-Based IOSA',
+        objectives: ['Explain how RBI differs from traditional IOSA', 'Describe why we focus on safety-critical areas'],
+        image: 'a321-side',
+      },
+      steps: n('Module 1: Foundations of Risk-Based IOSA. By the end of this module you will be able to explain how RBI differs from traditional IOSA, and describe why the programme focuses on safety-critical areas.'),
+    },
+    {
+      id: 'm1-iso', templateId: 'card-row', assertion: 'ISO Standards Foundation', sourceRefs: src(11),
+      data: {
+        cards: [
+          { code: 'ISO 9001:2015', title: 'Risk-Based Thinking', detail: 'Plan actions for risks', icon: 'lightbulb' },
+          { code: 'ISO 19011:2018', title: 'Risk Drives Auditing', detail: 'Planning, sampling and depth', icon: 'clipboard-check' },
+          { code: 'New Concept', title: 'One Unified Framework', detail: 'Risk across the audit lifecycle', icon: 'layers' },
+        ],
+      },
+      steps: n(
+        'Two ISO standards set the foundation. ISO 19011 says it plainly: "The concept of risk should substantively influence the planning, execution and reporting of audits."',
+        'ISO 9001:2015 introduces risk-based thinking. Organisations must identify risks and opportunities, and plan actions to address them.',
+        'ISO 19011:2018 sets the standards for auditing management systems. Risk should drive audit planning, sampling decisions, and the depth of examination during audits.',
+        'Together they give a new concept: a unified framework. Risk-awareness is embedded throughout the audit lifecycle, from programme design to final reporting.',
+      ),
+    },
+    {
+      id: 'm1-annex', templateId: 'card-row', assertion: 'Risk-Based Thinking — Annex A.4', sourceRefs: src(12),
+      data: {
+        cards: [
+          { title: 'Context and Planning', detail: 'Risks are the basis for planning', icon: 'compass' },
+          { title: 'Prevention as a System Property', detail: 'No separate preventive action clause', icon: 'shield-check' },
+          { title: 'Performance Over Prescription', icon: 'gauge' },
+        ],
+      },
+      steps: n(
+        'Annex A.4 of ISO 9001:2015 clarifies the intent behind risk-based thinking, and how it applies throughout the quality management system. Three points.',
+        'Context and planning. The organisation must understand its context and determine its risks as a basis for planning.',
+        'Prevention as a system property. The QMS itself acts as a preventive tool. There is no separate "preventive action" clause.',
+        'Performance over prescription. Risk-based thinking has enabled a shift from prescriptive requirements to performance-based requirements.',
+      ),
+    },
+    {
+      id: 'm1-prop', templateId: 'quote-reference', eyebrow: 'Risk Application', assertion: 'Proportionality', sourceRefs: src(13),
+      data: {
+        quote: 'Not all processes of a quality management system represent the same level of risk in terms of the organization’s ability to meet its objectives.',
+        reference: 'ISO 9001:2015, Annex A.4',
+      },
+      steps: n('Risk application starts with proportionality. Not all processes of a quality management system represent the same level of risk in terms of the organisation\'s ability to meet its objectives. So the effort we apply should not be the same either.'),
+    },
+    {
+      id: 'm1-resp', templateId: 'card-row', eyebrow: 'Risk Application', assertion: 'Organizational Responsibility — Clause 6.1', sourceRefs: src(13),
+      data: {
+        cards: [
+          { title: 'Actions to Address Risk', detail: 'And whether to keep documented evidence', icon: 'file-text' },
+          { title: 'Accountability', detail: 'Management and internal audit functions', icon: 'users' },
+        ],
+      },
+      steps: n(
+        'Under Clause 6.1, the organisation is responsible for its own application of risk-based thinking.',
+        'That includes the actions taken to address risk, and the decision whether to retain documented evidence of its risk determinations.',
+        'This places accountability squarely with management and with the internal audit functions. That means you.',
+      ),
+    },
+    {
+      id: 'm1-why', templateId: 'card-row', assertion: 'Why Risk Must Drive Audits', sourceRefs: src(14),
+      data: {
+        cards: [
+          { title: 'Focus on Significance', detail: 'Where failure has the greatest impact', icon: 'crosshair' },
+          { title: 'Greater Audit Value', detail: 'When the audit addresses high-risk issues', icon: 'trending-up' },
+        ],
+      },
+      steps: n(
+        'Why must risk drive audits? ISO 19011:2018: "The concept of risk should substantively influence the planning, execution and reporting of audits."',
+        'Focus on significance. Rather than mechanically checking every box, auditors direct their attention to the areas where failures would have the greatest operational or safety impact.',
+        'Greater audit value. The value of the audit increases substantially when the process addresses high-risk issues.',
+      ),
+    },
+    {
+      id: 'm1-life', templateId: 'card-row', assertion: 'Risk Across the Audit Lifecycle', sourceRefs: src(15),
+      data: {
+        cards: [
+          { code: '01', title: 'Planning', detail: 'Plan and checklist are risk-calibrated', icon: 'list-checks' },
+          { code: '02', title: 'Execution', detail: 'Sampling proportionate to risk exposure', icon: 'search' },
+          { code: '03', title: 'Reporting', detail: 'Findings risk-rated and prioritised', icon: 'flag' },
+        ],
+      },
+      steps: n(
+        'Risk-based thinking must be applied consistently at every stage of the audit, not just at planning.',
+        'Planning. The audit plan and the audit checklist are risk-calibrated.',
+        'Execution. Data collection and sampling strategies are proportionate to the risk exposure.',
+        'Reporting. Findings are risk-rated and prioritised. Follow-up plans are structured around the operational significance of each finding.',
+      ),
+    },
+    {
+      id: 'm1-purp1', templateId: 'card-row', eyebrow: 'Purpose of Risk-Based Auditing', assertion: 'System Maturity and ICAO Compliance', sourceRefs: src(16),
+      data: {
+        cards: [
+          { title: 'Assess System Maturity', detail: 'How effective the management system is', icon: 'gauge' },
+          { title: 'ICAO Annex 19', detail: 'Element 3.3, SSP framework', icon: 'scale' },
+          { title: 'Hazards, Risks, Mitigation', detail: 'Identify, measure, show it works', icon: 'shield-check' },
+        ],
+      },
+      steps: n(
+        'What is risk-based auditing for? First: system maturity and ICAO compliance.',
+        'It assesses the effectiveness and the maturity of the organisation\'s management system.',
+        'It complies with Element 3.3 of the ICAO Annex 19 SSP framework.',
+        'And it gives a mechanism to better identify hazards, measure the associated risks, and demonstrate effective mitigation of those risks.',
+      ),
+    },
+    {
+      id: 'm1-purp2', templateId: 'card-row', eyebrow: 'Purpose of Risk-Based Auditing', assertion: 'Safety and Efficiency', sourceRefs: src(17),
+      data: {
+        cards: [
+          { title: 'Preserve Aviation Safety', detail: 'Oversight on the most consequential risks', icon: 'shield-check' },
+          { title: 'Optimise Oversight Resources', detail: 'More effective use of resources', icon: 'scale' },
+        ],
+      },
+      steps: n(
+        'Second purpose: safety and efficiency.',
+        'Preserve aviation safety. The primary purpose of RBA is to reduce accidents and preserve today\'s historically low rate of fatal air accidents, by focusing oversight on the most consequential risks.',
+        'Optimise oversight resources. RBA enables a more effective use of the oversight resources that are available.',
+      ),
+    },
+    {
+      id: 'm1-cmp', templateId: 'compare-columns', assertion: 'Traditional vs. Risk-Based IOSA', sourceRefs: src(18),
+      data: {
+        left: { heading: 'Traditional IOSA', items: ['Full ISARP checklist every cycle', 'Same depth regardless of risk'], tag: 'Conformance-focused' },
+        right: { heading: 'Risk-Based IOSA', items: ['Scope and depth driven by risk', 'Focus on safety-critical areas'], tag: 'Maturity-focused' },
+      },
+      steps: n(
+        'Traditional IOSA applies the full ISARP checklist uniformly at every audit cycle, with the same audit depth regardless of operational risk or safety performance history. It is conformance-focused: documented and implemented.',
+        'Risk-Based IOSA drives scope and depth by operational risk and safety significance. It focuses on safety-critical areas and end-to-end process effectiveness. It is maturity-focused: performance and results driven.',
+        'Same standards. The difference is where the effort goes, and what we test.',
+      ),
+    },
+    {
+      id: 'm1-scope', templateId: 'card-row', assertion: 'How RBI Changes Audit Scoping', sourceRefs: src(19),
+      data: {
+        cards: [
+          { code: 'Scenario A', title: 'Rising Risk, Deeper Audit', icon: 'trending-up' },
+          { code: 'Scenario B', title: 'Stable Area, Lighter Coverage', icon: 'scale' },
+          { code: 'Key Message', title: 'Effort Moves Toward Risk', icon: 'target' },
+        ],
+        highlight: 2,
+      },
+      steps: n(
+        'How does RBI change audit scoping? Two scenarios.',
+        'Scenario A. Rising safety event exposure in a critical area leads to deeper, more frequent audit attention.',
+        'Scenario B. Stable conformity in lower-criticality areas may justify lighter coverage.',
+        'The key message: audit effort is redistributed toward the risks.',
+      ),
+    },
+    {
+      id: 'm1-scen-a', templateId: 'compare-columns', eyebrow: 'Scenario A', assertion: 'New Aircraft Type', sourceRefs: src(20),
+      data: {
+        left: { heading: 'What the Data Shows', icon: 'chart-line', items: ['Unstable approaches +31%, new type only', 'Differences training at 82%'] },
+        right: { heading: 'How the Audit Changes', icon: 'crosshair', items: ['Scope narrows to approach and landing'] },
+      },
+      steps: n(
+        'Scenario A: a new aircraft type, with increasing approach and landing events. What the data shows: unstable approach events are up 31% on the new type, and flat across all other fleets. Differences training is complete for only 82% of line crew.',
+        'How the audit changes: the scope narrows from "flight operations" to approach and landing on that type. The audit scope is tailored to the operator\'s risk profile.',
+        'The data told us where to look.',
+      ),
+    },
+    {
+      id: 'm1-scen-b', templateId: 'compare-columns', eyebrow: 'Scenario B', assertion: 'Stable Cabin Operations', sourceRefs: src(21),
+      data: {
+        left: { heading: 'What the Data Shows', icon: 'chart-line', items: ['No occurrence trend', 'No open findings', 'No post-holder change'] },
+        right: { heading: 'How the Audit Changes', icon: 'file-search', items: ['Coverage kept, depth reduced', 'Smaller sample, still representative'] },
+      },
+      steps: n(
+        'Scenario B: stable cabin operations. There has been no adverse trend in 24 months. What the data shows: no occurrence trend, no open findings, and no post-holder change.',
+        'How the audit changes: coverage is retained, but the depth is reduced to document and record review. The sample is reduced, but it is still representative.',
+        'Lighter does not mean skipped. The area is still covered.',
+      ),
+    },
+    {
+      id: 'm1-benefits', templateId: 'card-row', eyebrow: 'IOSA Vision', assertion: 'Benefits of the Risk-Based Approach', sourceRefs: src(22),
+      data: {
+        cards: [
+          { title: 'Operators', detail: 'Scope tailored to where effort is needed', icon: 'plane' },
+          { title: 'Regulators', detail: 'Greater insight into operator safety systems', icon: 'building' },
+          { title: 'Industry', detail: 'Improved safety levels industry-wide', icon: 'network' },
+        ],
+      },
+      steps: n(
+        'The IOSA vision: value across the aviation ecosystem.',
+        'Operators. Audit scope is tailored to where effort is needed most. Safety systems and audit methods get a maturity evaluation. Improved audit reports give sharper insight.',
+        'Regulators. Greater insight into operator safety systems and programmes. Stronger audit results through improved reporting. IOSA works as a complement to safety oversight.',
+        'Industry. Improved safety levels industry-wide, and more opportunities for regional and global risk management.',
+      ),
+    },
+    {
+      id: 'm1-model', templateId: 'procedure-flow', assertion: 'The IOSA RBI Model in Practice', sourceRefs: src(23),
+      data: { steps: ['Risk-Based Prioritisation', 'Focus on High-Risk Areas', 'Tailored Audit Scope', 'Reduced Low-Risk Frequency'] },
+      steps: n(
+        'The RBI audit model in practice. It starts with risk-based prioritisation.',
+        'Then the focus goes to the high-risk areas.',
+        'That gives a tailored audit scope.',
+        'And a reduced frequency for the low-risk areas.',
+        'Four parts, one model. Every module after this one uses it.',
+      ),
+    },
+    {
+      id: 'm1-kp', templateId: 'key-points', assertion: 'Module 1 — Key Points', sourceRefs: src(25),
+      data: {
+        points: [
+          { title: 'Effort, Not Scrutiny', detail: 'Scrutiny is not reduced' },
+          { title: 'Depth Follows Risk', detail: 'Calibrated to operational risk' },
+          { title: 'Test Effectiveness', detail: 'Do controls work in practice?' },
+        ],
+      },
+      steps: n(
+        'What to carry into the rest of the course. Effort, not scrutiny. RBI redistributes audit effort toward significance. It does not reduce the scrutiny applied.',
+        'Depth follows risk. Scope, sampling and follow-up are calibrated to operational risk and safety significance.',
+        'Test effectiveness. Auditors test whether controls work in practice, not only whether procedures exist on paper.',
+        'That closes Module 1.',
+      ),
+    },
+    {
+      id: 'm1-brk', templateId: 'break', sourceRefs: src(26),
+      data: { kind: 'Tea Break', ended: 'Module 1', next: { code: 'Module 2', title: 'RBI, SMS and Internal Assurance' } },
+      steps: n('Tea break. End of Module 1. We resume with Module 2: RBI, SMS and internal assurance.'),
+    },
+  ],
+};
+
+export const IOSA_RBI_MODULES = { 'rbi-m0': IOSA_RBI_M0, 'rbi-m1': IOSA_RBI_M1 };

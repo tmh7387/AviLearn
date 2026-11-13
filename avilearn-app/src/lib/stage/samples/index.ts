@@ -151,6 +151,25 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
       steps: n('Identify: reports, audits, data.', 'Assess: likelihood and severity.', 'Control: reduce the risk to an acceptable level.', 'Monitor: confirm the controls work, then go round again.', 'Ask where their operator is weakest in this cycle.'),
     },
     {
+      id: 'sources', templateId: 'card-row', eyebrow: 'Hazard Sources', assertion: 'Hazards Come From Three Main Sources',
+      data: {
+        cards: [
+          { title: 'Reports', detail: 'Voluntary and mandatory reporting', icon: 'file-text' },
+          { title: 'Audits', detail: 'Internal and external findings', icon: 'clipboard-check' },
+          { title: 'Data', detail: 'FDM and trend analysis', icon: 'chart-line' },
+        ],
+      },
+      steps: n('Three main sources feed the hazard register.', 'Reports: voluntary and mandatory reporting systems.', 'Audits: internal and external audit findings.', 'Data: flight data monitoring and trend analysis.'),
+    },
+    {
+      id: 'reactive', templateId: 'compare-columns', assertion: 'Find Hazards Before the Event',
+      data: {
+        left: { heading: 'Reactive', items: ['Investigate after occurrences'], tag: 'Event-driven' },
+        right: { heading: 'Proactive and Predictive', items: ['Look at normal operations', 'Watch the trends'], tag: 'Data-driven' },
+      },
+      steps: n('Reactive methods only start after something has happened.', 'Proactive and predictive methods look at normal operations and trends, before the event.', 'Most mature operators use all three.'),
+    },
+    {
       id: 'split', templateId: 'split-contrast', eyebrow: 'Hazard or Consequence', assertion: 'Record the Condition, Not the Outcome',
       data: { left: { value: 'Hazard', label: 'Condition that could harm' }, right: { value: 'Outcome', label: 'Result to prevent' } },
       steps: n('A hazard is the condition, for example a contaminated runway.', 'The outcome is what could happen: a runway excursion. Keep them apart in the register.'),
