@@ -1,4 +1,5 @@
 import type { SlideDeckSpecInput } from '../schema';
+import { GENERAL_SAMPLE } from './general';
 
 /**
  * Sample decks from three different programmes. They prove that every
@@ -67,6 +68,8 @@ const FACILITATOR = 'Anthony Houston';
 export const SMS_SAMPLE: SlideDeckSpecInput = {
   specVersion: 'stage/1',
   programme: 'sms-airlines',
+  theme: 'nav-chart',
+  vertical: 'aviation',
   course: 'SMS for Airline Managers',
   module: { code: 'SMS D1', title: 'Day 1 — Fundamentals' },
   lesson: { title: 'Day 1 — Fundamentals', objectives: ['Explain the four SMS components', 'Write a hazard statement'] },
@@ -185,6 +188,8 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
 export const CRM_SAMPLE: SlideDeckSpecInput = {
   specVersion: 'stage/1',
   programme: 'crm-instructor',
+  theme: 'nav-chart',
+  vertical: 'aviation',
   course: 'CRM Instructor',
   module: { code: 'CRM 02', title: 'Non-Technical Skills' },
   lesson: { title: 'NOTECHS and the Flight Deck', objectives: ['Name the NOTECHS categories'] },
@@ -216,9 +221,26 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
       ),
     },
     {
-      id: 'timeline', templateId: 'flight-timeline', eyebrow: 'Workload', assertion: 'Workload Peaks at Both Ends of the Flight',
-      data: { pins: [{ at: 'Pre-flight', label: 'Briefing' }, { at: 'Takeoff', label: 'High workload', key: true }, { at: 'Cruise', label: 'Low workload' }, { at: 'Approach', label: 'High workload', key: true }, { at: 'Taxi in', label: 'Fatigue risk' }] },
-      steps: n('Start at the briefing.', 'Takeoff: high workload.', 'Cruise: low workload. Watch for complacency.', 'Approach and landing: high workload again.', 'Taxi in: fatigue risk.', 'Plan the briefing around the two peaks.'),
+      id: 'timeline', templateId: 'phase-of-flight', eyebrow: 'Threat and Error Management', assertion: 'Every Phase Has Threats, Most in the Approach',
+      data: {
+        phases: [
+          { value: 'Late load sheet' },
+          { value: 'Wind shear' },
+          { value: 'Weather deviation' },
+          { value: 'Runway change', key: true },
+          { value: 'Busy apron' },
+        ],
+        latent: { label: 'Latent', value: 'Unclear procedures' },
+      },
+      steps: n(
+        'Illustrative threats, one per phase, gate to gate. Pre-departure and taxi: a late load sheet adds time pressure.',
+        'Takeoff and climb: wind shear.',
+        'Cruise: a weather deviation.',
+        'Descent, approach and landing: a late runway change. Most threats arise here.',
+        'Taxi and park: a busy apron.',
+        'Latent threats affect the whole flight, for example unclear procedures.',
+        'Ask each team to name three threats per phase in the Portal exercise.',
+      ),
     },
     {
       id: 'chain', templateId: 'cause-chain', eyebrow: 'Example Event', assertion: 'The Fix Belongs at System Level',
@@ -256,6 +278,8 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
 export const IOSA_SAMPLE: SlideDeckSpecInput = {
   specVersion: 'stage/1',
   programme: 'iosa-auditor',
+  theme: 'nav-chart',
+  vertical: 'aviation',
   course: 'IOSA Internal Auditor',
   module: { code: 'IOSA D2', title: 'Day 2 — Audit Principles' },
   lesson: { title: 'Day 2 — Audit Principles', objectives: ['Classify a nonconformity'] },
@@ -327,7 +351,7 @@ export const IOSA_SAMPLE: SlideDeckSpecInput = {
       steps: n('Record it with the ISARP reference.', 'Root cause, highlighted: most closures fail here.', 'Plan the action.', 'Implement.', 'Verify: evidence that the action works.', 'Ask which step their organisation skips most often.'),
     },
     {
-      id: 'tl', templateId: 'flight-timeline', eyebrow: 'Audit Cycle', assertion: 'A Finding Stays Open After the Audit Ends',
+      id: 'tl', templateId: 'timeline', eyebrow: 'Audit Cycle', assertion: 'A Finding Stays Open After the Audit Ends',
       data: { pins: [{ at: 'Before', label: 'Document review' }, { at: 'On site', label: 'Finding raised', key: true }, { at: 'After', label: 'Corrective action' }, { at: 'Closure', label: 'Evidence accepted' }] },
       steps: n('Before the visit: documents.', 'On site: the finding is raised.', 'After: the operator acts.', 'Closure: evidence is accepted.', 'The audit report is not the end of the finding.'),
     },
@@ -368,4 +392,5 @@ export const SAMPLE_DECKS: Record<string, SlideDeckSpecInput> = {
   sms: SMS_SAMPLE,
   crm: CRM_SAMPLE,
   iosa: IOSA_SAMPLE,
+  general: GENERAL_SAMPLE,
 };

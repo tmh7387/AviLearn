@@ -3,11 +3,13 @@ import type { TemplateDef } from './types';
 import { agenda, objectives, questions, sectionDivider, titleBumper } from './structure';
 import { breakSlide, courseMaterials, courseTitle, dayClose, dayOverview, facilitator, icebreaker, keyPoints, moduleOpener } from './opening';
 import { annotatedImage, assertionImage, heroNumber, quoteReference, splitContrast } from './evidence';
-import { causeChain, checklist, flightTimeline, procedureFlow } from './process';
+import { causeChain, checklist, phaseOfFlight, procedureFlow, timeline } from './process';
 import { exerciseLaunch, knowledgeCheck } from './interaction';
 
 /**
- * Registry of platform templates. Analysis tools shared with the Portal
+ * Registry of platform templates. Most are core templates for every industry;
+ * domain templates belong to one industry pack (./packs/verticals.ts).
+ * Analysis tools shared with the Portal
  * (fishbone, five-why, swiss-cheese, bowtie, risk-matrix, flight-profile,
  * card-sort) arrive in Phase 2 through the avilearn-course-tools package.
  */
@@ -33,7 +35,8 @@ const ALL = [
   quoteReference,
   procedureFlow,
   checklist,
-  flightTimeline,
+  timeline,
+  phaseOfFlight,
   causeChain,
   knowledgeCheck,
   exerciseLaunch,

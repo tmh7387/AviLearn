@@ -1,10 +1,10 @@
 /**
- * AviLearn Stage tokens: the single source of truth for projected courseware.
+ * Stage tokens: the single source of truth for projected courseware.
  *
- * Values come from docs/SPEC-stage-nav-chart.md (Nav Chart style). Every
- * template, the compiler, the presenter runtime, AI prompts and the future
- * video renderer read from here. Do not write colour or size literals
- * anywhere else in src/lib/stage.
+ * Every template, the compiler, the presenter runtime, AI prompts and the
+ * video renderer read sizes and timing from here, and colours and fonts from
+ * the deck's theme pack. Do not write colour or size literals anywhere else
+ * in src/lib/stage.
  */
 
 export type StageThemeName = 'light' | 'dark';
@@ -15,51 +15,21 @@ export interface StageTheme {
   grid: string;
   ink: string;
   inkMuted: string;
-  teal: string;
-  tealFill: string;
-  tealTint: string;
+  accent: string;
+  accentFill: string;
+  accentTint: string;
   card: string;
   line: string;
   /** Opaque white behind third-party logos, in both themes. */
   paper: string;
 }
 
+/**
+ * Brand-free geometry, type scale, word budget and timing. Colours and fonts
+ * live in theme packs (./packs/themes.ts), so one course can use any brand.
+ */
 export const STAGE = {
   canvas: { width: 1920, height: 1080, safe: { x: 115, top: 88, bottom: 134 }, gridStep: 77 },
-  themes: {
-    light: {
-      bg: '#eef3ef',
-      grid: 'rgba(18,48,90,.07)',
-      ink: '#12305a',
-      inkMuted: '#4b6584',
-      teal: '#0a6b62',
-      tealFill: '#0b7d72',
-      tealTint: 'rgba(11,125,114,.11)',
-      card: 'rgba(255,255,255,.78)',
-      line: '#12305a',
-      paper: '#ffffff',
-    },
-    dark: {
-      bg: '#0c1a2c',
-      grid: 'rgba(170,205,235,.07)',
-      ink: '#e3ecf6',
-      inkMuted: '#97abc3',
-      teal: '#2dd4bf',
-      tealFill: '#2dd4bf',
-      tealTint: 'rgba(45,212,191,.13)',
-      card: 'rgba(255,255,255,.045)',
-      line: '#b9cadc',
-      paper: '#ffffff',
-    },
-  } satisfies Record<StageThemeName, StageTheme>,
-  defaultTheme: 'light' as StageThemeName,
-  fonts: {
-    display: "'Barlow Condensed', 'Arial Narrow', sans-serif",
-    body: "'Barlow', 'Segoe UI', Arial, sans-serif",
-    mono: "'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace",
-    googleHref:
-      'https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@500;600&display=swap',
-  },
   /** Sizes in canvas px (1920 x 1080). */
   type: {
     title: 160,
@@ -81,21 +51,11 @@ export const STAGE = {
   video: { width: 1920, height: 1080, fps: 30, codec: 'h264', audioLufs: -16, minStepSec: 2.5, padSec: 0.6 },
 } as const;
 
-/** CSS custom properties for one theme, e.g. `--s-bg: #eef3ef;`. */
-export function themeCssVars(name: StageThemeName): string {
-  const t = STAGE.themes[name];
+/** CSS custom properties for one colour mode, e.g. `--s-bg: #eef3ef;`. */
+export function themeCssVars(t: StageTheme): string {
   return (Object.keys(t) as (keyof StageTheme)[])
     .map((k) => `--s-${k.replace(/[A-Z]/g, (c) => '-' + c.toLowerCase())}:${t[k]};`)
     .join('');
-}
-
-/** Every colour value the stage is allowed to emit (used by the QA colour audit). */
-export function allowedColors(): Set<string> {
-  const out = new Set<string>();
-  for (const name of ['light', 'dark'] as const) {
-    for (const v of Object.values(STAGE.themes[name])) out.add(v.toLowerCase().replace(/\s+/g, ''));
-  }
-  return out;
 }
 
 /** WCAG relative luminance for a #rrggbb colour. */
