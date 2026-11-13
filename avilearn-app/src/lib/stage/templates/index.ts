@@ -3,7 +3,7 @@ import type { TemplateDef } from './types';
 import { agenda, objectives, questions, sectionDivider, titleBumper } from './structure';
 import { breakSlide, courseMaterials, courseTitle, dayClose, dayOverview, facilitator, icebreaker, keyPoints, moduleOpener } from './opening';
 import { annotatedImage, assertionImage, heroNumber, quoteReference, splitContrast } from './evidence';
-import { causeChain, checklist, flightTimeline, procedureFlow, timeline } from './process';
+import { causeChain, checklist, phaseOfFlight, procedureFlow, timeline } from './process';
 import { exerciseLaunch, knowledgeCheck } from './interaction';
 
 /**
@@ -36,7 +36,7 @@ const ALL = [
   procedureFlow,
   checklist,
   timeline,
-  flightTimeline,
+  phaseOfFlight,
   causeChain,
   knowledgeCheck,
   exerciseLaunch,

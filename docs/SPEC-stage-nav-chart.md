@@ -140,7 +140,8 @@ Claude picks a `templateId` and fills `diagramData`. Code draws everything.
 | `procedure-flow` | 3–6 steps, verb first, ≤ 4 words | 1 per step + full view |
 | `checklist` | 2–6 items, ≤ 4 words | 1 per item + full view |
 | `split-contrast` | 2 hero values + 2-word labels | left, right |
-| `flight-timeline` | 3–6 pins: time or altitude + label | 1 per pin + full view |
+| `timeline` | 3–6 pins: time or stage + label (core) | 1 per pin + full view |
+| `phase-of-flight` | Aviation pack. 5 phases (Portal keys), value + optional bar, optional latent band | 1 per phase, latent, full view |
 | `annotated-image` | image ref, 1–4 callouts (≤ 3 words, x/y in %) | image, 1 per callout |
 
 Diagram drawing rules:

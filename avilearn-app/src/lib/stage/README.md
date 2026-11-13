@@ -20,7 +20,7 @@ No AI writes HTML, CSS or SVG. Templates draw everything from `tokens.ts`.
 | `packs/themes.ts` | Theme packs (brand): colours, fonts, heading case, display scale, org and product names. `nav-chart` (default) and `studio-neutral` (test) |
 | `packs/verticals.ts` | Industry packs: the domain templates each industry owns, plus extra voice rules. `aviation` (default) and `general` |
 | `schema.ts` | Deck and slide spec (Zod) |
-| `templates/` | 26 templates. Core templates work in every pack. A domain template (for example `flight-timeline`) works only in its industry pack. Each has a data schema, a build plan and a renderer. `opening.ts` holds the course opening and module start/end slides |
+| `templates/` | 26 templates. Core templates work in every pack. A domain template (for example `phase-of-flight`) works only in its industry pack. Each has a data schema, a build plan and a renderer. `opening.ts` holds the course opening and module start/end slides |
 | `public/stage/kestrel/` | Kestrel Pacific 3D renders (light and dark PNG) and media kit images. Make new renders with `scripts/kestrel-render.py` |
 | `voice.ts` | Banned phrases. The compiler rejects them |
 | `compiler.ts` | `compileDeck`, `renderSlide`, QA issues (schema, steps, words, colours, voice) |

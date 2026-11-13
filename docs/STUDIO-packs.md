@@ -19,7 +19,7 @@ A deck sets two packs:
 |---|---|---|
 | `nav-chart` | Theme | Aviation Synergy courses. Default |
 | `studio-neutral` | Theme | Test theme. Proves that the brand is a setting |
-| `aviation` | Industry | Owns `flight-timeline`. Default |
+| `aviation` | Industry | Owns `phase-of-flight` (the 5 Portal phases, A to B, any topic). Default |
 | `general` | Industry | Core templates only |
 
 ## Add a theme pack

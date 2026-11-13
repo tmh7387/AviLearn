@@ -27,7 +27,7 @@ export const AVIATION: VerticalPack = {
   id: 'aviation',
   name: 'Aviation',
   contentBy: 'aviation-synergy',
-  templates: ['flight-timeline'],
+  templates: ['phase-of-flight'],
   voice: [],
 };
 

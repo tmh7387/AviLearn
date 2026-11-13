@@ -105,7 +105,7 @@ test('the voice check rejects stock AI phrases', () => {
 });
 
 test('a domain template is rejected outside its industry pack', () => {
-  const slide = { id: 't', templateId: 'flight-timeline', assertion: 'Workload Peaks Twice', data: { pins: [{ at: 'A', label: 'One' }, { at: 'B', label: 'Two' }, { at: 'C', label: 'Three' }] }, steps: [1, 2, 3, 4].map(() => ({ speakerNotes: 'x' })) };
+  const slide = { id: 't', templateId: 'phase-of-flight', assertion: 'Threats Arise in Every Phase', data: { phases: ['One', 'Two', 'Three', 'Four', 'Five'].map((value) => ({ value })) }, steps: [1, 2, 3, 4, 5, 6].map(() => ({ speakerNotes: 'x' })) };
   const general = compileDeck({ ...base(slide), theme: 'studio-neutral', vertical: 'general' });
   assert.ok(general.issues.some((i) => i.code === 'pack'));
   const aviation = compileDeck({ ...base(slide), vertical: 'aviation' });

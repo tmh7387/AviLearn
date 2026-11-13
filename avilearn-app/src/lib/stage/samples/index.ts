@@ -221,9 +221,26 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
       ),
     },
     {
-      id: 'timeline', templateId: 'flight-timeline', eyebrow: 'Workload', assertion: 'Workload Peaks at Both Ends of the Flight',
-      data: { pins: [{ at: 'Pre-flight', label: 'Briefing' }, { at: 'Takeoff', label: 'High workload', key: true }, { at: 'Cruise', label: 'Low workload' }, { at: 'Approach', label: 'High workload', key: true }, { at: 'Taxi in', label: 'Fatigue risk' }] },
-      steps: n('Start at the briefing.', 'Takeoff: high workload.', 'Cruise: low workload. Watch for complacency.', 'Approach and landing: high workload again.', 'Taxi in: fatigue risk.', 'Plan the briefing around the two peaks.'),
+      id: 'timeline', templateId: 'phase-of-flight', eyebrow: 'Threat and Error Management', assertion: 'Every Phase Has Threats, Most in the Approach',
+      data: {
+        phases: [
+          { value: 'Late load sheet' },
+          { value: 'Wind shear' },
+          { value: 'Weather deviation' },
+          { value: 'Runway change', key: true },
+          { value: 'Busy apron' },
+        ],
+        latent: { label: 'Latent', value: 'Unclear procedures' },
+      },
+      steps: n(
+        'Illustrative threats, one per phase, gate to gate. Pre-departure and taxi: a late load sheet adds time pressure.',
+        'Takeoff and climb: wind shear.',
+        'Cruise: a weather deviation.',
+        'Descent, approach and landing: a late runway change. Most threats arise here.',
+        'Taxi and park: a busy apron.',
+        'Latent threats affect the whole flight, for example unclear procedures.',
+        'Ask each team to name three threats per phase in the Portal exercise.',
+      ),
     },
     {
       id: 'chain', templateId: 'cause-chain', eyebrow: 'Example Event', assertion: 'The Fix Belongs at System Level',

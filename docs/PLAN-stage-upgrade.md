@@ -123,7 +123,7 @@ Each template has a Zod schema, a default step plan, and sample data from **at l
 |---|---|
 | Structure | `title-bumper`, `section-divider`, `agenda`, `objectives`, `summary`, `questions` |
 | Evidence | `assertion-image`, `annotated-image`, `hero-number`, `split-contrast`, `quote-reference` (ICAO / IOSA / regulation excerpt) |
-| Process | `procedure-flow`, `checklist`, `flight-timeline`, `cause-chain` |
+| Process | `procedure-flow`, `checklist`, `timeline`, `phase-of-flight`, `cause-chain` |
 | Analysis tools (shared with Portal, see 4.5) | `fishbone` (cause diagram), `five-why`, `swiss-cheese`, `bowtie`, `risk-matrix`, `flight-profile`, `card-sort` |
 | Interaction | `knowledge-check`, `exercise-launch` (tells the room to open a Portal tool, with the exercise name and a QR code) |
 

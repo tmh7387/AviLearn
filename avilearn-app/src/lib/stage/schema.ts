@@ -35,7 +35,7 @@ export const TEMPLATE_IDS = [
   'procedure-flow',
   'checklist',
   'timeline',
-  'flight-timeline',
+  'phase-of-flight',
   'cause-chain',
   // interaction
   'knowledge-check',

@@ -117,7 +117,7 @@ export const SLIDE_CSS = `
 .st-checks-3 .st-check{padding:36px 28px;gap:24px}
 .st-checks-3 .st-check span{font-size:44px}
 
-/* flight-timeline */
+/* timeline */
 .st-tl{position:relative;height:520px}
 .st-tl-axis{position:absolute;left:0;right:0;top:50%;height:${STAGE.stroke.main}px;margin-top:-2px;background:var(--s-line)}
 .st-tl-pin{position:absolute;top:50%;width:340px;margin-left:-170px;text-align:center}
@@ -127,6 +127,27 @@ export const SLIDE_CSS = `
 .st-tl-l{font:600 38px/1.12 var(--s-font-body)}
 .st-up .st-tl-l{bottom:44px}.st-up .st-tl-at{top:44px}
 .st-down .st-tl-l{top:44px}.st-down .st-tl-at{bottom:44px}
+
+/* phase-of-flight (aviation pack) */
+.st-fp{display:flex;flex-direction:column;gap:20px}
+.st-fp-cols{display:grid;grid-template-columns:repeat(5,1fr)}
+.st-fp-col{display:flex;flex-direction:column;gap:18px;padding:8px 24px 0;border-left:2px solid var(--s-line)}
+.st-fp-col:first-child{border-left:0;padding-left:0}
+.st-fp-ph{font:600 26px/1.1 var(--s-font-mono);color:var(--s-ink-muted)}
+.st-fp-v{font:700 calc(54px*var(--s-dscale))/1.05 var(--s-font-display);text-transform:var(--s-head-case)}
+.st-fp-bar{height:150px;display:flex;align-items:flex-end}
+.st-fp-bar i{display:block;width:100%;min-height:8px;background:var(--s-ink-muted);border-radius:${STAGE.radius.box}px}
+.st-fp-col.st-hot-text .st-fp-bar i{background:var(--s-accent-fill)}
+.st-fp-col.st-hot-text .st-fp-ph{color:var(--s-accent)}
+.st-fp-route{position:relative;height:150px}
+.st-fp-route svg{display:block;width:100%;height:110px;overflow:visible}
+.st-fp-route line{stroke:var(--s-ink);stroke-width:${STAGE.stroke.main};vector-effect:non-scaling-stroke}
+.st-fp-dot{position:absolute;top:88px;width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;background:var(--s-bg);border:${STAGE.stroke.main}px solid var(--s-ink)}
+.st-fp-route marker path{fill:var(--s-ink)}
+.st-fp-a,.st-fp-b{position:absolute;bottom:0;font:700 30px/1 var(--s-font-mono)}
+.st-fp-a{left:0}.st-fp-b{right:0}
+.st-fp-latent{display:flex;align-items:baseline;gap:28px;padding:22px 28px;border:${STAGE.stroke.box}px solid var(--s-line);border-radius:${STAGE.radius.box}px;background:var(--s-accent-tint)}
+.st-fp-lv{font:600 40px/1.1 var(--s-font-body)}
 
 /* knowledge-check */
 .st-kc{display:flex;flex-direction:column;gap:44px}
