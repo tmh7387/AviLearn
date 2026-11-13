@@ -7,6 +7,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { buildGallery, compileDeck } from '../src/lib/stage';
 import { SAMPLE_DECKS } from '../src/lib/stage/samples';
+import { COURSE_DECKS } from '../src/lib/stage/courses';
 
 const publicDir = resolve(__dirname, '..', 'public');
 const MIME: Record<string, string> = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', svg: 'image/svg+xml', webp: 'image/webp' };
@@ -34,6 +35,19 @@ for (const { key, deck } of decks) {
   }
 }
 writeFileSync(join(out, 'gallery.html'), inlineImages(buildGallery(decks, (key) => `${key}.html`)));
+
+// Real courses: own folder, own gallery, same QA gate.
+const courseOut = join(out, 'courses');
+mkdirSync(courseOut, { recursive: true });
+const courses = Object.entries(COURSE_DECKS).map(([key, spec]) => ({ key, deck: compileDeck(spec) }));
+for (const { key, deck } of courses) {
+  writeFileSync(join(courseOut, `${key}.html`), inlineImages(deck.html));
+  for (const i of deck.issues) {
+    if (i.level === 'error') errors++;
+    console.log(`${i.level.padEnd(5)} ${key}/${i.slideId ?? '-'}: ${i.message}`);
+  }
+}
+console.log(`Wrote ${courses.length} course deck(s) to ${courseOut}`);
 console.log(`Wrote ${decks.length} decks and gallery.html to ${out}`);
 if (errors) {
   console.error(`${errors} QA error(s).`);

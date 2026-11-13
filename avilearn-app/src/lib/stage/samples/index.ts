@@ -35,7 +35,8 @@ const livery = (id: string, file: string, alt: string, extra = '') => ({
 const photo = (id: string, url: string, alt: string, credit?: string) => ({ id, url, alt, kind: 'photo' as const, credit });
 const logo = (id: string, alt: string) => ({ id, url: `/stage/samples/${id}.png`, alt, kind: 'drawing' as const });
 
-const assets = [
+/** Shared asset library: Kestrel renders and media, facilitator photo and logos. */
+export const assets = [
   livery('a321-34-liv', 'a321-three-quarter', 'Kestrel Pacific A321neo in airline livery, front three-quarter view, gear down'),
   livery('b787-side-liv', 'b787-side', 'Kestrel Pacific 787-9 in airline livery, left side view, gear down', ' (Sketchfab model, CC BY)'),
   livery('a321-top-liv', 'a321-top', 'Kestrel Pacific A321neo, top view, nose to the right'),
@@ -61,7 +62,7 @@ const assets = [
   logo('aviation-synergy', 'Aviation Synergy'),
 ];
 
-const FAC_DATA = { name: 'Anthony Houston', logos: ['usaf', 'faa', 'iata', 'nokscoot', 'nok', 'aviation-synergy'], photo: 'fac-photo' };
+export const FAC_DATA = { name: 'Anthony Houston', logos: ['usaf', 'faa', 'iata', 'nokscoot', 'nok', 'aviation-synergy'], photo: 'fac-photo' };
 
 const FACILITATOR = 'Anthony Houston';
 
