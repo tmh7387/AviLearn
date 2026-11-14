@@ -196,47 +196,80 @@ export const moduleOpener = defineTemplate({
 
 export const keyPoints = defineTemplate({
   id: 'key-points',
-  purpose: 'Last content slide of a module ("Module N — Key Points"): a short lead line and 2 or 3 points, one per step.',
+  purpose:
+    'Last content slide of a module ("Module N — Key Points"): an optional short lead line and 2 to 4 numbered points, one per step. Each point can carry an icon.',
   schema: z.object({
     lead: label(8).optional(),
-    points: z.array(z.object({ title: label(4), detail: label(6).optional() })).min(2).max(3),
+    points: z.array(z.object({ title: label(4), detail: label(6).optional(), icon: IconSchema.optional() })).min(2).max(4),
   }),
   needsAssertion: true,
   parts: (d) => d.points.length,
   fullView: true,
   render: (d, ctx) => `
-    ${d.lead ? `<p class="st-kp-lead" ${s(1, true)}>${ctx.log.t(1, d.lead)}</p>` : ''}
-    <div class="st-boxes" style="--n:${d.points.length}">
-      ${d.points
-        .map(
-          (p, i) => `
-        <div class="st-box" ${s(i + 1)}>
-          <div class="st-box-h">${ctx.log.t(i + 1, p.title)}</div>
-          ${p.detail ? `<div class="st-box-t">${ctx.log.t(i + 1, p.detail)}</div>` : ''}
-        </div>`,
-        )
-        .join('')}
+    <div class="st-kp">
+      ${d.lead ? `<div class="st-kp-tag" ${s(1, true)}>${ctx.log.t(1, d.lead)}</div>` : ''}
+      <ol class="st-list st-kp-rows">
+        ${d.points
+          .map(
+            (p, i) => `
+          <li class="st-kp-row" ${s(i + 1)}>
+            <span class="st-kp-n">${String(i + 1).padStart(2, '0')}</span>
+            <span><span class="st-kp-h">${ctx.log.t(i + 1, p.title)}</span>${p.detail ? `<span class="st-kp-t">${ctx.log.t(i + 1, p.detail)}</span>` : ''}</span>
+            ${p.icon ? `<span class="st-kp-ic" ${ctx.motion.m(i + 1, 'pin')}>${iconSvg(p.icon)}</span>` : '<span></span>'}
+          </li>`,
+          )
+          .join('')}
+      </ol>
     </div>`,
 });
 
+const HHMM = /^([01]?\d|2[0-3]):[0-5]\d$/;
+function clockSvg(resume?: string): string {
+  const m = resume ? HHMM.exec(resume) && resume.split(':').map(Number) : null;
+  const [h, mi] = m ? m : [0, 0];
+  const ticks = Array.from({ length: 12 }, (_, i) => {
+    const a = (i * 30 * Math.PI) / 180;
+    const r1 = i % 3 === 0 ? 70 : 76;
+    const x1 = 100 + r1 * Math.sin(a), y1 = 100 - r1 * Math.cos(a), x2 = 100 + 86 * Math.sin(a), y2 = 100 - 86 * Math.cos(a);
+    return `<line class="st-ct${i % 3 === 0 ? ' q' : ''}" x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`;
+  }).join('');
+  return `<svg viewBox="0 0 200 200" aria-hidden="true"><circle class="st-cf" cx="100" cy="100" r="94"/>${ticks}
+    <line class="st-ch-h" x1="100" y1="100" x2="100" y2="54" transform="rotate(${(h % 12) * 30 + mi * 0.5} 100 100)"/>
+    <line class="st-ch-m" x1="100" y1="100" x2="100" y2="28" transform="rotate(${mi * 6} 100 100)"/>
+    <circle class="st-cc" cx="100" cy="100" r="7"/></svg>`;
+}
+
 export const breakSlide = defineTemplate({
   id: 'break',
-  purpose: 'Tea or lunch break between modules. States which module ended, which one comes next, and the return time.',
+  purpose:
+    'Tea or lunch break between modules. States which module ended and which one comes next. A clock shows the return time; the presenter sets it on the slide (−5 / +5 min). resume (HH:MM) is the default.',
   schema: z.object({
     kind: label(3),
     ended: label(3).optional(),
     next: z.object({ code: z.string().min(1).max(10), title: label(6) }).optional(),
-    resume: z.string().max(12).optional(),
+    resume: z.string().regex(HHMM, 'resume must be HH:MM (24 h)').optional(),
+    clock: z.boolean().default(true),
   }),
   needsAssertion: false,
   parts: () => 1,
   fullView: false,
   render: (d, ctx) => `
     <div class="st-brk" ${s(1)}>
-      <div class="st-brk-kind">${ctx.log.t(1, d.kind)}</div>
-      ${d.resume ? `<div class="st-brk-time">${ctx.log.t(1, `Back at ${d.resume}`)}</div>` : ''}
-      ${d.ended ? `<p class="st-brk-line">${ctx.log.t(1, `End of ${d.ended}.`)}</p>` : ''}
-      ${d.next ? `<p class="st-brk-line">${ctx.log.t(1, `We resume with ${d.next.code} — ${d.next.title}.`)}</p>` : ''}
+      <div>
+        <div class="st-brk-kind">${ctx.log.t(1, d.kind)}</div>
+        ${d.ended ? `<p class="st-brk-line">${ctx.log.t(1, `End of ${d.ended}.`)}</p>` : ''}
+        ${d.next ? `<p class="st-brk-line">${ctx.log.t(1, `We resume with ${d.next.code} — ${d.next.title}.`)}</p>` : ''}
+      </div>
+      ${
+        d.clock
+          ? `<div class="st-clock" data-resume="${d.resume ?? ''}">
+        ${clockSvg(d.resume)}
+        <div class="st-clock-time">${ctx.log.t(1, 'Back at')} <b class="st-clock-t">${d.resume ?? '--:--'}</b></div>
+        <div class="st-clock-in"></div>
+        <div class="st-clock-ctl" aria-label="Change the return time"><button type="button" data-d="-5">−5 min</button><button type="button" data-d="5">+5 min</button></div>
+      </div>`
+          : ''
+      }
     </div>`,
 });
 

@@ -5,6 +5,7 @@ import { breakSlide, courseMaterials, courseTitle, dayClose, dayOverview, facili
 import { annotatedImage, assertionImage, heroNumber, quoteReference, splitContrast } from './evidence';
 import { causeChain, checklist, phaseOfFlight, procedureFlow, timeline } from './process';
 import { cardRow, compareColumns } from './compare';
+import { cycle, hierarchy, staircase } from './diagram';
 import { exerciseLaunch, knowledgeCheck } from './interaction';
 
 /**
@@ -36,6 +37,9 @@ const ALL = [
   quoteReference,
   cardRow,
   compareColumns,
+  cycle,
+  hierarchy,
+  staircase,
   procedureFlow,
   checklist,
   timeline,

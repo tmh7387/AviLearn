@@ -364,9 +364,9 @@ export const IOSA_RBI_M1: SlideDeckSpecInput = {
       id: 'm1-kp', templateId: 'key-points', assertion: 'Module 1 — Key Points', sourceRefs: src(25),
       data: {
         points: [
-          { title: 'Effort, Not Scrutiny', detail: 'Scrutiny is not reduced' },
-          { title: 'Depth Follows Risk', detail: 'Calibrated to operational risk' },
-          { title: 'Test Effectiveness', detail: 'Do controls work in practice?' },
+          { title: 'Effort, Not Scrutiny', detail: 'Scrutiny is not reduced', icon: 'scale' },
+          { title: 'Depth Follows Risk', detail: 'Calibrated to operational risk', icon: 'layers' },
+          { title: 'Test Effectiveness', detail: 'Do controls work in practice?', icon: 'circle-check' },
         ],
       },
       steps: n(
@@ -397,12 +397,13 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
         title: 'RBI, SMS and Internal Assurance',
         objectives: [
           'Connect RBI principles with SMS processes',
-          "Trace the auditor's SRM process",
-          'See how hazard data focuses audits',
+          'Trace the SRM process the auditor follows',
+          'See how hazard data supports audit focus',
           'Describe quality and safety assurance roles',
         ],
         image: 'a321-34',
       },
+      wordsApproved: 'Anthony: keep the four source objectives as they are (Module 2 review).',
       steps: n('Module 2: RBI, SMS and internal assurance. Four objectives. Connect RBI principles with SMS processes. Trace the safety risk management process the auditor follows. See how hazard data supports audit focus. And describe the quality and safety assurance roles.'),
     },
     {
@@ -428,7 +429,8 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
       ),
     },
     {
-      id: 'm2-signal', templateId: 'card-row', assertion: 'From Signal to Audit Decision', sourceRefs: src(29),
+      id: 'm2-signal', templateId: 'card-row', assertion: 'From Safety Signal to Audit Decision', sourceRefs: src(29),
+      wordsApproved: 'Anthony: keep "Safety" in the source title (Module 2 review).',
       data: {
         cards: [
           { title: 'The Signal', detail: 'Report, SPI, trend, finding', icon: 'bell-ring' },
@@ -446,9 +448,9 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
       ),
     },
     {
-      id: 'm2-roles', templateId: 'card-row', assertion: 'Internal Assurance Roles Must Connect', sourceRefs: src(30),
+      id: 'm2-roles', templateId: 'cycle', assertion: 'Internal Assurance Roles Must Connect', sourceRefs: src(30),
       data: {
-        cards: [
+        nodes: [
           { title: 'Operational Management', detail: 'Owns processes and daily compliance', icon: 'users' },
           { title: 'Performance Monitoring', detail: 'Monitors, reviews, challenges performance', icon: 'gauge' },
           { title: 'Internal Audit', detail: 'Independent assurance to management', icon: 'shield-check' },
@@ -462,7 +464,8 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
       ),
     },
     {
-      id: 'm2-ws1', templateId: 'compare-columns', eyebrow: 'Load Control, Outstation', assertion: 'Workshop 1 — Compliance vs. Risk', sourceRefs: src(31),
+      id: 'm2-ws1', templateId: 'compare-columns', assertion: 'Workshop 1 — Compliance vs. Risk', subhead: 'Load control and weight & balance at an outstation', sourceRefs: src(31),
+      wordsApproved: 'Anthony asked for the source subheader on screen (Module 2 review).',
       data: {
         left: { heading: 'Team A: Compliance', icon: 'list-checks', items: ['Same checklist, every cycle', 'Proves the control exists'] },
         right: { heading: 'Team B: Risk-Based', icon: 'crosshair', items: ['Scope driven by risk data', 'Tests if the control works'] },
@@ -489,9 +492,9 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
       id: 'm2-kp', templateId: 'key-points', assertion: 'Module 2 — Key Points', sourceRefs: src(33),
       data: {
         points: [
-          { title: 'SMS Points First', detail: 'Primary source of the risk picture' },
-          { title: 'Convert the Signal', detail: 'Into a scoped audit decision' },
-          { title: 'The Loop Must Close', detail: 'Or the same weakness recurs' },
+          { title: 'SMS Points First', detail: 'Primary source of the risk picture', icon: 'compass' },
+          { title: 'Convert the Signal', detail: 'Into a scoped audit decision', icon: 'crosshair' },
+          { title: 'The Loop Must Close', detail: 'Or the same weakness recurs', icon: 'repeat' },
         ],
       },
       steps: n(
@@ -504,7 +507,7 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
     {
       id: 'm2-lunch', templateId: 'break', sourceRefs: src(34),
       data: { kind: 'Lunch Break', ended: 'Module 2', next: { code: 'Module 3', title: 'IOSA Renewal Readiness' } },
-      steps: n('Lunch break. We will resume at the scheduled time. The afternoon sessions cover IOSA renewal readiness, process-based thinking, and the renewal timeline workshop.'),
+      steps: n('Lunch break. Set the return time on the clock before you leave the room. We will resume at the scheduled time. The afternoon sessions cover IOSA renewal readiness, process-based thinking, and the renewal timeline workshop.'),
     },
   ],
 };

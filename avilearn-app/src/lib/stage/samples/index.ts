@@ -170,6 +170,44 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
       steps: n('Reactive methods only start after something has happened.', 'Proactive and predictive methods look at normal operations and trends, before the event.', 'Most mature operators use all three.'),
     },
     {
+      id: 'components', templateId: 'hierarchy', eyebrow: 'ICAO Annex 19', assertion: 'Four Components Make One SMS',
+      data: {
+        root: { title: 'Safety Management System', icon: 'shield-check' },
+        children: [
+          { title: 'Policy', icon: 'file-text' },
+          { title: 'Risk Management', icon: 'triangle-alert' },
+          { title: 'Assurance', icon: 'gauge' },
+          { title: 'Promotion', icon: 'messages-square' },
+        ],
+      },
+      steps: n('The SMS sits on four components.', 'Safety policy and objectives.', 'Safety risk management.', 'Safety assurance.', 'Safety promotion.', 'Every element in your manual maps to one of these four.'),
+    },
+    {
+      id: 'loop', templateId: 'cycle', assertion: 'Assurance Feeds Back Into Risk Management',
+      data: {
+        nodes: [
+          { title: 'Identify', icon: 'search' },
+          { title: 'Assess', icon: 'scale' },
+          { title: 'Control', icon: 'shield-check' },
+          { title: 'Monitor', icon: 'eye' },
+        ],
+        center: 'SRM loop',
+      },
+      steps: n('Identify hazards.', 'Assess the risk.', 'Put controls in place.', 'Monitor the controls, and feed what you learn back into identification.', 'The loop never stops.'),
+    },
+    {
+      id: 'maturity', templateId: 'staircase', assertion: 'Hazard Identification Matures in Three Steps',
+      data: {
+        levels: [
+          { title: 'Reactive', detail: 'After the event', icon: 'flag' },
+          { title: 'Proactive', detail: 'From normal operations', icon: 'search' },
+          { title: 'Predictive', detail: 'From trends and data', icon: 'chart-line' },
+        ],
+        highlight: 2,
+      },
+      steps: n('Reactive: we learn after an occurrence.', 'Proactive: we look at normal operations and reports.', 'Predictive: we use trends and data to see the hazard before it bites.', 'Where is your operator today?'),
+    },
+    {
       id: 'split', templateId: 'split-contrast', eyebrow: 'Hazard or Consequence', assertion: 'Record the Condition, Not the Outcome',
       data: { left: { value: 'Hazard', label: 'Condition that could harm' }, right: { value: 'Outcome', label: 'Result to prevent' } },
       steps: n('A hazard is the condition, for example a contaminated runway.', 'The outcome is what could happen: a runway excursion. Keep them apart in the register.'),

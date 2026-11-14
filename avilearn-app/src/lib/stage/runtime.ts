@@ -77,6 +77,22 @@ document.addEventListener('keydown',function(e){
   else if(key==='Home'){go(0,1);}else if(key==='End'){go(slides.length-1,meta.steps[slides.length-1]);}
   else if(key==='f'||key==='F'){fs();}else if(key==='d'||key==='D'){theme();}else if(key==='n'||key==='N'){notes();}else if(key==='m'||key==='M'){motion();}
 });
+/* Break clock: return time set on the slide (-5 / +5 min), kept per deck and slide in this browser. */
+function clocks(){[].slice.call(deck.querySelectorAll('.st-clock')).forEach(function(c){
+  var idx=slides.indexOf(c.closest('.st-slide')),key='stage-resume:'+location.pathname+':'+idx;
+  function parse(v){var r=/^(\\d{1,2}):(\\d{2})$/.exec(v||'');return r?(+r[1])*60+(+r[2]):null;}
+  var t=parse(store(key));if(t===null)t=parse(c.getAttribute('data-resume'));
+  if(t===null){var d0=new Date();t=Math.ceil((d0.getHours()*60+d0.getMinutes()+15)/5)*5;}
+  function draw(){t=((t%1440)+1440)%1440;var h=Math.floor(t/60),mm=t%60;
+    c.querySelector('.st-ch-h').setAttribute('transform','rotate('+((h%12)*30+mm*0.5)+' 100 100)');
+    c.querySelector('.st-ch-m').setAttribute('transform','rotate('+(mm*6)+' 100 100)');
+    c.querySelector('.st-clock-t').textContent=(h<10?'0':'')+h+':'+(mm<10?'0':'')+mm;
+    var nw=new Date(),left=t-(nw.getHours()*60+nw.getMinutes());if(left<-720)left+=1440;
+    c.querySelector('.st-clock-in').textContent=left>0?'in '+left+' min':'';}
+  c.addEventListener('click',function(e){e.stopPropagation();var b=e.target.closest&&e.target.closest('[data-d]');if(!b)return;
+    t+=+b.getAttribute('data-d');store(key,String(Math.floor(((t%1440)+1440)%1440/60))+':'+('0'+(((t%60)+60)%60)).slice(-2));draw();});
+  draw();setInterval(draw,30000);});}
+clocks();
 document.querySelector('.st-stage').addEventListener('click',next);
 hud.addEventListener('click',function(e){e.stopPropagation();var a=e.target.getAttribute&&e.target.getAttribute('data-a');
   if(a==='prev')prev();else if(a==='next')next();else if(a==='notes')notes();else if(a==='theme')theme();else if(a==='fs')fs();else if(a==='motion')motion();});

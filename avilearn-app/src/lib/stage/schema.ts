@@ -33,6 +33,9 @@ export const TEMPLATE_IDS = [
   'quote-reference',
   'card-row',
   'compare-columns',
+  'cycle',
+  'hierarchy',
+  'staircase',
   // process
   'procedure-flow',
   'checklist',
@@ -80,6 +83,13 @@ export const SlideSpecSchema = z.object({
   templateId: z.enum(TEMPLATE_IDS),
   eyebrow: maxWords(4, 'Eyebrow').optional(),
   assertion: maxWords(STAGE.words.headline, 'Assertion headline').optional(),
+  /** One line under the headline (scenario, setting). Counts toward the word limit. */
+  subhead: maxWords(12, 'Subhead').optional(),
+  /**
+   * The reviewer approved more words than the slide limit, to keep the source
+   * meaning (guided build). State why. The word-limit error becomes a warning.
+   */
+  wordsApproved: z.string().min(3).max(160).optional(),
   data: z.unknown(),
   steps: z.array(StepSchema).min(1).max(8),
   /** Name bar at the bottom: shows for 5 s when the slide opens (facilitator, guest speaker). */

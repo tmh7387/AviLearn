@@ -87,7 +87,7 @@ export function renderSlide(
 
   const showHead = def.needsAssertion || !!slide.assertion;
   const head = showHead
-    ? `${slide.eyebrow ? `<div class="st-eyebrow">${esc(slide.eyebrow)}</div>` : ''}${slide.assertion ? `<h2 class="st-h">${esc(slide.assertion)}</h2>` : ''}`
+    ? `${slide.eyebrow ? `<div class="st-eyebrow">${esc(slide.eyebrow)}</div>` : ''}${slide.assertion ? `<h2 class="st-h">${esc(slide.assertion)}</h2>` : ''}${slide.subhead ? `<p class="st-subhead">${esc(slide.subhead)}</p>` : ''}`
     : '';
 
   let l3 = '';
@@ -95,8 +95,10 @@ export function renderSlide(
     const lt = slide.lowerThird;
     l3 = `<div class="st-l3" aria-hidden="true"><b>${log.t(1, lt.name)}</b>${lt.role ? `<span>${log.t(1, lt.role)}</span>` : ''}</div>`;
   }
-  const words = log.items.reduce((n, t) => n + countWords(t.text), 0) + countWords(slide.assertion ?? '');
-  if (words > W.slideMax) {
+  const words = log.items.reduce((n, t) => n + countWords(t.text), 0) + countWords(slide.assertion ?? '') + countWords(slide.subhead ?? '');
+  if (words > W.slideMax && slide.wordsApproved) {
+    issues.push({ level: 'warn', code: 'words', slideId: slide.id, message: `${words} words on screen, over the limit of ${W.slideMax}. Approved by the reviewer: ${slide.wordsApproved}` });
+  } else if (words > W.slideMax) {
     issues.push({ level: 'error', code: 'words', slideId: slide.id, message: `${words} words on screen; the limit is ${W.slideMax}. Move detail to speaker notes.` });
   } else if (words > W.slideTarget) {
     issues.push({ level: 'warn', code: 'words', slideId: slide.id, message: `${words} words on screen; the target is ${W.slideTarget}.` });
@@ -131,7 +133,7 @@ export function renderSlide(
     `<div class="st-foot"><span class="st-mark"${outro ? ` data-s="1" ${motion.m(1, 'pin')}` : ''}>${theme.markIcon ? MARK_SVG : ''}${esc(theme.product)}</span><span>${esc(deck.module.code)} · ${index + 1} / ${deck.slides.length}</span></div>` +
     `</section>`;
 
-  for (const text of [slide.eyebrow ?? '', slide.assertion ?? '', ...log.items.map((t) => t.text)]) {
+  for (const text of [slide.eyebrow ?? '', slide.assertion ?? '', slide.subhead ?? '', ...log.items.map((t) => t.text)]) {
     for (const message of voiceProblems(text, vertical.voice)) issues.push({ level: 'error', code: 'voice', slideId: slide.id, message });
   }
 

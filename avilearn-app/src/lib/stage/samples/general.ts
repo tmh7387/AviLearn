@@ -77,6 +77,42 @@ export const GENERAL_SAMPLE: SlideDeckSpecInput = {
       steps: n('SAMPLE. Vague feedback judges the person and gives no next step.', 'Specific feedback names the behaviour and the fix.', 'Ask the group to rewrite one vague line of their own.'),
     },
     {
+      id: 'loop', templateId: 'cycle', eyebrow: 'Coaching', assertion: 'Feedback Is a Loop, Not a Speech',
+      data: {
+        nodes: [
+          { title: 'Observe', icon: 'eye' },
+          { title: 'Describe', icon: 'message-circle' },
+          { title: 'Agree', icon: 'handshake' },
+          { title: 'Follow Up', icon: 'refresh-cw' },
+        ],
+      },
+      steps: n('SAMPLE. Observe the behaviour.', 'Describe what you saw.', 'Agree the next step together.', 'Follow up within the week.', 'Then the loop starts again.'),
+    },
+    {
+      id: 'team', templateId: 'hierarchy', assertion: 'Who Gives Feedback to Whom',
+      data: {
+        root: { title: 'General Manager', icon: 'user' },
+        children: [
+          { title: 'Front Office', items: ['Reception', 'Concierge'], icon: 'hotel' },
+          { title: 'Housekeeping', items: ['Rooms', 'Laundry'], icon: 'building' },
+          { title: 'Food and Beverage', items: ['Kitchen', 'Service'], icon: 'users' },
+        ],
+      },
+      steps: n('SAMPLE. The general manager coaches the heads of department.', 'Front office.', 'Housekeeping.', 'Food and beverage.', 'Each head coaches their own team.'),
+    },
+    {
+      id: 'levels', templateId: 'staircase', assertion: 'Coaching Skill Builds in Steps',
+      data: {
+        levels: [
+          { title: 'Notice', icon: 'eye' },
+          { title: 'Describe', icon: 'message-circle' },
+          { title: 'Coach', icon: 'graduation-cap' },
+          { title: 'Develop Others', icon: 'users' },
+        ],
+      },
+      steps: n('SAMPLE. First, notice behaviour.', 'Then describe it without judgement.', 'Then coach the next step.', 'Finally, develop others to coach.', 'Most supervisors stop at step two.'),
+    },
+    {
       id: 'check', templateId: 'checklist', assertion: 'Check Your Message Before You Speak',
       data: { items: ['Based on facts', 'About one behaviour', 'Private setting', 'Ends with a question'] },
       steps: n('Facts.', 'One behaviour.', 'Setting.', 'Question.', 'Full view.'),
