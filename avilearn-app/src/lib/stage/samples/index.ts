@@ -47,6 +47,7 @@ export const assets = [
   livery('b787-tail-liv', 'b787-tail', 'Kestrel Pacific 787-9, vertical fin with the kestrel emblem', ' (Sketchfab model, CC BY)'),
   livery('b787-34-liv', 'b787-three-quarter', 'Kestrel Pacific 787-9 in airline livery, front three-quarter view', ' (Sketchfab model, CC BY)'),
   { id: 'a321-model', url: '/stage/kestrel/a321-model.json', kind: 'model' as const, alt: 'Kestrel Pacific A321neo seen from above, flying the route' },
+  { id: 'a321-gear', url: '/stage/kestrel/a321-gear.json', kind: 'model' as const, alt: 'Kestrel Pacific A321neo seen from the side, flying gate to gate' },
   render('a321-34', 'a321-three-quarter', 'Kestrel Pacific A321neo, front three-quarter view, gear down'),
   render('a321-side', 'a321-side', 'Kestrel Pacific A321neo, left side view'),
   render('b787-side', 'b787-side', 'Kestrel Pacific 787-9, left side view, gear down', ' (Sketchfab model, CC BY)'),
@@ -197,6 +198,29 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
       steps: n('Identify hazards.', 'Assess the risk.', 'Put controls in place.', 'Monitor the controls, and feed what you learn back into identification.', 'The loop never stops.'),
     },
     {
+      id: 'fishbone', templateId: 'fishbone-build', eyebrow: 'Hazard Analysis', assertion: 'Ramp Collision, Causes by Category',
+      wordsApproved: 'Fishbone diagram: every cause stays on screen by design (approved 2026-11-16)',
+      data: {
+        problem: 'Tug struck a parked aircraft',
+        categories: [
+          { name: 'People', causes: [{ text: 'New driver, solo' }] },
+          { name: 'Process', causes: [{ text: 'No wing walker rule', isSystemic: true }, { text: 'Stand plan not briefed' }] },
+          { name: 'Equipment', causes: [{ text: 'Worn tug brakes' }] },
+          { name: 'Management', causes: [{ text: 'Short turnaround targets', isSystemic: true }] },
+          { name: 'Environment', causes: [{ text: 'Wet apron at night' }] },
+        ],
+      },
+      steps: n(
+        'Illustrative ramp event. A tug struck a parked aircraft.',
+        'People: a new driver working alone.',
+        'Process: no wing walker rule, and the stand plan was not briefed.',
+        'Equipment: worn brakes.',
+        'Management: short turnaround targets.',
+        'Environment: a wet apron at night.',
+        'Two causes are systemic. The SMS fixes those, not the driver.',
+      ),
+    },
+    {
       id: 'maturity', templateId: 'staircase', assertion: 'Hazard Identification Matures in Three Steps',
       data: {
         levels: [
@@ -304,6 +328,44 @@ export const CRM_SAMPLE: SlideDeckSpecInput = {
         'Taxi and park: a busy apron.',
         'Latent threats affect the whole flight, for example unclear procedures.',
         'Ask each team to name three threats per phase in the Portal exercise.',
+      ),
+    },
+    {
+      id: 'profile', templateId: 'flight-profile-scene', eyebrow: 'Threat and Error Management', assertion: 'Every Phase Has Threats, Most in the Approach',
+      data: {
+        phases: [
+          { value: 'Late load sheet' },
+          { value: 'Wind shear' },
+          { value: 'Weather deviation' },
+          { value: 'Runway change', key: true },
+          { value: 'Busy apron' },
+        ],
+        latent: { label: 'Latent', value: 'Unclear procedures' },
+        aircraft: 'a321-gear',
+      },
+      steps: n('Let the flight run without talking. Then ask: which phase had the most threats on your last line check? SME to check the illustrative threats.'),
+    },
+    {
+      id: 'fishbone', templateId: 'fishbone-build', eyebrow: 'Root Cause Analysis', assertion: 'Unstable Approach, Causes by Category',
+      wordsApproved: 'Fishbone diagram: every cause stays on screen by design (approved 2026-11-16)',
+      data: {
+        problem: 'Unstable approach continued to landing',
+        categories: [
+          { name: 'People', causes: [{ text: 'Fatigue after early report' }, { text: 'Plan continuation bias' }] },
+          { name: 'Process', causes: [{ text: 'No go-around trigger in SOP', isSystemic: true }, { text: 'Late runway change brief' }] },
+          { name: 'Equipment and tools', causes: [{ text: 'Rushed FMS change' }, { text: 'Tailwind not on display' }] },
+          { name: 'Management', causes: [{ text: 'Back-to-back early rosters', isSystemic: true }, { text: 'On-time pressure', isSystemic: true }] },
+          { name: 'Environment', causes: [{ text: 'Tailwind on final' }, { text: 'Night, new airport' }] },
+        ],
+      },
+      steps: n(
+        'Illustrative event. SME to check the causes. The approach was not stable, and the crew continued to land.',
+        'People: fatigue and plan continuation bias.',
+        'Process: no clear go-around trigger, and a late brief.',
+        'Equipment and tools: a rushed FMS change.',
+        'Management: rosters and on-time pressure.',
+        'Environment: tailwind, night, a new airport.',
+        'The systemic causes sit in the organisation. Fix these first, then the teams run their own fishbone in the Portal.',
       ),
     },
     {

@@ -7,7 +7,8 @@ import { causeChain, checklist, phaseOfFlight, procedureFlow, timeline } from '.
 import { cardRow, compareColumns } from './compare';
 import { cycle, hierarchy, staircase } from './diagram';
 import { exerciseLaunch, knowledgeCheck } from './interaction';
-import { routeOpener } from './scene';
+import { flightProfileScene, routeOpener } from './scene';
+import { fishboneBuild } from './fishbone';
 
 /**
  * Registry of platform templates. Most are core templates for every industry;
@@ -15,6 +16,8 @@ import { routeOpener } from './scene';
  * Analysis tools shared with the Portal
  * (fishbone, five-why, swiss-cheese, bowtie, risk-matrix, flight-profile,
  * card-sort) arrive in Phase 2 through the avilearn-course-tools package.
+ * fishbone-build and flight-profile-scene are the instructor's presentation
+ * views; they read the same data shapes as the Portal tools.
  */
 const ALL = [
   courseTitle,
@@ -24,6 +27,8 @@ const ALL = [
   courseMaterials,
   moduleOpener,
   routeOpener,
+  flightProfileScene,
+  fishboneBuild,
   keyPoints,
   breakSlide,
   dayClose,

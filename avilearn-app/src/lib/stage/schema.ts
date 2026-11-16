@@ -42,6 +42,8 @@ export const TEMPLATE_IDS = [
   'checklist',
   'timeline',
   'phase-of-flight',
+  'flight-profile-scene',
+  'fishbone-build',
   'cause-chain',
   // interaction
   'knowledge-check',

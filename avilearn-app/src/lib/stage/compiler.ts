@@ -6,7 +6,8 @@ import { PRESENTER_JS } from './runtime';
 import { STAGE } from './tokens';
 import { MotionLog, motionPlan } from './motion';
 import { voiceProblems } from './voice';
-import { SCENE_CSS, SCENE_LIB, sceneJs } from './templates/scene';
+import { SCENE_CSS, SCENE_LIB, SCENE_TEMPLATES, sceneJs } from './templates/scene';
+import { FISHBONE_CSS } from './templates/fishbone';
 import { allowedColors, getThemePack, getVertical, ownerOf, packCss, templateAllowed, type ThemePack, type VerticalPack } from './packs';
 
 export interface StageIssue {
@@ -202,7 +203,7 @@ export function compileDeck(input: SlideDeckSpecInput | unknown, opts: CompileOp
   });
   issues.push(...slides.flatMap((s) => s.issues));
 
-  const scenes = spec.slides.some((s) => s.templateId === 'route-opener');
+  const scenes = spec.slides.some((s) => SCENE_TEMPLATES.includes(s.templateId));
   const meta = {
     theme: mode,
     steps: slides.map((s) => s.steps),
@@ -218,7 +219,7 @@ export function compileDeck(input: SlideDeckSpecInput | unknown, opts: CompileOp
 <title>${esc(spec.module.code)} · ${esc(spec.lesson.title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${theme.fonts.googleHref}">
-${scenes ? `<script type="importmap">${JSON.stringify({ imports: { three: `${opts.sceneLib ?? SCENE_LIB}/build/three.module.js` } })}</script>\n` : ''}<style>${packCss(theme)}${SLIDE_CSS}${scenes ? SCENE_CSS : ''}${PRESENTER_CSS}</style>
+${scenes ? `<script type="importmap">${JSON.stringify({ imports: { three: `${opts.sceneLib ?? SCENE_LIB}/build/three.module.js` } })}</script>\n` : ''}<style>${packCss(theme)}${SLIDE_CSS}${FISHBONE_CSS}${scenes ? SCENE_CSS : ''}${PRESENTER_CSS}</style>
 </head>
 <body>
 <main class="st-stage" aria-label="${esc(spec.lesson.title)}">
