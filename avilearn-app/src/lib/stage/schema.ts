@@ -16,6 +16,7 @@ export const TEMPLATE_IDS = [
   'course-materials',
   // module start and end
   'module-opener',
+  'route-opener',
   'key-points',
   'break',
   'day-close',
@@ -58,8 +59,8 @@ export const AssetSchema = z.object({
   url: z.string().min(1),
   /** Optional version for the dark theme, e.g. a 3D render with light lines. */
   urlDark: z.string().min(1).optional(),
-  /** photo: fills its frame (crop). drawing: shown whole (renders, diagrams, logos). */
-  kind: z.enum(['photo', 'drawing']).default('drawing'),
+  /** photo: fills its frame (crop). drawing: shown whole (renders, diagrams, logos). model: a glTF 3D model for motion scenes. */
+  kind: z.enum(['photo', 'drawing', 'model']).default('drawing'),
   /** Source or licence line shown with the image, e.g. "Kestrel Pacific is fictional. AI image." */
   credit: z.string().max(90).optional(),
   alt: z.string().min(1, 'Every image needs alt text'),

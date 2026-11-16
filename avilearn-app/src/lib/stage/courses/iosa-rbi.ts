@@ -391,17 +391,17 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
   lesson: { title: 'Day 1 — Fundamentals', objectives: ['Connect RBI principles with SMS processes'] },
   slides: [
     {
-      id: 'm2-open', templateId: 'module-opener', sourceRefs: src(27),
+      id: 'm2-open', templateId: 'route-opener', sourceRefs: src(27),
       data: {
-        number: '2',
+        label: 'Module 2',
         title: 'RBI, SMS and Internal Assurance',
         objectives: [
-          'Connect RBI principles with SMS processes',
-          'Trace the SRM process the auditor follows',
-          'See how hazard data supports audit focus',
-          'Describe quality and safety assurance roles',
+          { text: 'Connect RBI principles with SMS processes' },
+          { text: 'Trace the SRM process the auditor follows' },
+          { text: 'See how hazard data supports audit focus' },
+          { text: 'Describe quality and safety assurance roles' },
         ],
-        image: 'a321-34',
+        aircraft: 'a321-model',
       },
       wordsApproved: 'Anthony: keep the four source objectives as they are (Module 2 review).',
       steps: n('Module 2: RBI, SMS and internal assurance. Four objectives. Connect RBI principles with SMS processes. Trace the safety risk management process the auditor follows. See how hazard data supports audit focus. And describe the quality and safety assurance roles.'),

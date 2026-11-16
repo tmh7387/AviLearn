@@ -6,6 +6,7 @@ import { PRESENTER_JS } from './runtime';
 import { STAGE } from './tokens';
 import { MotionLog, motionPlan } from './motion';
 import { voiceProblems } from './voice';
+import { SCENE_CSS, SCENE_LIB, sceneJs } from './templates/scene';
 import { allowedColors, getThemePack, getVertical, ownerOf, packCss, templateAllowed, type ThemePack, type VerticalPack } from './packs';
 
 export interface StageIssue {
@@ -170,7 +171,12 @@ export interface CompiledDeck {
 }
 
 /** Validate a deck spec and compile it to one self-contained HTML presentation. */
-export function compileDeck(input: SlideDeckSpecInput | unknown): CompiledDeck {
+export interface CompileOptions {
+  /** Base URL of three.js for motion scenes. Default: pinned jsDelivr copy. Use a local copy for offline SCORM. */
+  sceneLib?: string;
+}
+
+export function compileDeck(input: SlideDeckSpecInput | unknown, opts: CompileOptions = {}): CompiledDeck {
   const parsed = SlideDeckSpecSchema.safeParse(input);
   if (!parsed.success) {
     const issues: StageIssue[] = parsed.error.issues.map((i) => ({ level: 'error', code: 'schema', message: `${i.path.join('.')}: ${i.message}` }));
@@ -196,6 +202,7 @@ export function compileDeck(input: SlideDeckSpecInput | unknown): CompiledDeck {
   });
   issues.push(...slides.flatMap((s) => s.issues));
 
+  const scenes = spec.slides.some((s) => s.templateId === 'route-opener');
   const meta = {
     theme: mode,
     steps: slides.map((s) => s.steps),
@@ -211,7 +218,7 @@ export function compileDeck(input: SlideDeckSpecInput | unknown): CompiledDeck {
 <title>${esc(spec.module.code)} · ${esc(spec.lesson.title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="${theme.fonts.googleHref}">
-<style>${packCss(theme)}${SLIDE_CSS}${PRESENTER_CSS}</style>
+${scenes ? `<script type="importmap">${JSON.stringify({ imports: { three: `${opts.sceneLib ?? SCENE_LIB}/build/three.module.js` } })}</script>\n` : ''}<style>${packCss(theme)}${SLIDE_CSS}${scenes ? SCENE_CSS : ''}${PRESENTER_CSS}</style>
 </head>
 <body>
 <main class="st-stage" aria-label="${esc(spec.lesson.title)}">
@@ -225,7 +232,7 @@ ${slides.map((s) => s.html).join('\n')}
 <button type="button" data-a="notes">Notes</button><button type="button" data-a="theme">Light/Dark</button><button type="button" data-a="fs">Full screen</button><button type="button" data-a="motion">Motion</button>
 </nav>
 <script type="application/json" id="st-meta">${JSON.stringify(meta).replace(/</g, '\\u003c')}</script>
-<script>${PRESENTER_JS}</script>
+<script>${PRESENTER_JS}</script>${scenes ? `\n<script>${sceneJs(opts.sceneLib ?? SCENE_LIB)}</script>` : ''}
 </body>
 </html>`;
 

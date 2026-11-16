@@ -20,7 +20,7 @@ No AI writes HTML, CSS or SVG. Templates draw everything from `tokens.ts`.
 | `packs/themes.ts` | Theme packs (brand): colours, fonts, heading case, display scale, org and product names. `nav-chart` (default) and `studio-neutral` (test) |
 | `packs/verticals.ts` | Industry packs: the domain templates each industry owns, plus extra voice rules. `aviation` (default) and `general` |
 | `schema.ts` | Deck and slide spec (Zod) |
-| `templates/` | 26 templates. Core templates work in every pack. A domain template (for example `phase-of-flight`) works only in its industry pack. Each has a data schema, a build plan and a renderer. `opening.ts` holds the course opening and module start/end slides |
+| `templates/` | 32 templates. Core templates work in every pack. A domain template (for example `phase-of-flight`) works only in its industry pack. Each has a data schema, a build plan and a renderer. `opening.ts` holds the course opening and module start/end slides |
 | `public/stage/kestrel/` | Kestrel Pacific 3D renders (light and dark PNG) and media kit images. Make new renders with `scripts/kestrel-render.py` |
 | `motion.ts` | Motion system: verbs (reveal, draw, grow, count, pin), stagger rule, motion QA plan. Timings live in `tokens.ts` (`STAGE.motion`) |
 | `voice.ts` | Banned phrases. The compiler rejects them |
@@ -65,6 +65,7 @@ Both default to the values above. An unknown pack is a QA error. `defaultTheme` 
 
 - Every part enters in 600 ms on one easing curve. Past parts dim to 30% in 300 ms. Parts that enter on one step start 120 ms apart; the presenter shortens the gap so a step ends inside 1200 ms.
 - A template gives a part its verb with `ctx.motion.m(step, verb)`: `reveal`, `draw` (SVG needs `pathLength="1"`), `draw-v`, `grow`, `grow-x`, `count`, `pin`. Parts with no verb reveal.
+- Motion scenes (`templates/scene.ts`): `route-opener` (aviation pack) is a module opener played as a flight. A live 3D glTF aircraft (asset `kind: 'model'`, nose along +X) flies in, turns onto the course and crosses one waypoint per objective. Each objective lights when the nose crosses its waypoint, and each leg lasts as long as reading that objective takes (`pace`, words per second, default 2.5). The markup is the end state, so the slide reads without JavaScript or WebGL. three.js loads on first play from a pinned jsDelivr copy; pass `compileDeck(spec, { sceneLib })` to use a local copy (offline SCORM). Frame capture for video: `window.stScene(slideElement, ms)` sets an exact frame. Motion off (M key) shows the end state.
 - Branded sequences: `course-title` plays the intro (3 s), `module-opener`, `title-bumper` and `section-divider` the bumper (1.5 s), `day-close` the outro (2 s). A slide's `lowerThird: { name, role }` shows a name bar for 5 s.
 - Motion QA (`code: 'motion'`) fails a step whose parts cannot enter inside 1200 ms. Split the step.
 - The system setting "reduce motion" and the `M` key switch motion off.

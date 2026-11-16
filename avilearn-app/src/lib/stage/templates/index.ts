@@ -7,6 +7,7 @@ import { causeChain, checklist, phaseOfFlight, procedureFlow, timeline } from '.
 import { cardRow, compareColumns } from './compare';
 import { cycle, hierarchy, staircase } from './diagram';
 import { exerciseLaunch, knowledgeCheck } from './interaction';
+import { routeOpener } from './scene';
 
 /**
  * Registry of platform templates. Most are core templates for every industry;
@@ -22,6 +23,7 @@ const ALL = [
   dayOverview,
   courseMaterials,
   moduleOpener,
+  routeOpener,
   keyPoints,
   breakSlide,
   dayClose,

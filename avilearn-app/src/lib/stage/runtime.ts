@@ -57,6 +57,7 @@ function apply(changed){
   var gap=movers.length<2?0:seq?Math.min(400,(MO.sequences[seq]-longest)/(movers.length-1)):Math.min(MO.stagger,(MO.maxMove-longest)/(movers.length-1));
   if(!still)movers.forEach(function(mv,j){var d=Math.max(0,Math.round(j*gap))+'ms';mv.e.style.transitionDelay=d;if(mv.part)mv.part.style.transitionDelay=d;});
   movers.forEach(function(mv,j){if(mv.e.getAttribute('data-m')==='count')count(mv.e,still?0:j*gap);});
+  if(changed){slides.forEach(function(s,j){if(j!==i&&s._on){s._on=false;s.dispatchEvent(new Event('st:leave'));}});el._on=true;el.dispatchEvent(new Event('st:enter'));}
   if(changed){el.classList.add('st-enter');el.classList.remove('st-play');void el.offsetWidth;el.classList.remove('st-enter');el.classList.add('st-play');}
   notesTx.textContent=meta.notes[i][k-1]||'';
   pos.textContent=(i+1)+'/'+slides.length+' · '+k+'/'+n;
