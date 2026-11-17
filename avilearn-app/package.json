@@ -11,7 +11,8 @@
     "publish:portal": "node scripts/publish-to-portal.mjs",
     "test:stage": "tsx --test test/stage.test.ts",
     "stage:build": "tsx scripts/stage-build.ts",
-    "stage:check": "node scripts/stage-check.mjs"
+    "stage:check": "node scripts/stage-check.mjs",
+    "stage:video": "tsx scripts/video/stage-video.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.76",
@@ -37,6 +38,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "playwright": "^1.63.0",
+    "three": "0.170.0",
     "tsx": "^4.20.3",
     "typescript": "^5"
   }

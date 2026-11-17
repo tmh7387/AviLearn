@@ -343,7 +343,7 @@ function Route(el){
       var cam=new T.OrthographicCamera(0,${C.width},0,-${C.height},1,4000);cam.position.set(0,1500,0);cam.up.set(0,0,-1);cam.lookAt(0,0,0);
       cam.left=0;cam.right=${C.width};cam.top=0;cam.bottom=-${C.height};cam.updateProjectionMatrix();
       var sun=new T.DirectionalLight(0xffffff,2.2);sun.position.set(440,1000,20);sun.target.position.set(960,0,540);
-      sun.castShadow=true;sun.shadow.mapSize.set(4096,4096);Object.assign(sun.shadow.camera,{left:-1400,right:1400,top:1400,bottom:-1400,near:10,far:3000});
+      sun.castShadow=true;var sm=window.stShadowMap||4096;sun.shadow.mapSize.set(sm,sm);Object.assign(sun.shadow.camera,{left:-1400,right:1400,top:1400,bottom:-1400,near:10,far:3000});
       sun.shadow.radius=14;sun.shadow.blurSamples=20;sun.shadow.bias=-0.0004;
       sc.add(sun,sun.target,new T.HemisphereLight(0xdfe9ee,0x6f7f86,0.9));
       var ground=new T.Mesh(new T.PlaneGeometry(6000,6000),new T.ShadowMaterial({color:0x0a1a2e,opacity:0.22}));
