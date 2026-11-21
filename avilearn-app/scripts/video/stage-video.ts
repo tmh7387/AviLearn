@@ -2,8 +2,9 @@
  * Video stage: export one module to MP4 (1080p, 30 fps, H.264, AAC) with
  * narration from the speaker notes and WebVTT captions.
  *
- *   bash scripts/video/setup-tts.sh                  (once)
- *   npm run stage:video -- rbi-m2 [--voice bm_george] [--speed 1] [--out dir] [--slides m2-open,m2-sms] [--shadow 1024]
+ *   Voice: ElevenLabs "george" (default) or "alice". Offline fallback: any Kokoro id
+ *   (e.g. --voice bm_george), after: bash scripts/video/setup-tts.sh (once)
+ *   npm run stage:video -- rbi-m2 [--voice george|alice|<kokoro id>] [--speed 1] [--out dir] [--slides m2-open,m2-sms] [--shadow 1024]
  *     -> ../env/tmp/video/<key>/<key>.mp4, <key>.vtt
  *
  * How it works. The compiled deck is the source: no second set of templates.
@@ -43,15 +44,16 @@ const opt = (name: string, def: string) => {
 const key = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--')));
 const decks: Record<string, SlideDeckSpecInput> = { ...SAMPLE_DECKS, ...COURSE_DECKS } as Record<string, SlideDeckSpecInput>;
 if (!key || !decks[key]) {
-  console.error(`Usage: npm run stage:video -- <deck key> [--voice bm_george] [--speed 1] [--out dir] [--slides id,id]\nDeck keys: ${Object.keys(decks).join(', ')}`);
+  console.error(`Usage: npm run stage:video -- <deck key> [--voice george|alice|<kokoro id>] [--speed 1] [--out dir] [--slides id,id]\nDeck keys: ${Object.keys(decks).join(', ')}`);
   process.exit(2);
 }
-const voice = opt('voice', 'bm_george');
+const voice = opt('voice', 'george');
+const eleven = ['george', 'alice'].includes(voice); // ElevenLabs voices; anything else is a Kokoro voice id
 const speed = opt('speed', '1');
 const out = resolve(opt('out', join(app, '..', 'env', 'tmp', 'video', key)));
 const ttsDir = resolve(opt('tts', join(app, '..', 'env', 'tmp', 'tts')));
 const only = opt('slides', '');
-if (!existsSync(join(ttsDir, 'kokoro-q8.onnx'))) {
+if (!eleven && !existsSync(join(ttsDir, 'kokoro-q8.onnx'))) {
   console.error(`No narration model in ${ttsDir}. Run: bash scripts/video/setup-tts.sh`);
   process.exit(2);
 }

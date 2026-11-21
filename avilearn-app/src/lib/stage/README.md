@@ -37,7 +37,7 @@ Analysis tools shared with the Portal (fishbone, five-why, swiss-cheese, bowtie,
 |---|---|
 | `npm run test:stage` | Unit tests: contrast, QA rules, template coverage |
 | `npm run stage:build` | Writes `../env/tmp/stage/{gallery,sms,crm,iosa,general}.html`. Fails on a QA error |
-| `bash scripts/video/setup-tts.sh` then `npm run stage:video -- rbi-m2` | Exports one module to `../env/tmp/video/<key>/<key>.mp4` (1080p, 30 fps, H.264, AAC) and `<key>.vtt`. Narration comes from the speaker notes. See Video below |
+| `npm run stage:video -- rbi-m2` | Exports one module to `../env/tmp/video/<key>/<key>.mp4` (1080p, 30 fps, H.264, AAC) and `<key>.vtt`. Narration comes from the speaker notes. See Video below |
 | `npm run stage:check` | Opens every slide at 1920×1080 in light and dark, checks overflow, canvas bounds and the 22 px floor, saves screenshots. Needs `npx playwright install chromium` once |
 | `npm run dev`, then `/stage/gallery` | The gallery in the app. `/stage/deck/sms` (or `crm`, `iosa`, `general`) presents a sample deck |
 
@@ -80,7 +80,8 @@ Both default to the values above. An unknown pack is a QA error. `defaultTheme` 
 - Order: one segment per step, the same order as a presenter pressing Space.
 - Motion: CSS motion is paused and stepped frame by frame (Web Animations API). Motion scenes are stepped with `window.stScene`. When the motion ends, one frame is held, so a held slide costs one frame.
 - Length: a segment lasts as long as its motion or its narration, whichever is longer. The voice starts 0.4 s after the step starts.
-- Narration: `scripts/video/tts.py` runs Kokoro-82M (Apache-2.0) offline. `setup-tts.sh` gets the model and 28 English voices from the npm registry into `../env/tmp/tts`. Default voice `bm_george` (British male). `--voice af_heart`, `--speed 1.1`. Acronyms are spelled for speech in `tts.py` (`SAY`).
+- Narration: `scripts/video/tts.py`. Default engine ElevenLabs (`eleven_v4`). Voices: `george` (default, British male) and `alice` (alternate, British female): `--voice alice`. `--speed 1.1` (0.7 to 1.2). Needs `ELEVENLABS_API_KEY`, or a cloud environment secret for `api.elevenlabs.io`. Audio is cached in `<out>/voice-cache` by text, voice and speed, so a re-export spends no characters on unchanged notes.
+- Offline fallback: Kokoro-82M (Apache-2.0). Run `bash scripts/video/setup-tts.sh` once, then pass a Kokoro voice id, e.g. `--voice bm_george`. Acronyms are spelled for Kokoro in `tts.py` (`SAY`).
 - Captions: one WebVTT cue per spoken sentence, timed from the audio. Also inside the MP4 as a soft subtitle track.
 - Software rendering: the 3D shadow map drops to 1024 px for capture (`--shadow`), because a 4096 map takes about 4 s a frame without a GPU.
 
