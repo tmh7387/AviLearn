@@ -76,10 +76,21 @@ export const SourceRefSchema = z.object({
   page: z.number().int().positive().optional(),
 });
 
-export const StepSchema = z.object({
-  speakerNotes: z.string().trim().min(1, 'Every step needs speaker notes'),
-  lowerThird: z.string().optional(),
-});
+/**
+ * Two kinds of notes per step.
+ *  - speakerNotes: the content. Always read in the automated narration (video).
+ *  - facilitatorNotes: room instructions for a live session ("refer to your
+ *    workbook", "you have 40 minutes"). Shown to the presenter. Left out of the
+ *    narration unless the export asks for them (--facilitator).
+ * A step needs at least one of the two.
+ */
+export const StepSchema = z
+  .object({
+    speakerNotes: z.string().trim().min(1).optional(),
+    facilitatorNotes: z.string().trim().min(1).optional(),
+    lowerThird: z.string().optional(),
+  })
+  .refine((st) => st.speakerNotes || st.facilitatorNotes, 'Every step needs speaker notes or facilitator lines');
 
 export const SlideSpecSchema = z.object({
   id: z.string().min(1),

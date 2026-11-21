@@ -372,4 +372,5 @@ html,body{margin:0;height:100%;background:var(--s-bg);overflow:hidden}
 .st-notes{position:fixed;left:0;right:0;bottom:0;max-height:34vh;overflow:auto;z-index:2;background:var(--s-bg);border-top:2px solid var(--s-accent);
   color:var(--s-ink);font:500 20px/1.45 var(--s-font-body);padding:16px max(20px,4vw) 56px}
 .st-notes b{font:600 13px/1 var(--s-font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--s-accent);display:block;margin-bottom:8px}
+.st-notes p{margin:0 0 14px}.st-notes p.st-facil{font-style:italic;opacity:.8}
 `;

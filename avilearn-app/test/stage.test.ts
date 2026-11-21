@@ -147,3 +147,19 @@ test('motion: templates carry their verbs and sequences', () => {
   assert.ok(l3.html.includes('class="st-l3"') && l3.html.includes('Sam Sample'));
   assert.ok(!l3.issues.some((i) => i.code === 'motion'));
 });
+
+test('facilitator lines: stored apart from speaker notes; a step needs one of the two', () => {
+  const base = SAMPLE_DECKS[Object.keys(SAMPLE_DECKS)[0]];
+  const slide = { ...base.slides[0], steps: base.slides[0].steps.map(() => ({ facilitatorNotes: 'You have 40 minutes.' })) };
+  const out = compileDeck({ ...base, slides: [slide] });
+  assert.deepEqual(out.issues.filter((i) => i.level === 'error'), []);
+  assert.ok(out.html.includes('You have 40 minutes.'));
+  const empty = { ...slide, steps: slide.steps.map(() => ({})) };
+  let failed = false;
+  try {
+    failed = compileDeck({ ...base, slides: [empty] }).issues.some((i) => i.level === 'error');
+  } catch {
+    failed = true;
+  }
+  assert.ok(failed, 'a step with no notes must fail');
+});

@@ -1,10 +1,11 @@
 /**
  * Video stage: export one module to MP4 (1080p, 30 fps, H.264, AAC) with
- * narration from the speaker notes and WebVTT captions.
+ * narration from the speaker notes and WebVTT captions. Facilitator lines
+ * (room instructions) are left out unless --facilitator is given.
  *
  *   Voice: ElevenLabs "george" (default) or "alice". Offline fallback: any Kokoro id
  *   (e.g. --voice bm_george), after: bash scripts/video/setup-tts.sh (once)
- *   npm run stage:video -- rbi-m2 [--voice george|alice|<kokoro id>] [--speed 1] [--out dir] [--slides m2-open,m2-sms] [--shadow 1024]
+ *   npm run stage:video -- rbi-m2 [--voice george|alice|<kokoro id>] [--speed 1] [--out dir] [--slides m2-open,m2-sms] [--shadow 1024] [--facilitator]
  *     -> ../env/tmp/video/<key>/<key>.mp4, <key>.vtt
  *
  * How it works. The compiled deck is the source: no second set of templates.
@@ -53,6 +54,8 @@ const speed = opt('speed', '1');
 const out = resolve(opt('out', join(app, '..', 'env', 'tmp', 'video', key)));
 const ttsDir = resolve(opt('tts', join(app, '..', 'env', 'tmp', 'tts')));
 const only = opt('slides', '');
+/** --facilitator also reads the facilitator lines (live-session room instructions). Default: speaker notes only. */
+const withFacil = args.includes('--facilitator');
 if (!eleven && !existsSync(join(ttsDir, 'kokoro-q8.onnx'))) {
   console.error(`No narration model in ${ttsDir}. Run: bash scripts/video/setup-tts.sh`);
   process.exit(2);
@@ -73,7 +76,7 @@ mkdirSync(join(out, 'voice'), { recursive: true });
 
 /* ---------- 2. narration: one segment per step, from the speaker notes ---------- */
 const segs = spec.slides.flatMap((s, i) =>
-  s.steps.map((st, k) => ({ id: `s${String(i + 1).padStart(2, '0')}-${k + 1}`, slide: i, step: k + 1, text: (st.speakerNotes ?? '').trim() })),
+  s.steps.map((st, k) => ({ id: `s${String(i + 1).padStart(2, '0')}-${k + 1}`, slide: i, step: k + 1, text: [st.speakerNotes, withFacil ? st.facilitatorNotes : ''].filter(Boolean).join(' ').trim() })),
 );
 writeFileSync(join(out, 'segments.json'), JSON.stringify(segs.filter((s) => s.text), null, 1));
 console.log(`Narration: ${segs.length} steps, voice ${voice}`);

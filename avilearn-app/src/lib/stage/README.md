@@ -80,6 +80,7 @@ Both default to the values above. An unknown pack is a QA error. `defaultTheme` 
 - Order: one segment per step, the same order as a presenter pressing Space.
 - Motion: CSS motion is paused and stepped frame by frame (Web Animations API). Motion scenes are stepped with `window.stScene`. When the motion ends, one frame is held, so a held slide costs one frame.
 - Length: a segment lasts as long as its motion or its narration, whichever is longer. The voice starts 0.4 s after the step starts.
+- Two kinds of notes per step. `speakerNotes` is the content: always narrated. `facilitatorNotes` holds room instructions for a live session ("refer to your workbook", "you have 40 minutes"): the presenter sees them under Notes (N), and the video leaves them out unless you pass `--facilitator`. A step needs at least one of the two.
 - Narration: `scripts/video/tts.py`. Default engine ElevenLabs (`eleven_v4`). Voices: `george` (default, British male) and `alice` (alternate, British female): `--voice alice`. `--speed 1.1` (0.7 to 1.2). Needs `ELEVENLABS_API_KEY`, or a cloud environment secret for `api.elevenlabs.io`. Audio is cached in `<out>/voice-cache` by text, voice and speed, so a re-export spends no characters on unchanged notes.
 - Offline fallback: Kokoro-82M (Apache-2.0). Run `bash scripts/video/setup-tts.sh` once, then pass a Kokoro voice id, e.g. `--voice bm_george`. Acronyms are spelled for Kokoro in `tts.py` (`SAY`).
 - Captions: one WebVTT cue per spoken sentence, timed from the audio. Also inside the MP4 as a soft subtitle track.

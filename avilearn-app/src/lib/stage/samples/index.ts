@@ -14,7 +14,9 @@ import { GENERAL_SAMPLE } from './general';
  * in a real course.
  */
 
-const n = (...notes: string[]) => notes.map((speakerNotes) => ({ speakerNotes }));
+/** Steps from notes: a string is speaker notes; pass an object for facilitator lines. */
+const n = (...notes: (string | { speakerNotes?: string; facilitatorNotes?: string })[]) =>
+  notes.map((x) => (typeof x === 'string' ? { speakerNotes: x } : x));
 
 const KESTREL = 'Kestrel Pacific is a fictional airline.';
 const render = (id: string, file: string, alt: string, extra = '') => ({
@@ -240,12 +242,12 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
     {
       id: 'kc', templateId: 'knowledge-check',
       data: { question: 'Which is a hazard, not a consequence?', options: ['Runway excursion', 'Contaminated runway', 'Aircraft damage', 'Injury to crew'], answerIndex: 1 },
-      steps: n('Give the room twenty seconds. Ask for a show of hands per option.', 'Contaminated runway is the condition. The others are outcomes.'),
+      steps: [{ speakerNotes: 'Which one is the hazard?', facilitatorNotes: 'Give the room twenty seconds. Ask for a show of hands per option.' }, { speakerNotes: 'Contaminated runway is the condition. The others are outcomes.' }],
     },
     {
       id: 'ex', templateId: 'exercise-launch',
       data: { exercise: 'Build a Risk Profile', tool: 'Risk profile', task: 'Enter three hazards and assess each one with the matrix', minutes: 40, team: true, url: 'portal.avilearn.app' },
-      steps: n('Please refer to your Participant Workbook. Teams open the Portal. Walk the room after ten minutes.'),
+      steps: [{ speakerNotes: 'Teams open the Portal.', facilitatorNotes: 'Please refer to your Participant Workbook. Walk the room after ten minutes.' }],
     },
     {
       id: 'kp', templateId: 'key-points', assertion: 'Module 2 — Key Points',
@@ -263,7 +265,7 @@ export const SMS_SAMPLE: SlideDeckSpecInput = {
     {
       id: 'brk', templateId: 'break',
       data: { kind: 'Tea Break', ended: 'Module 2', next: { code: 'Module 3', title: 'Safety Risk Assessment' }, resume: '10:45' },
-      steps: n('Fifteen minutes. Remind the room of the return time.'),
+      steps: [{ speakerNotes: 'Fifteen minutes.', facilitatorNotes: 'Remind the room of the return time.' }],
     },
   ],
 };

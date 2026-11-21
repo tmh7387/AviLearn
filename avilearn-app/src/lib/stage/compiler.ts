@@ -27,6 +27,8 @@ export interface RenderedSlide {
   words: number;
   texts: VisibleText[];
   notes: string[];
+  /** Facilitator lines per step ('' when none). */
+  facil: string[];
   issues: StageIssue[];
 }
 
@@ -52,7 +54,7 @@ export function renderSlide(
     });
   }
   const parsed = def.schema.safeParse(slide.data);
-  const base = { id: slide.id, templateId: slide.templateId, notes: slide.steps.map((st) => st.speakerNotes) };
+  const base = { id: slide.id, templateId: slide.templateId, notes: slide.steps.map((st) => st.speakerNotes ?? ''), facil: slide.steps.map((st) => st.facilitatorNotes ?? '') };
 
   if (!parsed.success) {
     for (const iss of parsed.error.issues) {
@@ -209,6 +211,7 @@ export function compileDeck(input: SlideDeckSpecInput | unknown, opts: CompileOp
     steps: slides.map((s) => s.steps),
     full: slides.map((s) => s.fullView),
     notes: slides.map((s) => s.notes),
+    facil: slides.map((s) => s.facil),
   };
 
   const html = `<!doctype html>
@@ -227,7 +230,7 @@ ${scenes ? `<script type="importmap">${JSON.stringify({ imports: { three: `${opt
 ${slides.map((s) => s.html).join('\n')}
 </div>
 </main>
-<aside class="st-notes" hidden><b>Speaker notes</b><p></p></aside>
+<aside class="st-notes" hidden><b>Speaker notes</b><p></p><b class="st-facil">Facilitator</b><p class="st-facil"></p></aside>
 <nav class="st-hud" aria-label="Presenter controls">
 <button type="button" data-a="prev" aria-label="Back">‹</button><span class="st-pos"></span><button type="button" data-a="next" aria-label="Next">›</button>
 <button type="button" data-a="notes">Notes</button><button type="button" data-a="theme">Light/Dark</button><button type="button" data-a="fs">Full screen</button><button type="button" data-a="motion">Motion</button>

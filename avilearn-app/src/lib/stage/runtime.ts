@@ -13,7 +13,7 @@ var W=${STAGE.canvas.width},H=${STAGE.canvas.height},SLIDE_MS=${STAGE.motion.sli
 var root=document.documentElement,deck=document.querySelector('.st-deck');
 var slides=[].slice.call(deck.querySelectorAll('.st-slide'));
 var meta=JSON.parse(document.getElementById('st-meta').textContent);
-var notesEl=document.querySelector('.st-notes'),notesTx=notesEl.querySelector('p'),pos=document.querySelector('.st-pos'),hud=document.querySelector('.st-hud');
+var notesEl=document.querySelector('.st-notes'),notesTx=notesEl.querySelector('p'),facilTx=notesEl.querySelector('p.st-facil'),facilB=notesEl.querySelector('b.st-facil'),pos=document.querySelector('.st-pos'),hud=document.querySelector('.st-hud');
 var i=0,k=1,hudTimer=0;
 function fit(){deck.style.setProperty('--k',Math.min(innerWidth/W,innerHeight/H));}
 function store(key,val){try{if(val===undefined)return localStorage.getItem(key);localStorage.setItem(key,val);}catch(e){return null;}}
@@ -60,6 +60,7 @@ function apply(changed){
   if(changed){slides.forEach(function(s,j){if(j!==i&&s._on){s._on=false;s.dispatchEvent(new Event('st:leave'));}});el._on=true;el.dispatchEvent(new Event('st:enter'));}
   if(changed){el.classList.add('st-enter');el.classList.remove('st-play');void el.offsetWidth;el.classList.remove('st-enter');el.classList.add('st-play');}
   notesTx.textContent=meta.notes[i][k-1]||'';
+  var fl=(meta.facil&&meta.facil[i][k-1])||'';facilTx.textContent=fl;facilTx.hidden=facilB.hidden=!fl;
   pos.textContent=(i+1)+'/'+slides.length+' · '+k+'/'+n;
   try{history.replaceState(null,'','#'+(i+1)+'-'+k);}catch(e){}
 }

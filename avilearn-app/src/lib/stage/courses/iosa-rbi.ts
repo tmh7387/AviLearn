@@ -11,7 +11,9 @@ import { assets, FAC_DATA } from '../samples';
  * Status: Module 0 approved (13 Nov 2026). Module 1 approved. Module 2 — draft for review.
  */
 
-const n = (...notes: string[]) => notes.map((speakerNotes) => ({ speakerNotes }));
+/** Steps from notes: a string is speaker notes; pass an object for facilitator lines. */
+const n = (...notes: (string | { speakerNotes?: string; facilitatorNotes?: string })[]) =>
+  notes.map((x) => (typeof x === 'string' ? { speakerNotes: x } : x));
 const SOURCE = { 1: 'IOSA-RBI-Day1_v3-6.pdf', 2: 'IOSA-RBI-Day2_v3-3.pdf', 3: 'IOSA-RBI-Day3_v3-2.pdf' } as const;
 const src = (slide: number, day: 1 | 2 | 3 = 1) => [{ file: SOURCE[day], slide }];
 
@@ -473,7 +475,7 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
       steps: n(
         'Workshop 1: compliance versus risk. The process is load control and weight and balance at an outstation. Team A audits as a compliance team: same checklist, same depth, every cycle. That proves the control exists.',
         'Team B audits risk-based: scope and depth are driven by risk data. That tests whether the control works.',
-        'The output is an RBI Working Charter. Please refer to your Participant Workbook.',
+        { speakerNotes: 'The output is an RBI Working Charter.', facilitatorNotes: 'Please refer to your Participant Workbook.' },
       ),
     },
     {
@@ -485,7 +487,7 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
         'Size the sample. State how much you will examine, and the reason that amount is enough.',
         'Name the evidence. List what you will ask to see, read, watch or hear. Then write the finding you expect.',
         'Build the charter. Report out, compare the two approaches, and agree six working rules for Thai Airways internal audit.',
-        'You have 40 minutes.',
+        { facilitatorNotes: 'You have 40 minutes.' },
       ),
     },
     {
@@ -507,7 +509,7 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
     {
       id: 'm2-lunch', templateId: 'break', sourceRefs: src(34),
       data: { kind: 'Lunch Break', ended: 'Module 2', next: { code: 'Module 3', title: 'IOSA Renewal Readiness' } },
-      steps: n('Lunch break. Set the return time on the clock before you leave the room. We will resume at the scheduled time. The afternoon sessions cover IOSA renewal readiness, process-based thinking, and the renewal timeline workshop.'),
+      steps: [{ speakerNotes: 'Lunch break. The afternoon sessions cover IOSA renewal readiness, process-based thinking, and the renewal timeline workshop.', facilitatorNotes: 'Set the return time on the clock before the room leaves. We resume at the scheduled time.' }],
     },
   ],
 };
