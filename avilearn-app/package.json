@@ -12,7 +12,8 @@
     "test:stage": "tsx --test test/stage.test.ts",
     "stage:build": "tsx scripts/stage-build.ts",
     "stage:check": "node scripts/stage-check.mjs",
-    "stage:video": "tsx scripts/video/stage-video.ts"
+    "stage:video": "tsx scripts/video/stage-video.ts",
+    "stage:package": "tsx scripts/package/stage-package.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.76",

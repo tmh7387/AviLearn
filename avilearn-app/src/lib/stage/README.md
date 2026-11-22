@@ -38,6 +38,7 @@ Analysis tools shared with the Portal (fishbone, five-why, swiss-cheese, bowtie,
 | `npm run test:stage` | Unit tests: contrast, QA rules, template coverage |
 | `npm run stage:build` | Writes `../env/tmp/stage/{gallery,sms,crm,iosa,general}.html`. Fails on a QA error |
 | `npm run stage:video -- rbi-m2` | Exports one module to `../env/tmp/video/<key>/<key>.mp4` (1080p, 30 fps, H.264, AAC) and `<key>.vtt`. Narration comes from the speaker notes. See Video below |
+| `npm run stage:package -- rbi-m2 [--format scorm12\|web]` | Packages one module as a self-study course: `../env/tmp/package/<key>/<key>-<format>.zip`. See Self-study below |
 | `npm run stage:check` | Opens every slide at 1920×1080 in light and dark, checks overflow, canvas bounds and the 22 px floor, saves screenshots. Needs `npx playwright install chromium` once |
 | `npm run dev`, then `/stage/gallery` | The gallery in the app. `/stage/deck/sms` (or `crm`, `iosa`, `general`) presents a sample deck |
 
@@ -85,4 +86,12 @@ Both default to the values above. An unknown pack is a QA error. `defaultTheme` 
 - Offline fallback: Kokoro-82M (Apache-2.0). Run `bash scripts/video/setup-tts.sh` once, then pass a Kokoro voice id, e.g. `--voice bm_george`. Acronyms are spelled for Kokoro in `tts.py` (`SAY`).
 - Captions: one WebVTT cue per spoken sentence, timed from the audio. Also inside the MP4 as a soft subtitle track.
 - Software rendering: the 3D shadow map drops to 1024 px for capture (`--shadow`), because a 4096 map takes about 4 s a frame without a GPU.
+
+## Self-study (interactive player and export)
+
+- `compileDeck(spec, { mode: 'self-study', audio })` builds the learner player from the same deck. Each slide has `delivery`: `both` (default), `live` (classroom only: workshops, breaks) or `self-study` (player only, e.g. a scored check that replaces a group task). The video export also uses the self-study set (`--mode live` for the classroom set).
+- The player: Start, then the narration plays each step and moves on (P = pause). Space or click also moves on. A `knowledge-check` waits for an answer, marks it right or wrong, shows the answer, then plays the explanation (step 2). A progress bar and the score show in the player.
+- Events on `document`: `st:progress` {slide, step, id, at, total}, `st:answer` {id, choice, correct, answer}, `st:complete` {score, max}. `window.stGo(slide, step)` jumps (resume).
+- `scripts/package/stage-package.ts` makes the narration (ElevenLabs, cached with the video), MP3 per step, copies the used assets and three.js, and zips. `scorm12`: adds `imsmanifest.xml` and `scorm12.js` (completion, score as percent of checks right, pass mark 80%, bookmark in `cmi.core.lesson_location`, answers in `cmi.suspend_data`). `web`: the same folder for the Portal or any web server. xAPI is next.
+- Fonts load from Google Fonts; everything else is in the package.
 

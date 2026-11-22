@@ -93,7 +93,7 @@ def eleven(text, voice, speed):
 
 
 def speak_eleven(segs, out_dir, voice, speed):
-    cache = os.path.join(os.path.dirname(os.path.abspath(out_dir)), "voice-cache")
+    cache = os.environ.get("TTS_CACHE") or os.path.join(os.path.dirname(os.path.abspath(out_dir)), "voice-cache")
     os.makedirs(cache, exist_ok=True)
     timing = {}
     for seg in segs:

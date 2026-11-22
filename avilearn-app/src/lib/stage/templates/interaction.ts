@@ -5,7 +5,7 @@ import { defineTemplate } from './types';
 
 export const knowledgeCheck = defineTemplate({
   id: 'knowledge-check',
-  purpose: 'Question with 2 to 4 options. Step 1 asks; step 2 reveals the answer.',
+  purpose: 'Question with 2 to 4 options. Step 1 asks; step 2 reveals the answer. In self-study the learner picks an option and it is scored.',
   schema: z.object({
     question: label(14),
     options: z.array(label(6)).min(2).max(4),
@@ -16,7 +16,7 @@ export const knowledgeCheck = defineTemplate({
   fullView: false,
   lastIsFull: true,
   render: (d, ctx) => `
-    <div class="st-kc">
+    <div class="st-kc" data-kc-a="${d.answerIndex}">
       <p class="st-kc-q" ${s(1, true)}>${ctx.log.t(1, d.question)}</p>
       <div class="st-kc-opts">
         ${d.options
@@ -28,6 +28,7 @@ export const knowledgeCheck = defineTemplate({
           )
           .join('')}
       </div>
+      <p class="st-kc-fb" aria-live="polite"></p>
     </div>`,
 });
 

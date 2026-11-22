@@ -5,7 +5,7 @@
  *
  *   Voice: ElevenLabs "george" (default) or "alice". Offline fallback: any Kokoro id
  *   (e.g. --voice bm_george), after: bash scripts/video/setup-tts.sh (once)
- *   npm run stage:video -- rbi-m2 [--voice george|alice|<kokoro id>] [--speed 1] [--out dir] [--slides m2-open,m2-sms] [--shadow 1024] [--facilitator]
+ *   npm run stage:video -- rbi-m2 [--voice george|alice|<kokoro id>] [--speed 1] [--out dir] [--slides m2-open,m2-sms] [--shadow 1024] [--facilitator] [--mode self-study|live]
  *     -> ../env/tmp/video/<key>/<key>.mp4, <key>.vtt
  *
  * How it works. The compiled deck is the source: no second set of templates.
@@ -26,6 +26,7 @@ import { createServer } from 'node:http';
 import { extname, join, resolve } from 'node:path';
 import { chromium } from 'playwright';
 import { compileDeck } from '../../src/lib/stage';
+import { slidesFor } from '../../src/lib/stage/compiler';
 import { COURSE_DECKS } from '../../src/lib/stage/courses';
 import { SAMPLE_DECKS } from '../../src/lib/stage/samples';
 import type { SlideDeckSpecInput } from '../../src/lib/stage/schema';
@@ -63,6 +64,9 @@ if (!eleven && !existsSync(join(ttsDir, 'kokoro-q8.onnx'))) {
 
 /* ---------- 1. compile the deck (three.js from the local package, not the CDN) ---------- */
 let spec = decks[key];
+// A video is self-study: keep the slides marked both or self-study (workshops, breaks out). --mode live keeps the classroom set.
+const playMode = opt('mode', 'self-study') === 'live' ? 'live' : 'self-study';
+spec = { ...spec, slides: slidesFor(spec.slides, playMode).map((s) => ({ ...s, delivery: 'both' as const })) };
 if (only) spec = { ...spec, slides: spec.slides.filter((s) => only.split(',').includes(s.id)) };
 const deck = compileDeck(spec, { sceneLib: '/three' });
 const errs = deck.issues.filter((i) => i.level === 'error');

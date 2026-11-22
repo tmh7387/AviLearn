@@ -163,3 +163,17 @@ test('facilitator lines: stored apart from speaker notes; a step needs one of th
   }
   assert.ok(failed, 'a step with no notes must fail');
 });
+
+test('self-study mode: delivery filter, audio per step, scored checks', () => {
+  const base = SAMPLE_DECKS[Object.keys(SAMPLE_DECKS)[0]];
+  const [a, b] = base.slides;
+  const kc = { id: 'kc-t', templateId: 'knowledge-check' as const, delivery: 'self-study' as const, data: { question: 'Which is a hazard?', options: ['Wet runway', 'Injury'], answerIndex: 0 }, steps: [{ speakerNotes: 'Pick one.' }, { speakerNotes: 'Wet runway.' }] };
+  const spec = { ...base, slides: [a, { ...b, delivery: 'live' as const }, kc] };
+  const live = compileDeck(spec);
+  assert.deepEqual(live.slides.map((s) => s.id), [a.id, b.id]);
+  const self = compileDeck(spec, { mode: 'self-study', audio: { 'kc-t': ['audio/1.mp3', ''] } });
+  assert.deepEqual(self.issues.filter((i) => i.level === 'error'), []);
+  assert.deepEqual(self.slides.map((s) => s.id), [a.id, 'kc-t']);
+  assert.ok(self.html.includes('class="st-self"') && self.html.includes('data-kc-a="0"') && self.html.includes('audio/1.mp3'));
+  assert.ok(!live.html.includes('st-start"'));
+});

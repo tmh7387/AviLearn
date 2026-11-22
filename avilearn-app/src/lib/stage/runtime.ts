@@ -7,6 +7,11 @@ import { STAGE } from './tokens';
  * Keys: Space / Right / PageDown / click = next step; Left / PageUp = back;
  * Home / End; F = full screen; D = light/dark; N = speaker notes; M = motion on/off.
  * The address keeps the place as #<slide>-<step>.
+ *
+ * Self-study mode (meta.mode): Start plays the narration for each step and
+ * moves on when it ends; P = pause/play. A knowledge check waits for an answer,
+ * scores it and shows the right option. Events on document: st:progress,
+ * st:answer, st:complete (detail objects). window.stGo(slide, step) jumps.
  */
 export const PRESENTER_JS = `(function(){
 var W=${STAGE.canvas.width},H=${STAGE.canvas.height},SLIDE_MS=${STAGE.motion.slide};
@@ -63,9 +68,10 @@ function apply(changed){
   var fl=(meta.facil&&meta.facil[i][k-1])||'';facilTx.textContent=fl;facilTx.hidden=facilB.hidden=!fl;
   pos.textContent=(i+1)+'/'+slides.length+' · '+k+'/'+n;
   try{history.replaceState(null,'','#'+(i+1)+'-'+k);}catch(e){}
+  if(SELF)selfStep();
 }
 function motion(){still=!still;root.classList.toggle('st-still',still);store('stage-still',still?'1':'0');showHud();}
-function next(){if(k<meta.steps[i]){k++;apply(false);}else if(i<slides.length-1){i++;k=1;apply(true);}}
+function next(){if(kcWait())return;if(k<meta.steps[i]){k++;apply(false);}else if(i<slides.length-1){i++;k=1;apply(true);}}
 function prev(){if(k>1){k--;apply(false);}else if(i>0){i--;k=meta.steps[i];apply(true);}}
 function go(j,s){i=Math.max(0,Math.min(slides.length-1,j));k=Math.max(1,Math.min(meta.steps[i],s||1));apply(true);}
 function fs(){try{if(document.fullscreenElement)document.exitFullscreen();else root.requestFullscreen().catch(function(){});}catch(e){}}
@@ -77,6 +83,7 @@ document.addEventListener('keydown',function(e){
   if(key===' '||key==='ArrowRight'||key==='PageDown'||key==='ArrowDown'){e.preventDefault();if(e.target&&e.target.blur)e.target.blur();next();}
   else if(key==='ArrowLeft'||key==='PageUp'||key==='ArrowUp'){e.preventDefault();prev();}
   else if(key==='Home'){go(0,1);}else if(key==='End'){go(slides.length-1,meta.steps[slides.length-1]);}
+  else if(SELF&&(key==='p'||key==='P')){play(!playing);}
   else if(key==='f'||key==='F'){fs();}else if(key==='d'||key==='D'){theme();}else if(key==='n'||key==='N'){notes();}else if(key==='m'||key==='M'){motion();}
 });
 /* Break clock: return time set on the slide (-5 / +5 min), kept per deck and slide in this browser. */
@@ -97,11 +104,48 @@ function clocks(){[].slice.call(deck.querySelectorAll('.st-clock')).forEach(func
 clocks();
 document.querySelector('.st-stage').addEventListener('click',next);
 hud.addEventListener('click',function(e){e.stopPropagation();var a=e.target.getAttribute&&e.target.getAttribute('data-a');
+  if(a==='play'){play(!playing);return;}
   if(a==='prev')prev();else if(a==='next')next();else if(a==='notes')notes();else if(a==='theme')theme();else if(a==='fs')fs();else if(a==='motion')motion();});
 document.addEventListener('mousemove',showHud);
 addEventListener('resize',fit);
 if(store('stage-still')==='1')still=true;root.classList.toggle('st-still',still);
 var saved=store('stage-theme');setTheme(saved==='dark'||saved==='light'?saved:meta.theme);
+/* ---------- self-study player ---------- */
+var SELF=meta.mode==='self-study',playing=false,au=SELF?new Audio():null,waitT=0,answers={},done=false,started=false;
+var total=meta.steps.reduce(function(a,b){return a+b;},0),kcs=slides.filter(function(s){return s.querySelector('.st-kc');}).length;
+function emit(name,d){try{document.dispatchEvent(new CustomEvent(name,{detail:d}));}catch(e){}}
+function kcWait(){return SELF&&k===1&&!(i in answers)&&!!slides[i].querySelector('.st-kc');}
+function score(){var c=0;for(var x in answers)if(answers[x].ok)c++;return c;}
+function selfStep(){
+  var at=0;for(var j=0;j<i;j++)at+=meta.steps[j];at+=k;
+  document.querySelector('.st-prog i').style.width=(100*at/total)+'%';
+  var sc=document.querySelector('.st-score');if(kcs){sc.hidden=false;sc.textContent='Score '+score()+'/'+kcs;}
+  emit('st:progress',{slide:i,step:k,id:meta.ids[i],at:at,total:total});
+  if(at===total&&!done){done=true;emit('st:complete',{score:score(),max:kcs});}
+  narrate();
+}
+function narrate(){
+  clearTimeout(waitT);if(!au)return;au.pause();if(!playing)return;
+  var src=(meta.audio[i]||[])[k-1]||'';
+  if(src){au.src=src;au.play().catch(function(){play(false);});}else waitT=setTimeout(auto,2500);
+}
+function auto(){if(!playing||kcWait())return;if(i===slides.length-1&&k===meta.steps[i]){play(false);return;}next();}
+function play(on){if(!SELF)return;playing=on;var b=document.querySelector('.st-play-b');if(b)b.textContent=on?'Pause':'Play';if(on)narrate();else{clearTimeout(waitT);au.pause();}}
+if(SELF){
+  au.addEventListener('ended',function(){waitT=setTimeout(auto,700);});
+  var st=document.querySelector('.st-start');
+  st.addEventListener('click',function(e){e.stopPropagation();if(!(e.target.closest&&e.target.closest('[data-a="start"]')))return;st.hidden=true;started=true;play(true);});
+  deck.addEventListener('click',function(e){
+    var o=e.target.closest&&e.target.closest('.st-kc-opt');if(!o)return;e.stopPropagation();
+    var el=slides[i],kc=el.querySelector('.st-kc');if(k!==1||(i in answers))return;
+    var opts=[].slice.call(kc.querySelectorAll('.st-kc-opt')),pick=opts.indexOf(o),ans=+kc.getAttribute('data-kc-a'),ok=pick===ans;
+    answers[i]={pick:pick,ok:ok};o.classList.add(ok?'st-kc-right':'st-kc-wrong');kc.classList.add('st-kc-done');
+    var fb=kc.querySelector('.st-kc-fb');if(fb){fb.textContent=ok?'Correct.':'Not quite. The answer is '+String.fromCharCode(65+ans)+'.';fb.className='st-kc-fb '+(ok?'st-kc-fb-ok':'st-kc-fb-no');}
+    emit('st:answer',{slide:i,id:meta.ids[i],choice:pick,correct:ok,answer:ans});
+    setTimeout(next,ok?500:900);
+  });
+  window.stGo=go;window.stAnswers=function(){return answers;};
+}
 var m=/^#(\\d+)-(\\d+)$/.exec(location.hash);fit();
 if(m)go(+m[1]-1,+m[2]);else go(0,1);
 })();`;

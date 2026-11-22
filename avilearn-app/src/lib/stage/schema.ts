@@ -109,6 +109,12 @@ export const SlideSpecSchema = z.object({
   /** Name bar at the bottom: shows for 5 s when the slide opens (facilitator, guest speaker). */
   lowerThird: z.object({ name: maxWords(4, 'Lower third name'), role: maxWords(6, 'Lower third role').optional() }).optional(),
   sourceRefs: z.array(SourceRefSchema).default([]),
+  /**
+   * Where the slide plays. live: classroom only (workshops, breaks, room logistics).
+   * self-study: the self-study player only (e.g. a scored check that replaces a group task).
+   * both (default): everywhere.
+   */
+  delivery: z.enum(['both', 'live', 'self-study']).default('both'),
 });
 
 export const SlideDeckSpecSchema = z.object({

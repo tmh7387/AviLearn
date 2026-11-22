@@ -177,6 +177,20 @@ export interface CompiledDeck {
 export interface CompileOptions {
   /** Base URL of three.js for motion scenes. Default: pinned jsDelivr copy. Use a local copy for offline SCORM. */
   sceneLib?: string;
+  /**
+   * live (default): the presenter deck. self-study: the learner player. Slides are
+   * kept by their delivery field; narration plays each step and moves on; knowledge
+   * checks are answered and scored; progress, answers and completion are sent as
+   * st:progress, st:answer and st:complete events (the SCORM adapter listens).
+   */
+  mode?: 'live' | 'self-study';
+  /** Self-study narration: audio URL per step, by slide id ('' for none). */
+  audio?: Record<string, string[]>;
+}
+
+/** The slides a mode plays, by each slide's delivery field. */
+export function slidesFor<T extends { delivery?: 'both' | 'live' | 'self-study' }>(slides: T[], mode: 'live' | 'self-study' = 'live'): T[] {
+  return slides.filter((s) => (s.delivery ?? 'both') === 'both' || s.delivery === mode);
 }
 
 export function compileDeck(input: SlideDeckSpecInput | unknown, opts: CompileOptions = {}): CompiledDeck {
@@ -185,7 +199,8 @@ export function compileDeck(input: SlideDeckSpecInput | unknown, opts: CompileOp
     const issues: StageIssue[] = parsed.error.issues.map((i) => ({ level: 'error', code: 'schema', message: `${i.path.join('.')}: ${i.message}` }));
     return { spec: input as SlideDeckSpec, theme: undefined as unknown as ThemePack, vertical: undefined as unknown as VerticalPack, slides: [], issues, html: '' };
   }
-  const spec = parsed.data;
+  const playMode = opts.mode ?? 'live';
+  const spec = { ...parsed.data, slides: slidesFor(parsed.data.slides, playMode) };
   const theme = getThemePack(spec.theme);
   const vertical = getVertical(spec.vertical);
   if (!theme || !vertical) {
@@ -212,10 +227,14 @@ export function compileDeck(input: SlideDeckSpecInput | unknown, opts: CompileOp
     full: slides.map((s) => s.fullView),
     notes: slides.map((s) => s.notes),
     facil: slides.map((s) => s.facil),
+    mode: playMode,
+    ids: slides.map((s) => s.id),
+    audio: playMode === 'self-study' ? slides.map((s) => opts.audio?.[s.id] ?? []) : [],
   };
+  const self = playMode === 'self-study';
 
   const html = `<!doctype html>
-<html lang="en" data-theme="${mode}">
+<html lang="en" data-theme="${mode}"${self ? ' class="st-self"' : ''}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -233,9 +252,12 @@ ${slides.map((s) => s.html).join('\n')}
 <aside class="st-notes" hidden><b>Speaker notes</b><p></p><b class="st-facil">Facilitator</b><p class="st-facil"></p></aside>
 <nav class="st-hud" aria-label="Presenter controls">
 <button type="button" data-a="prev" aria-label="Back">‹</button><span class="st-pos"></span><button type="button" data-a="next" aria-label="Next">›</button>
+${self ? '<button type="button" data-a="play" class="st-play-b">Pause</button><span class="st-score" hidden></span>' : ''}
 <button type="button" data-a="notes">Notes</button><button type="button" data-a="theme">Light/Dark</button><button type="button" data-a="fs">Full screen</button><button type="button" data-a="motion">Motion</button>
 </nav>
-<script type="application/json" id="st-meta">${JSON.stringify(meta).replace(/</g, '\\u003c')}</script>
+${self ? `<div class="st-prog" aria-hidden="true"><i></i></div>
+<div class="st-start"><div><p class="st-start-k">${esc(spec.module.code)}</p><h1>${esc(spec.module.title)}</h1><button type="button" data-a="start">Start</button><p class="st-start-h">Narration plays and the module moves on by itself. Space or click goes to the next step. Answer each question to continue.</p></div></div>
+` : ''}<script type="application/json" id="st-meta">${JSON.stringify(meta).replace(/</g, '\\u003c')}</script>
 <script>${PRESENTER_JS}</script>${scenes ? `\n<script>${sceneJs(opts.sceneLib ?? SCENE_LIB)}</script>` : ''}
 </body>
 </html>`;

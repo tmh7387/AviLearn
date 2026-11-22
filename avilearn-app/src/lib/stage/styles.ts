@@ -359,6 +359,23 @@ export const SLIDE_CSS = `
 `;
 
 export const PRESENTER_CSS = `
+/* Self-study player */
+.st-self .st-kc:not(.st-kc-done) .st-kc-opt{cursor:pointer;transition:border-color .2s,background .2s}
+.st-self .st-kc:not(.st-kc-done) .st-kc-opt:hover{border-color:var(--s-accent);background:var(--s-accent-tint)}
+.st-kc-opt.st-kc-wrong{opacity:.55}.st-kc-opt.st-kc-wrong .st-box-t{text-decoration:line-through}
+.st-kc-opt.st-kc-right{border-color:var(--s-accent)}
+.st-kc-fb{font:600 34px/1.2 var(--s-font-body);margin:0;color:var(--s-ink)}.st-kc-fb:empty{display:none}.st-kc-fb-ok{color:var(--s-accent)}
+.st-prog{position:fixed;left:0;right:0;top:0;height:5px;z-index:3;background:var(--s-line)}
+.st-prog i{display:block;height:100%;width:0;background:var(--s-accent-fill);transition:width .4s}
+.st-score{padding:0 6px;color:var(--s-accent)}
+.st-start{position:fixed;inset:0;z-index:5;display:grid;place-items:center;background:color-mix(in srgb,var(--s-bg) 88%,transparent);backdrop-filter:blur(6px);text-align:center;padding:24px}
+.st-start[hidden]{display:none}
+.st-start>div{max-width:720px}
+.st-start-k{font:600 15px/1 var(--s-font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--s-accent);margin:0 0 14px}
+.st-start h1{font:600 clamp(28px,4vw,52px)/1.1 var(--s-font-display,var(--s-font-body));color:var(--s-ink);margin:0 0 28px}
+.st-start button{font:600 18px/1 var(--s-font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--s-bg);background:var(--s-accent-fill);border:0;border-radius:4px;padding:18px 44px;cursor:pointer}
+.st-start button:focus-visible{outline:3px solid var(--s-accent);outline-offset:3px}
+.st-start-h{font:400 16px/1.5 var(--s-font-body);color:var(--s-ink-muted);margin:22px auto 0;max-width:520px}
 html,body{margin:0;height:100%;background:var(--s-bg);overflow:hidden}
 .st-stage{position:fixed;inset:0;overflow:hidden;background:var(--s-bg);cursor:pointer}
 .st-deck{position:absolute;left:50%;top:50%;width:${C.width}px;height:${C.height}px;transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center}

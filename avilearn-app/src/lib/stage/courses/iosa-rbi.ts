@@ -450,6 +450,15 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
       ),
     },
     {
+      id: 'm2-kc1', templateId: 'knowledge-check', delivery: 'self-study',
+      wordsApproved: 'Self-study check written by Claude from Module 2 content. Needs SME review.',
+      data: { question: 'A late load sheet report repeats at one outstation. What do you ask first?', options: ['Who made the error?', 'Is the control working?', 'How many reports came in?', 'Which checklist item applies?'], answerIndex: 1 },
+      steps: n(
+        'Check your understanding. A late load sheet report comes in again, from the same outstation. What do you ask first?',
+        'Is the control working? A repeat report points at a process, not a one-off. That question turns the signal into an audit decision.',
+      ),
+    },
+    {
       id: 'm2-roles', templateId: 'cycle', assertion: 'Internal Assurance Roles Must Connect', sourceRefs: src(30),
       data: {
         nodes: [
@@ -466,7 +475,7 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
       ),
     },
     {
-      id: 'm2-ws1', templateId: 'compare-columns', assertion: 'Workshop 1 — Compliance vs. Risk', subhead: 'Load control and weight & balance at an outstation', sourceRefs: src(31),
+      id: 'm2-ws1', templateId: 'compare-columns', delivery: 'live', assertion: 'Workshop 1 — Compliance vs. Risk', subhead: 'Load control and weight & balance at an outstation', sourceRefs: src(31),
       wordsApproved: 'Anthony asked for the source subheader on screen (Module 2 review).',
       data: {
         left: { heading: 'Team A: Compliance', icon: 'list-checks', items: ['Same checklist, every cycle', 'Proves the control exists'] },
@@ -479,7 +488,7 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
       ),
     },
     {
-      id: 'm2-ws1-steps', templateId: 'procedure-flow', eyebrow: 'Workshop 1 · 40 Minutes', assertion: 'Load Control and Weight and Balance at an Outstation', sourceRefs: src(32),
+      id: 'm2-ws1-steps', templateId: 'procedure-flow', delivery: 'live', eyebrow: 'Workshop 1 · 40 Minutes', assertion: 'Load Control and Weight and Balance at an Outstation', sourceRefs: src(32),
       data: { steps: ['Read Your Brief', 'Set Your Scope', 'Size the Sample', 'Name the Evidence', 'Build the Charter'] },
       steps: n(
         'Read your brief. Groups A and C audit as a compliance team. Groups B, D and E audit as a risk team. Same process, different mandate.',
@@ -488,6 +497,15 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
         'Name the evidence. List what you will ask to see, read, watch or hear. Then write the finding you expect.',
         'Build the charter. Report out, compare the two approaches, and agree six working rules for Thai Airways internal audit.',
         { facilitatorNotes: 'You have 40 minutes.' },
+      ),
+    },
+    {
+      id: 'm2-kc2', templateId: 'knowledge-check', delivery: 'self-study',
+      wordsApproved: 'Self-study check written by Claude from Module 2 content. Needs SME review.',
+      data: { question: 'Which audit approach tests whether a control works?', options: ['Same checklist every cycle', 'Scope driven by risk data', 'Document review only', 'Random spot checks'], answerIndex: 1 },
+      steps: n(
+        'One more. Which audit approach tests whether a control actually works?',
+        'Scope driven by risk data. A compliance checklist proves the control exists. A risk-based audit tests whether it works.',
       ),
     },
     {
@@ -507,7 +525,7 @@ export const IOSA_RBI_M2: SlideDeckSpecInput = {
       ),
     },
     {
-      id: 'm2-lunch', templateId: 'break', sourceRefs: src(34),
+      id: 'm2-lunch', templateId: 'break', delivery: 'live', sourceRefs: src(34),
       data: { kind: 'Lunch Break', ended: 'Module 2', next: { code: 'Module 3', title: 'IOSA Renewal Readiness' } },
       steps: [{ speakerNotes: 'Lunch break. The afternoon sessions cover IOSA renewal readiness, process-based thinking, and the renewal timeline workshop.', facilitatorNotes: 'Set the return time on the clock before the room leaves. We resume at the scheduled time.' }],
     },
