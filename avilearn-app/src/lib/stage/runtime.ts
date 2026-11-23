@@ -130,11 +130,15 @@ function narrate(){
   if(src){au.src=src;au.play().catch(function(){play(false);});}else waitT=setTimeout(auto,2500);
 }
 function auto(){if(!playing||kcWait())return;if(i===slides.length-1&&k===meta.steps[i]){play(false);return;}next();}
-function play(on){if(!SELF)return;playing=on;var b=document.querySelector('.st-play-b');if(b)b.textContent=on?'Pause':'Play';if(on)narrate();else{clearTimeout(waitT);au.pause();}}
+function play(on){if(!SELF)return;var was=playing;playing=on;var b=document.querySelector('.st-play-b');if(b)b.textContent=on?'Pause':'Play';
+  /* Pause holds everything: narration, step motion and the motion scene. */
+  var anims=[];try{anims=document.getAnimations();}catch(e){}
+  if(on){anims.forEach(function(a){try{a.play();}catch(e){}});if(!was)slides[i].dispatchEvent(new Event('st:resume'));narrate();}
+  else{clearTimeout(waitT);au.pause();anims.forEach(function(a){try{a.pause();}catch(e){}});slides[i].dispatchEvent(new Event('st:pause'));}}
 if(SELF){
   au.addEventListener('ended',function(){waitT=setTimeout(auto,700);});
   var st=document.querySelector('.st-start');
-  st.addEventListener('click',function(e){e.stopPropagation();if(!(e.target.closest&&e.target.closest('[data-a="start"]')))return;st.hidden=true;started=true;play(true);});
+  st.addEventListener('click',function(e){e.stopPropagation();if(!(e.target.closest&&e.target.closest('[data-a="start"]')))return;st.hidden=true;started=true;apply(true);play(true);/* replay the slide's motion from the start, in front of the learner */});
   deck.addEventListener('click',function(e){
     var o=e.target.closest&&e.target.closest('.st-kc-opt');if(!o)return;e.stopPropagation();
     var el=slides[i],kc=el.querySelector('.st-kc');if(k!==1||(i in answers))return;

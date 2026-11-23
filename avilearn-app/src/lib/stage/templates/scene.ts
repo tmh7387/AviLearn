@@ -377,14 +377,19 @@ function Route(el){
     track.style.strokeDashoffset=trackLen-Math.min(trackLen,uAt(t));
     if(gl&&gl.draw)gl.draw(t);
   }
-  var raf=0;
+  var raf=0,base=0;
+  function run(){cancelAnimationFrame(raf);var s=performance.now()-base;(function loop(now){base=Math.max(0,now-s);at(base);if(base<END)raf=requestAnimationFrame(loop);})(performance.now());}
   function play(){
-    cancelAnimationFrame(raf);initGL();
+    cancelAnimationFrame(raf);initGL();base=0;
     if(document.documentElement.classList.contains('st-still')){at(END);return;}
-    var t0=performance.now();(function loop(now){var t=now-t0;at(t);if(t<END)raf=requestAnimationFrame(loop);})(t0);
+    run();
   }
-  el.closest('.st-slide').addEventListener('st:enter',play);
-  el.closest('.st-slide').addEventListener('st:leave',function(){cancelAnimationFrame(raf);});
+  var sl=el.closest('.st-slide');
+  sl.addEventListener('st:enter',play);
+  sl.addEventListener('st:leave',function(){cancelAnimationFrame(raf);});
+  /* Self-study pause and play: hold the scene at its current time. */
+  sl.addEventListener('st:pause',function(){cancelAnimationFrame(raf);});
+  sl.addEventListener('st:resume',function(){if(base<END&&!document.documentElement.classList.contains('st-still'))run();});
   return {at:at,end:END,init:initGL};
 }
 function Profile(el){
@@ -463,14 +468,19 @@ function Profile(el){
     sh.style.fillOpacity=(0.22*(1-hgt)).toFixed(3);sh.style.opacity=g.model?ease(span(t,T0-400,400)):0;
     if(gl&&gl.draw)gl.draw(t);
   }
-  var raf=0;
+  var raf=0,base=0;
+  function run(){cancelAnimationFrame(raf);var s=performance.now()-base;(function loop(now){base=Math.max(0,now-s);at(base);if(base<END)raf=requestAnimationFrame(loop);})(performance.now());}
   function play(){
-    cancelAnimationFrame(raf);initGL();
+    cancelAnimationFrame(raf);initGL();base=0;
     if(document.documentElement.classList.contains('st-still')){at(END);return;}
-    var t0=performance.now();(function loop(now){var t=now-t0;at(t);if(t<END)raf=requestAnimationFrame(loop);})(t0);
+    run();
   }
-  el.closest('.st-slide').addEventListener('st:enter',play);
-  el.closest('.st-slide').addEventListener('st:leave',function(){cancelAnimationFrame(raf);});
+  var sl=el.closest('.st-slide');
+  sl.addEventListener('st:enter',play);
+  sl.addEventListener('st:leave',function(){cancelAnimationFrame(raf);});
+  /* Self-study pause and play: hold the scene at its current time. */
+  sl.addEventListener('st:pause',function(){cancelAnimationFrame(raf);});
+  sl.addEventListener('st:resume',function(){if(base<END&&!document.documentElement.classList.contains('st-still'))run();});
   return {at:at,end:END,init:initGL};
 }
 var players=new Map();

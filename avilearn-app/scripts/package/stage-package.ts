@@ -2,7 +2,7 @@
  * Package one module as a self-study course: the interactive player with
  * narration, scored knowledge checks and progress tracking.
  *
- *   npm run stage:package -- rbi-m2 [--format scorm12|web] [--voice george|alice] [--speed 1] [--out dir]
+ *   npm run stage:package -- rbi-m2 [--format scorm12|web] [--voice george|alice] [--speed 1] [--out dir] [--three local|cdn]
  *     -> ../env/tmp/package/<key>/<key>-<format>.zip and the unzipped folder next to it
  *
  * scorm12: SCORM 1.2 zip for an LMS (learning management system). The LMS gets
@@ -91,7 +91,9 @@ const spec = {
   ...input,
   assets: (input.assets ?? []).map((a) => ({ ...a, url: local(a.url), ...(a.urlDark ? { urlDark: local(a.urlDark) } : {}) })),
 };
-const deck = compileDeck(spec, { mode: 'self-study', audio, sceneLib: './three' });
+// three.js for motion scenes: in the package by default (an LMS may be offline). --three cdn loads the pinned jsDelivr copy instead.
+const cdnThree = opt('three', 'local') === 'cdn';
+const deck = compileDeck(spec, { mode: 'self-study', audio, ...(cdnThree ? {} : { sceneLib: './three' }) });
 const errs = deck.issues.filter((i) => i.level === 'error');
 if (errs.length) {
   for (const e of errs) console.error(`QA error ${e.slideId ?? '-'}: ${e.message}`);
@@ -102,7 +104,7 @@ for (const rel of copied) {
   mkdirSync(dirname(join(site, rel)), { recursive: true });
   copyFileSync(join(app, 'public', rel), join(site, rel));
 }
-if (deck.html.includes('type="importmap"')) {
+if (!cdnThree && deck.html.includes('type="importmap"')) {
   for (const f of ['build/three.module.js', 'examples/jsm/loaders/GLTFLoader.js', 'examples/jsm/utils/BufferGeometryUtils.js', 'examples/jsm/environments/RoomEnvironment.js']) {
     mkdirSync(dirname(join(site, 'three', f)), { recursive: true });
     copyFileSync(join(app, 'node_modules', 'three', f), join(site, 'three', f));
