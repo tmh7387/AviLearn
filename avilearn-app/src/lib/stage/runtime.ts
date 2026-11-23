@@ -11,7 +11,7 @@ import { STAGE } from './tokens';
  * Self-study mode (meta.mode): Start plays the narration for each step and
  * moves on when it ends; P = pause/play. A knowledge check waits for an answer,
  * scores it and shows the right option. Events on document: st:progress,
- * st:answer, st:complete (detail objects). window.stGo(slide, step) jumps.
+ * st:answer (every answer; first: true on the scored one), st:complete (detail objects). window.stGo(slide, step) jumps.
  */
 export const PRESENTER_JS = `(function(){
 var W=${STAGE.canvas.width},H=${STAGE.canvas.height},SLIDE_MS=${STAGE.motion.slide};
@@ -149,11 +149,13 @@ if(SELF){
     var opts=[].slice.call(kc.querySelectorAll('.st-kc-opt')),pick=opts.indexOf(o),ans=+kc.getAttribute('data-kc-a'),ok=pick===ans;
     pass[i]=true;var first=!(i in answers);if(first)answers[i]={pick:pick,ok:ok};o.classList.add(ok?'st-kc-right':'st-kc-wrong');kc.classList.add('st-kc-done');
     var fb=kc.querySelector('.st-kc-fb');if(fb){fb.textContent=ok?'Correct.':'Not quite. The answer is '+String.fromCharCode(65+ans)+'.';fb.className='st-kc-fb '+(ok?'st-kc-fb-ok':'st-kc-fb-no');}
-    if(first)emit('st:answer',{slide:i,id:meta.ids[i],choice:pick,correct:ok,answer:ans});
+    emit('st:answer',{slide:i,id:meta.ids[i],choice:pick,correct:ok,answer:ans,first:first});
     setTimeout(next,ok?500:900);
   });
   window.stGo=go;window.stAnswers=function(){return answers;};
 }
 var m=/^#(\\d+)-(\\d+)$/.exec(location.hash);fit();
+/* true when the address named a place on load (LMS adapters then skip their bookmark) */
+window.stDeepLink=!!m;
 if(m)go(+m[1]-1,+m[2]);else go(0,1);
 })();`;
