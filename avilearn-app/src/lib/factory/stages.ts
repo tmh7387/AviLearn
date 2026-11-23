@@ -6,7 +6,10 @@ import { parsePdf } from '@/lib/transform/pdf-parser';
 import { parsePptxBuffer } from '@/lib/transform/pptx-parser';
 import type { ParsedSlide } from '@/lib/transform/types';
 import { BUCKET } from './supabase-store';
-import { NonRetryableError, type StageDef } from './types';
+import { NonRetryableError, type StageContext, type StageDef } from './types';
+import { AI_CONFIG } from '@/lib/config';
+import { runQualityGate, reportToSmeFlags } from '@/lib/agents/quality-gate';
+import { createGeminiDecisionsClient } from '@/lib/agents/decisions-client';
 
 type RoutedLesson = {
   title: string;
@@ -47,6 +50,28 @@ const intake: StageDef = {
   },
 };
 
+/**
+ * Quality gate pilot (Gemini Decision 1). Adds review flags only.
+ * A gate failure never fails the job: the pilot must not block conversion.
+ */
+async function runGate(ctx: StageContext, slides: ParsedSlide[]): Promise<void> {
+  try {
+    await ctx.progress('Quality gate: checking slides with Gemini Decision 1');
+    const report = await runQualityGate(slides, createGeminiDecisionsClient(), {
+      model: AI_CONFIG.gemini.decisionModel,
+      signal: ctx.signal,
+    });
+    await ctx.writeArtifact('quality-gate', report);
+    ctx.addSmeFlags(reportToSmeFlags(report));
+    await ctx.progress(
+      `Quality gate: ${report.reviewCount}/${slides.length} slides need review, ${report.errors.length} not checked`,
+      { reviewCount: report.reviewCount, errors: report.errors.length, inputTokens: report.inputTokens, costUsd: report.costUsd }
+    );
+  } catch (err) {
+    await ctx.progress(`Quality gate skipped: ${err instanceof Error ? err.message : String(err)}`);
+  }
+}
+
 const enrichment: StageDef = {
   name: 'enrichment',
   timeoutMs: 5 * 60 * 1000, // normal run is about 30 s
@@ -56,6 +81,7 @@ const enrichment: StageDef = {
     await ctx.progress('Classifying slides');
     const enriched = await runEnrichmentAgent(slides, ctx.job.moduleId);
     await ctx.writeArtifact('enrichment', enriched);
+    if (AI_CONFIG.qualityGate.enabled) await runGate(ctx, enriched);
   },
 };
 

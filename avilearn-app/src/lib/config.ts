@@ -25,6 +25,12 @@ export const AI_CONFIG = {
   gemini: {
     apiKey: process.env.GEMINI_API_KEY || '',
     imageModel: process.env.GEMINI_IMAGE_MODEL || 'imagen-3.0-generate-002',
+    /** Gemini Decision 1: calibrated yes/no, choice and score answers. Used by the quality gate pilot. */
+    decisionModel: process.env.GEMINI_DECISION_MODEL || 'gemini-decision-1',
+  },
+  qualityGate: {
+    /** Pilot switch. Off by default. Set QUALITY_GATE_ENABLED=1 and a paid GEMINI_API_KEY. */
+    enabled: process.env.QUALITY_GATE_ENABLED === '1',
   },
 } as const;
 
