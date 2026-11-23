@@ -256,7 +256,7 @@ ${self ? '<button type="button" data-a="play" class="st-play-b">Pause</button><s
 <button type="button" data-a="notes">Notes</button><button type="button" data-a="theme">Light/Dark</button><button type="button" data-a="fs">Full screen</button><button type="button" data-a="motion">Motion</button>
 </nav>
 ${self ? `<div class="st-prog" aria-hidden="true"><i></i></div>
-<div class="st-start"><div><p class="st-start-k">${esc(spec.module.code)}</p><h1>${esc(spec.module.title)}</h1><button type="button" data-a="start">Start</button><p class="st-start-h">Narration plays and the module moves on by itself. Space or click goes to the next step. Answer each question to continue.</p></div></div>
+<div class="st-start"><div><p class="st-start-k">${esc(spec.module.code)}</p><h1>${esc(spec.module.title)}</h1><button type="button" data-a="start">Start</button><p class="st-start-h">Narration plays and the module moves on by itself. Space or click goes to the next step. The module waits for your answer to each question.</p></div></div>
 ` : ''}<script type="application/json" id="st-meta">${JSON.stringify(meta).replace(/</g, '\\u003c')}</script>
 <script>${PRESENTER_JS}</script>${scenes ? `\n<script>${sceneJs(opts.sceneLib ?? SCENE_LIB)}</script>` : ''}
 </body>

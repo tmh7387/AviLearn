@@ -68,7 +68,7 @@ function apply(changed){
   var fl=(meta.facil&&meta.facil[i][k-1])||'';facilTx.textContent=fl;facilTx.hidden=facilB.hidden=!fl;
   pos.textContent=(i+1)+'/'+slides.length+' · '+k+'/'+n;
   try{history.replaceState(null,'','#'+(i+1)+'-'+k);}catch(e){}
-  if(SELF)selfStep();
+  if(SELF){if(changed)kcReset();selfStep();}
 }
 function motion(){still=!still;root.classList.toggle('st-still',still);store('stage-still',still?'1':'0');showHud();}
 function next(){if(kcWait())return;if(k<meta.steps[i]){k++;apply(false);}else if(i<slides.length-1){i++;k=1;apply(true);}}
@@ -111,10 +111,14 @@ addEventListener('resize',fit);
 if(store('stage-still')==='1')still=true;root.classList.toggle('st-still',still);
 var saved=store('stage-theme');setTheme(saved==='dark'||saved==='light'?saved:meta.theme);
 /* ---------- self-study player ---------- */
-var SELF=meta.mode==='self-study',playing=false,au=SELF?new Audio():null,waitT=0,answers={},done=false,started=false;
+var SELF=meta.mode==='self-study',playing=false,au=SELF?new Audio():null,waitT=0,answers={},pass={},done=false,started=false;
 var total=meta.steps.reduce(function(a,b){return a+b;},0),kcs=slides.filter(function(s){return s.querySelector('.st-kc');}).length;
 function emit(name,d){try{document.dispatchEvent(new CustomEvent(name,{detail:d}));}catch(e){}}
-function kcWait(){return SELF&&k===1&&!(i in answers)&&!!slides[i].querySelector('.st-kc');}
+/* answers: first answer per check (the score). pass: answered on this visit to the slide; a check asks again on every visit. */
+function kcWait(){return SELF&&k===1&&!(i in pass)&&!!slides[i].querySelector('.st-kc');}
+function kcReset(){delete pass[i];var kc=slides[i].querySelector('.st-kc');if(!kc)return;kc.classList.remove('st-kc-done');
+  [].forEach.call(kc.querySelectorAll('.st-kc-opt'),function(o){o.classList.remove('st-kc-right','st-kc-wrong');});
+  var fb=kc.querySelector('.st-kc-fb');if(fb){fb.textContent='';fb.className='st-kc-fb';}}
 function score(){var c=0;for(var x in answers)if(answers[x].ok)c++;return c;}
 function selfStep(){
   var at=0;for(var j=0;j<i;j++)at+=meta.steps[j];at+=k;
@@ -141,11 +145,11 @@ if(SELF){
   st.addEventListener('click',function(e){e.stopPropagation();if(!(e.target.closest&&e.target.closest('[data-a="start"]')))return;st.hidden=true;started=true;apply(true);play(true);/* replay the slide's motion from the start, in front of the learner */});
   deck.addEventListener('click',function(e){
     var o=e.target.closest&&e.target.closest('.st-kc-opt');if(!o)return;e.stopPropagation();
-    var el=slides[i],kc=el.querySelector('.st-kc');if(k!==1||(i in answers))return;
+    var el=slides[i],kc=el.querySelector('.st-kc');if(k!==1||(i in pass))return;
     var opts=[].slice.call(kc.querySelectorAll('.st-kc-opt')),pick=opts.indexOf(o),ans=+kc.getAttribute('data-kc-a'),ok=pick===ans;
-    answers[i]={pick:pick,ok:ok};o.classList.add(ok?'st-kc-right':'st-kc-wrong');kc.classList.add('st-kc-done');
+    pass[i]=true;var first=!(i in answers);if(first)answers[i]={pick:pick,ok:ok};o.classList.add(ok?'st-kc-right':'st-kc-wrong');kc.classList.add('st-kc-done');
     var fb=kc.querySelector('.st-kc-fb');if(fb){fb.textContent=ok?'Correct.':'Not quite. The answer is '+String.fromCharCode(65+ans)+'.';fb.className='st-kc-fb '+(ok?'st-kc-fb-ok':'st-kc-fb-no');}
-    emit('st:answer',{slide:i,id:meta.ids[i],choice:pick,correct:ok,answer:ans});
+    if(first)emit('st:answer',{slide:i,id:meta.ids[i],choice:pick,correct:ok,answer:ans});
     setTimeout(next,ok?500:900);
   });
   window.stGo=go;window.stAnswers=function(){return answers;};
