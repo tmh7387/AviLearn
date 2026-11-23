@@ -53,6 +53,27 @@ Use a paid-tier key. On the free tier, Google can use the content to improve its
 - `avilearn-app/src/lib/factory/stages.ts`: `runGate` hook in the enrichment stage.
 - `avilearn-app/test/quality-gate.test.ts`: `npm run test:gate`.
 
+## Live test (2026-11-23)
+
+Run: `npm run gate:live` (needs `GEMINI_API_KEY`).
+In the cloud environment, the proxy sets the key. Use a dummy key and set `NODE_USE_ENV_PROXY=1`, because Node `fetch` ignores `HTTPS_PROXY` without it:
+
+```
+NODE_USE_ENV_PROXY=1 GEMINI_API_KEY=dummy npm run gate:live
+```
+
+Result on 5 sample slides (`scripts/gate-live.ts`): 5 of 5 checked, 0 errors, 3,471 input tokens, USD 0.00035, 0.5 s.
+
+| Slide | Gemini type (conf.) | Opus type | Flags |
+| --- | --- | --- | --- |
+| 1 Title | title_slide (0.99) | same | none |
+| 2 Dense regulation text, 62 words | text_heavy (0.94) | same | split_slide (0.92), sme_check (0.98), too_dense (0.29), too_many_words |
+| 3 5-Why steps | procedure_checklist (0.60) | same | type_uncertain |
+| 4 Fishbone shapes | diagram (0.95) | same | none |
+| 5 Quiz | quiz_exercise (0.97) | same | none |
+
+The answers match the expected flags. No SDK change was needed.
+
 ## Next steps (not in this pilot)
 
 - Check Stage deck copy (AI-sounding text, brand rules) on rendered slide screenshots.
