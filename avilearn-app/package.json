@@ -11,10 +11,13 @@
     "publish:portal": "node scripts/publish-to-portal.mjs",
     "test:stage": "tsx --test test/stage.test.ts",
     "stage:build": "tsx scripts/stage-build.ts",
-    "stage:check": "node scripts/stage-check.mjs"
+    "stage:check": "node scripts/stage-check.mjs",
+    "test:gate": "tsx --test test/quality-gate.test.ts",
+    "gate:live": "tsx scripts/gate-live.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.76",
+    "@google/genai": "^3.6.1",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.105.4",
     "ai": "^6.0.177",
